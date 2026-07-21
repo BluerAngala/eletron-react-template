@@ -5,79 +5,101 @@
 
 ---
 
+## 开发工作流（必须遵守）
+
+### 1. 规划阶段：OpenSpec
+
+任何新功能、页面、组件开发前，**必须先用 OpenSpec 做规划**，谋定后动。
+
+```bash
+openspec new change "<kebab-case-name>"   # 创建变更
+openspec status --change "<name>" --json   # 查看状态
+openspec instructions <artifact> --change "<name>" --json  # 获取指引
+```
+
+产出物：`proposal.md`（做什么）、`design.md`（怎么做）、`tasks.md`（实施步骤）
+
+> 技能参考：`skill://openspec-propose`、`skill://openspec-apply-change`
+
+### 2. 设计阶段：UI/UX 设计系统
+
+前端页面/组件开发前，**必须先用设计技能生成设计系统**，禁止直接写代码。
+
+**技能优先级**：
+1. **`ui-ux-pro-max`** — 生成设计系统（配色、排版、风格、UX 规范）
+2. **`gpt-taste`** — Awwwards 级别的设计工程（GSAP 动效、AIDA 结构、Bento 网格）
+3. **`design-taste-frontend`** — 反模板化前端设计
+
+**工作流**：
+```bash
+# 生成设计系统
+python3 skills/ui-ux-pro-max/scripts/search.py "<产品类型> <风格>" --design-system -p "项目名"
+
+# 查询具体领域
+python3 skills/ui-ux-pro-max/scripts/search.py "<关键词>" --domain <style|color|typography|ux|landing>
+```
+
+**设计红线**：
+- ❌ 禁止默认模板样式（无设计感的卡片、无聊的布局）
+- ❌ 禁止 Emoji 作为图标（用 SVG）
+- ❌ 禁止硬编码颜色值（用 CSS 变量或 Tailwind）
+- ❌ 禁止 6 行以上的标题文字墙
+- ✅ 必须有视觉层次、间距节奏、微交互动效
+- ✅ 必须遵循 AIDA 结构（Attention → Interest → Desire → Action）
+
+> 技能参考：`skill://ui-ux-pro-max`、`skill://gpt-taste`、`skill://design-taste-frontend`
+
+### 3. 实现阶段：代码规范
+
+规划和设计完成后，按以下规范实现：
+
+- 新组件放 `src/components/<name>/index.tsx`
+- 类型定义集中放 `src/type/`
+- IPC 通道命名：`kebab-case`
+- 样式：TailwindCSS v4，禁止硬编码颜色
+- 提交前：`pnpm typecheck && pnpm lint && pnpm format:check`
+
+---
+
 ## 目录规范
 
 ```
 src/                    渲染进程（React 组件、样式、类型）
   components/           可复用组件（每个组件一个目录，入口 index.tsx）
-  demos/                功能演示代码（IPC、Node.js 调用等）
+  demos/                功能演示代码
   type/                 全局类型定义（.d.ts）
   assets/               静态资源（SVG、图片）
 electron/               主进程
   main/                 主进程逻辑（窗口、IPC、自动更新）
-  preload/              Preload 脚本（contextBridge 暴露安全 API）
+  preload/              Preload 脚本（contextBridge）
 test/                   测试
-  e2e/                  Playwright E2E 测试
+  e2e/                  Playwright E2E
   *.test.ts             Vitest 单元测试
-public/                 公共静态资源（打包时原样复制）
+public/                 公共静态资源
 docs/                   参考文档和模板存档
 dev_docs/               开发日志（Build in Public）
 ```
 
-**规则**：
-- 新组件放 `src/components/<name>/index.tsx`，不要平铺到 `src/`
-- 类型定义集中放 `src/type/`，不要散落在组件里
-- Electron 主进程代码只放 `electron/`，渲染进程不要直接 import Node 模块
-
 ---
 
-## 代码质量
+## 代码质量工具
 
-### 当前状态
-项目**尚未配置** ESLint、Prettier、Husky 等代码质量工具。提交前需手动检查。
+| 工具 | 命令 | 用途 |
+|------|------|------|
+| ESLint | `pnpm lint` / `pnpm lint:fix` | 代码检查 |
+| Prettier | `pnpm format` / `pnpm format:check` | 格式化 |
+| TypeScript | `pnpm typecheck` | 类型检查 |
+| Vitest | `pnpm test` | 单元测试 |
+| Playwright | `pnpm test:e2e` | E2E 测试 |
 
-### 推荐标准（待实施）
-- **格式化**: Prettier（单引号、无分号、2 空格缩进）
-- **Lint**: ESLint + `@typescript-eslint` + `eslint-plugin-react`
-- **Git Hooks**: Husky + lint-staged（提交前自动格式化）
-- **Commit**: 遵循 [Conventional Commits](https://www.conventionalcommits.org/)（`feat:` / `fix:` / `chore:`）
-
-> 参考配置文件：`tsconfig.json`（严格模式已开启）
-
----
-
-## 提交前预检清单
-
-提交 GitHub 前，按顺序执行：
-
+**提交前预检**：
 ```bash
-pnpm typecheck        # 1. TypeScript 类型检查（必须通过）
-pnpm test             # 2. 单元测试
-pnpm build            # 3. 确认构建不报错
+pnpm typecheck && pnpm lint && pnpm format:check && pnpm test
 ```
-
-**CI 会拦截的问题**（参见 `.github/workflows/`）：
-- `pr-guard.yml`：禁止修改 lockfile（`pnpm-lock.yaml` 等由维护者管理）
-- `ci.yml`：Markdown 文件变更时触发 markdownlint
-- `build.yml`：push 到 main 时三平台（macOS/Linux/Windows）并行构建
-
----
-
-## 开发命令速查
-
-| 命令 | 用途 |
-|------|------|
-| `pnpm dev` | 启动开发环境（Vite HMR + Electron） |
-| `pnpm build` | 构建 + 打包（产物在 `release/`） |
-| `pnpm test` | Vitest 单元测试 |
-| `pnpm test:e2e` | Playwright E2E（先 build 再测试） |
-| `pnpm typecheck` | TypeScript 类型检查 |
 
 ---
 
 ## IPC 通信约定
-
-渲染进程通过 preload 暴露的 `window.ipcRenderer` 与主进程通信。
 
 ```typescript
 // 渲染进程 → 主进程
@@ -87,19 +109,7 @@ const result = await window.ipcRenderer.invoke('channel-name', ...args)
 ipcMain.handle('channel-name', (event, ...args) => { ... })
 ```
 
-通道命名规范：`kebab-case`（如 `check-update`、`start-download`）
-
-> 参考实现：`electron/main/update.ts`、`electron/preload/index.ts`、`src/components/update/index.tsx`
-
----
-
-## 样式约定
-
-- 使用 TailwindCSS v4 utility classes，不要写自定义 CSS（除非必要）
-- 路径别名 `@/` → `src/`（配置在 `tsconfig.json` + `vite.config.ts`）
-- 深色/浅色模式：禁止硬编码颜色值
-
-> 参考：`src/index.css`（`@import "tailwindcss"` + `@theme` 自定义）
+> 参考：`electron/main/update.ts`、`electron/preload/index.ts`、`src/components/update/index.tsx`
 
 ---
 
@@ -110,8 +120,6 @@ ipcMain.handle('channel-name', (event, ...args) => { ... })
 | [`vite.config.ts`](vite.config.ts) | Vite + Electron 构建配置 |
 | [`tsconfig.json`](tsconfig.json) | TypeScript 严格编译选项 |
 | [`electron-builder.json`](electron-builder.json) | 打包发布配置 |
-| [`vitest.config.ts`](vitest.config.ts) | 单元测试配置 |
-| [`playwright.config.ts`](playwright.config.ts) | E2E 测试配置 |
-| [`pnpm-workspace.yaml`](pnpm-workspace.yaml) | pnpm 工作空间 |
-| [`.npmrc`](.npmrc) | npm 配置（shamefully-hoist） |
+| [`eslint.config.js`](eslint.config.js) | ESLint 配置 |
+| [`.prettierrc`](.prettierrc) | Prettier 配置 |
 | [`.github/workflows/`](.github/workflows/) | CI/CD 流水线 |
