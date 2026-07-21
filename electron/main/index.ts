@@ -3,6 +3,7 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
+import Store from 'electron-store'
 import { update } from './update'
 
 const require = createRequire(import.meta.url)
@@ -47,21 +48,65 @@ let win: BrowserWindow | null = null
 const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
+// 窗口状态持久化
+const windowStore = new Store({ name: 'window-state' })
+const DEFAULT_WIDTH = 1200
+const DEFAULT_HEIGHT = 800
+const MIN_WIDTH = 800
+const MIN_HEIGHT = 600
+
+function getWindowState() {
+  const state = windowStore.get('bounds', null) as {
+    x?: number
+    y?: number
+    width?: number
+    height?: number
+    isMaximized?: boolean
+  } | null
+  if (!state) return { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT }
+  return {
+    x: state.x,
+    y: state.y,
+    width: Math.max(state.width || DEFAULT_WIDTH, MIN_WIDTH),
+    height: Math.max(state.height || DEFAULT_HEIGHT, MIN_HEIGHT),
+    isMaximized: state.isMaximized,
+  }
+}
+
+function saveWindowState(win: BrowserWindow) {
+  if (win.isMaximized()) {
+    windowStore.set('bounds.isMaximized', true)
+  } else {
+    const bounds = win.getBounds()
+    windowStore.set('bounds', { ...bounds, isMaximized: false })
+  }
+}
+
 async function createWindow() {
+  const windowState = getWindowState()
+
   win = new BrowserWindow({
     title: 'Main window',
     icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
-    width: 1200,
-    height: 800,
+    width: windowState.width,
+    height: windowState.height,
+    ...(windowState.x !== undefined && { x: windowState.x }),
+    ...(windowState.y !== undefined && { y: windowState.y }),
+    minWidth: MIN_WIDTH,
+    minHeight: MIN_HEIGHT,
     webPreferences: {
       preload,
-      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-      // nodeIntegration: true,
-
-      // Consider using contextBridge.exposeInMainWorld
-      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      // contextIsolation: false,
     },
+  })
+
+  // 恢复最大化状态
+  if (windowState.isMaximized) {
+    win.maximize()
+  }
+
+  // 窗口关闭时保存状态
+  win.on('close', () => {
+    if (win) saveWindowState(win)
   })
 
   if (VITE_DEV_SERVER_URL) {
