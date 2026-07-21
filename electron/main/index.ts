@@ -8,6 +8,9 @@ import { update } from './update'
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+// 强制 DevTools 使用中文，不弹语言选择
+app.commandLine.appendSwitch('lang', 'zh-CN')
+
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -65,7 +68,7 @@ async function createWindow() {
     // #298
     win.loadURL(VITE_DEV_SERVER_URL)
     // Open devTool if the app is not packaged
-    win.webContents.openDevTools()
+    win.webContents.openDevTools({ mode: 'detach' })
   } else {
     win.loadFile(indexHtml)
   }
