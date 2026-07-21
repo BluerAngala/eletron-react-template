@@ -67,15 +67,18 @@ const Update = () => {
     [],
   )
 
-  const onUpdateDownloaded = useCallback((_event: Electron.IpcRendererEvent, ...args: any[]) => {
-    setProgressInfo({ percent: 100 })
-    setModalBtn((state) => ({
-      ...state,
-      cancelText: 'Later',
-      okText: 'Install now',
-      onOk: () => window.ipcRenderer.invoke('quit-and-install'),
-    }))
-  }, [])
+  const onUpdateDownloaded = useCallback(
+    (_event: Electron.IpcRendererEvent, ..._args: unknown[]) => {
+      setProgressInfo({ percent: 100 })
+      setModalBtn((state) => ({
+        ...state,
+        cancelText: 'Later',
+        okText: 'Install now',
+        onOk: () => window.ipcRenderer.invoke('quit-and-install'),
+      }))
+    },
+    [],
+  )
 
   useEffect(() => {
     // Get version information and whether to update
@@ -90,7 +93,7 @@ const Update = () => {
       window.ipcRenderer.off('download-progress', onDownloadProgress)
       window.ipcRenderer.off('update-downloaded', onUpdateDownloaded)
     }
-  }, [])
+  }, [onUpdateCanAvailable, onUpdateError, onDownloadProgress, onUpdateDownloaded])
 
   return (
     <>

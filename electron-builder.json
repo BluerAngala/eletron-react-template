@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "YourAppID",
+  "appId": "com.bluerangala.eletron-react-template",
   "asar": true,
   "directories": {
     "output": "release/${version}"
@@ -35,8 +35,8 @@
   },
   "publish": {
     "provider": "github",
-    "owner": "electron-vite",
-    "repo": "electron-vite-react",
+    "owner": "BluerAngala",
+    "repo": "eletron-react-template",
     "releaseType": "release"
   }
 }

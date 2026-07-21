@@ -28,12 +28,14 @@ const ModalTemplate: React.FC<
       <div className="absolute inset-0 bg-slate-900/14 backdrop-blur-sm" onClick={onCancel} />
       <div className="absolute left-1/2 top-1/2 w-[min(calc(100vw-2rem),_460px)] -translate-x-1/2 -translate-y-1/2">
         <div
-          className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white px-5 py-4 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.28)]"
+          className="overflow-hidden rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.28)]"
           style={{ width }}
         >
           <div className="flex items-start gap-3 text-slate-900">
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">System</div>
+              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">
+                System
+              </div>
               <div className="mt-1 text-2xl font-semibold tracking-tight">{title}</div>
             </div>
             <span
