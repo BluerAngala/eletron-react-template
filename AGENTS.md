@@ -7,21 +7,7 @@
 
 ## 开发工作流（必须遵守）
 
-### 1. 规划阶段：OpenSpec
-
-任何新功能、页面、组件开发前，**必须先用 OpenSpec 做规划**，谋定后动。
-
-```bash
-openspec new change "<kebab-case-name>"   # 创建变更
-openspec status --change "<name>" --json   # 查看状态
-openspec instructions <artifact> --change "<name>" --json  # 获取指引
-```
-
-产出物：`proposal.md`（做什么）、`design.md`（怎么做）、`tasks.md`（实施步骤）
-
-> 技能参考：`skill://openspec-propose`、`skill://openspec-apply-change`
-
-### 2. 设计阶段：UI/UX 设计系统
+### 1. 设计阶段：UI/UX 设计系统
 
 前端页面/组件开发前，**必须先用设计技能生成设计系统**，禁止直接写代码。
 
