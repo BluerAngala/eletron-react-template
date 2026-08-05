@@ -1,0 +1,65 @@
+{
+  "name": "eletron-react-template",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Electron + React + TypeScript 桌面应用模板，基于 electron-vite-react 二次开发。",
+  "license": "MIT",
+  "author": "BluerAngala",
+  "type": "module",
+  "main": "dist-electron/main/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BluerAngala/eletron-react-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BluerAngala/eletron-react-template/issues"
+  },
+  "homepage": "https://github.com/BluerAngala/eletron-react-template#readme",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && electron-builder",
+    "preview": "vite preview",
+    "pretest": "vite build --mode=test",
+    "test": "vitest run",
+    "test:e2e": "pnpm pretest && playwright test",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"electron/**/*.{ts,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"electron/**/*.{ts,json}\""
+  },
+  "dependencies": {
+    "electron-store": "^11.0.2",
+    "electron-updater": "^6.8.3",
+    "lucide-react": "^1.25.0",
+    "react-router-dom": "^7.18.1",
+    "sonner": "^2.0.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.60.0",
+    "@tailwindcss/vite": "^4.3.0",
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.64.0",
+    "@typescript-eslint/parser": "^8.64.0",
+    "@vitejs/plugin-react": "^6.0.2",
+    "electron": "^42.1.0",
+    "electron-builder": "^26.8.1",
+    "eslint": "^10.7.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "prettier": "^3.9.5",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
+    "vite-plugin-electron": "^1.0.1",
+    "vite-plugin-electron-renderer": "^1.0.0",
+    "vitest": "^4.1.8"
+  }
+}

@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+dist-electron
+release
+*.local
+
+# Editor directories and files
+.vscode/.debug.env
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+#lockfile
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+test/screenshots
+
+# 开发日志内部版（不公开）
+dev_docs/articles/internal/
+dev_docs/.drafts/
+
+# AI 工具配置
+.claude/
+.trae/
+
+# Python 缓存
+__pycache__/
+*.pyc
