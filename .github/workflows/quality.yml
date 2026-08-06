@@ -29,7 +29,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 11.13.0
+          version: 11.13.1
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -52,5 +52,6 @@ jobs:
       - name: Unit Test
         run: pnpm test
 
-      - name: Build
-        run: pnpm build
+      # 质量门禁用 vite build 验证渲染层可构建（避免每次下载 Electron 二进制）
+      - name: Build (Renderer)
+        run: npx vite build
