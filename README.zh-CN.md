@@ -21,6 +21,7 @@
 - 🧪 Vitest 单元测试 + Playwright E2E 测试
 - 🛡️ Biome 统一代码检查与格式化（单一工具，零配置陷阱）
 - 📦 electron-builder 打包 + GitHub Release 发布 + 自动更新
+- 🪄 一键改名脚本 + 图标生成脚本（单个 SVG 生成全套图标）
 
 ## 快速开始
 
@@ -38,6 +39,22 @@ pnpm install
 pnpm dev
 ```
 
+## 从模板创建新项目
+
+```sh
+# 1. 克隆（或作为 GitHub 模板使用）后安装依赖
+pnpm install
+
+# 2. 改名（默认交互式引导，也可直接传参；--dry-run 仅预览不写入）
+pnpm rename --name my-app --appId com.example.myapp --repo owner/repo
+
+# 3. 将 assets/logo.svg 替换为自己的图标（可从 iconfont 下载），再生成全套图标
+pnpm icons
+```
+
+`pnpm rename` 一次性改写 name / productName / appId / 仓库地址 / README。
+`pnpm icons` 从一个 SVG 生成 `.icns` / `.ico` / favicon / 多尺寸 PNG。
+
 ## 可用脚本
 
 | 命令 | 说明 |
@@ -52,6 +69,8 @@ pnpm dev
 | `pnpm lint:fix` | Biome 自动修复 |
 | `pnpm format` | Biome 格式化（写入） |
 | `pnpm format:check` | Biome 格式化检查 |
+| `pnpm rename` | 交互式改名（包名 / appId / 仓库等） |
+| `pnpm icons` | 从 assets/logo.svg 生成全套图标 |
 
 ## 项目结构
 

@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import Store from 'electron-store'
 import { clearLogs, createLogger, type LogEntry, onLog, readLogs, writeLogEntry } from './logger'
+import { setupAppMenu } from './menu'
+import { setupTray, type TrayHandle } from './tray'
 import { update } from './update'
 
 const logger = createLogger('main')
@@ -62,6 +64,7 @@ process.on('unhandledRejection', (reason) => {
 })
 
 let win: BrowserWindow | null = null
+let tray: TrayHandle | null = null
 const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
@@ -103,7 +106,7 @@ async function createWindow() {
   const windowState = getWindowState()
 
   win = new BrowserWindow({
-    title: 'Main window',
+    title: app.getName(),
     icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
     width: windowState.width,
     height: windowState.height,
@@ -121,9 +124,13 @@ async function createWindow() {
     win.maximize()
   }
 
-  // 窗口关闭时保存状态
-  win.on('close', () => {
+  // 窗口关闭时保存状态；开启「关闭到托盘」时改为隐藏而非退出
+  win.on('close', (event) => {
     if (win) saveWindowState(win)
+    if (tray?.isCloseToTray() && !tray.isQuitting()) {
+      event.preventDefault()
+      win.hide()
+    }
   })
 
   if (VITE_DEV_SERVER_URL) {
@@ -145,6 +152,11 @@ async function createWindow() {
     logger.error('window-load-failed', { errorCode, errorDescription })
   })
 
+  // 渲染进程崩溃兜底：记录原因（crashed / oom / killed 等）
+  win.webContents.on('render-process-gone', (_event, details) => {
+    logger.error('render-process-gone', { reason: details.reason, exitCode: details.exitCode })
+  })
+
   // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString())
@@ -160,7 +172,11 @@ async function createWindow() {
   update(win)
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  setupAppMenu()
+  tray = setupTray(() => win)
+  return createWindow()
+})
 
 app.on('window-all-closed', () => {
   win = null
@@ -178,7 +194,10 @@ app.on('second-instance', () => {
 app.on('activate', () => {
   const allWindows = BrowserWindow.getAllWindows()
   if (allWindows.length) {
-    allWindows[0].focus()
+    const [first] = allWindows
+    if (first.isMinimized()) first.restore()
+    first.show()
+    first.focus()
   } else {
     createWindow()
   }

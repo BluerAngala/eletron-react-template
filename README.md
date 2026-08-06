@@ -21,6 +21,7 @@ A desktop application template built on Electron + React + TypeScript, derived f
 - 🧪 Vitest unit tests + Playwright E2E tests
 - 🛡️ Biome for linting & formatting (single tool, zero config traps)
 - 📦 electron-builder packaging with GitHub Release publishing + auto-update
+- 🪄 One-command rename script + full icon set generation from a single SVG
 
 ## Quick Start
 
@@ -38,6 +39,24 @@ pnpm install
 pnpm dev
 ```
 
+## Create a New Project
+
+```sh
+# 1. Clone (or use as a GitHub template) then install deps
+pnpm install
+
+# 2. Rename the project — interactive by default, or pass flags
+#    (--dry-run previews without writing)
+pnpm rename --name my-app --appId com.example.myapp --repo owner/repo
+
+# 3. Replace assets/logo.svg with your own icon (e.g. download from iconfont),
+#    then generate the full icon set
+pnpm icons
+```
+
+`pnpm rename` rewrites name / productName / appId / repo / README in one pass.
+`pnpm icons` generates `.icns` / `.ico` / favicon / multi-size PNGs from one SVG.
+
 ## Available Scripts
 
 | Command | Description |
@@ -52,6 +71,8 @@ pnpm dev
 | `pnpm lint:fix` | Biome auto-fix |
 | `pnpm format` | Biome format (write) |
 | `pnpm format:check` | Biome format check |
+| `pnpm rename` | Rename project (name / appId / repo) interactively |
+| `pnpm icons` | Generate full icon set from assets/logo.svg |
 
 ## Project Structure
 
