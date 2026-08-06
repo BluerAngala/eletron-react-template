@@ -1,4 +1,6 @@
 allowBuilds:
+  '@google/genai': true
   electron-winstaller: true
+  protobufjs: true
 overrides:
   '@electron/get': 4.0.0

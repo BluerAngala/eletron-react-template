@@ -35,6 +35,21 @@ contextBridge.exposeInMainWorld('logAPI', {
   },
 })
 
+// AI 能力 API（主进程 pi-ai 桥接：流式对话 / 中断 / 模型列表 / Key 管理）
+contextBridge.exposeInMainWorld('ai', {
+  chat: (req: unknown) => ipcRenderer.send('ai:chat', req),
+  abort: (requestId: string) => ipcRenderer.send('ai:abort', requestId),
+  listModels: () => ipcRenderer.invoke('ai:list-models') as Promise<unknown>,
+  setKey: (provider: string, key: string) =>
+    ipcRenderer.invoke('ai:set-key', provider, key) as Promise<boolean>,
+  authStatus: () => ipcRenderer.invoke('ai:auth-status') as Promise<unknown>,
+  onEvent: (listener: (event: unknown) => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, payload: unknown) => listener(payload)
+    ipcRenderer.on('ai:event', handler)
+    return () => ipcRenderer.off('ai:event', handler)
+  },
+})
+
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {
   on(...args: Parameters<typeof ipcRenderer.on>) {

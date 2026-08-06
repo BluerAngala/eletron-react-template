@@ -1,9 +1,11 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
+import enUSAI from '@/locales/en-US/ai.json'
 import enUSCommon from '@/locales/en-US/common.json'
 import enUSErrors from '@/locales/en-US/errors.json'
 import enUSHome from '@/locales/en-US/home.json'
 import enUSLogs from '@/locales/en-US/logs.json'
+import zhCNAI from '@/locales/zh-CN/ai.json'
 import zhCNCommon from '@/locales/zh-CN/common.json'
 import zhCNErrors from '@/locales/zh-CN/errors.json'
 import zhCNHome from '@/locales/zh-CN/home.json'
@@ -48,12 +50,14 @@ void i18n.use(initReactI18next).init({
       common: zhCNCommon,
       home: zhCNHome,
       logs: zhCNLogs,
+      ai: zhCNAI,
       errors: zhCNErrors,
     },
     'en-US': {
       common: enUSCommon,
       home: enUSHome,
       logs: enUSLogs,
+      ai: enUSAI,
       errors: enUSErrors,
     },
   },

@@ -1,0 +1,20 @@
+{
+  "title": "AI 对话",
+  "subtitle": "基于 @earendil-works/pi-ai 的多厂商流式对话演示",
+  "provider": "厂商",
+  "model": "模型",
+  "systemPrompt": "系统提示词（可选）",
+  "noModels": "该厂商暂无可用模型",
+  "apiKeyPlaceholder": "粘贴 API Key 后回车",
+  "configured": "已配置 Key",
+  "notConfigured": "未配置 Key",
+  "saveKey": "保存 Key",
+  "saved": "已保存",
+  "keyHint": "Key 仅保存在本机主进程（electron-store）",
+  "send": "发送",
+  "stop": "停止",
+  "placeholder": "输入消息，Enter 发送，Shift+Enter 换行",
+  "empty": "还没有对话，输入消息开始吧",
+  "error": "出错了",
+  "clear": "清空对话"
+}

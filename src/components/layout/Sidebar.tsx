@@ -1,4 +1,5 @@
 import {
+  Bot,
   Check,
   ChevronDown,
   ChevronLeft,
@@ -23,6 +24,7 @@ interface SidebarProps {
 
 const navItems = [
   { to: '/', icon: Home, key: 'nav.home' },
+  { to: '/ai', icon: Bot, key: 'nav.ai' },
   { to: '/logs', icon: ScrollText, key: 'nav.logs' },
 ]
 

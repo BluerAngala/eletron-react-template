@@ -3,6 +3,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import Store from 'electron-store'
+import { initAi } from './ai'
 import { clearLogs, createLogger, type LogEntry, onLog, readLogs, writeLogEntry } from './logger'
 import { setupAppMenu } from './menu'
 import { setupTray, type TrayHandle } from './tray'
@@ -176,6 +177,7 @@ async function createWindow() {
 
 app.whenReady().then(() => {
   setupAppMenu()
+  initAi()
   tray = setupTray(() => win)
   return createWindow()
 })

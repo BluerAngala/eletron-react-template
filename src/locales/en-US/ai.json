@@ -1,0 +1,20 @@
+{
+  "title": "AI Chat",
+  "subtitle": "Multi-provider streaming chat powered by @earendil-works/pi-ai",
+  "provider": "Provider",
+  "model": "Model",
+  "systemPrompt": "System prompt (optional)",
+  "noModels": "No models available for this provider",
+  "apiKeyPlaceholder": "Paste API key and press Enter",
+  "configured": "Key configured",
+  "notConfigured": "Key not configured",
+  "saveKey": "Save key",
+  "saved": "Saved",
+  "keyHint": "Key is stored locally in the main process (electron-store)",
+  "send": "Send",
+  "stop": "Stop",
+  "placeholder": "Type a message. Enter to send, Shift+Enter for newline",
+  "empty": "No messages yet — start typing",
+  "error": "Error",
+  "clear": "Clear chat"
+}
