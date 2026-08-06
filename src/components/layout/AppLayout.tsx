@@ -20,6 +20,8 @@ export function AppLayout() {
   const { t } = useTranslation()
   const location = useLocation()
   const title = t(pageTitleKeys[location.pathname] ?? 'pages.unknown')
+  // AI 对话页全屏沉浸（无内边距），其余页面保留 p-6
+  const isFullBleed = location.pathname === '/ai'
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_KEY, String(collapsed))
@@ -32,7 +34,7 @@ export function AppLayout() {
       <div className="flex flex-1 flex-col overflow-hidden">
         <TopBar title={title} />
 
-        <main className="flex-1 overflow-auto p-6">
+        <main className={`flex-1 overflow-auto ${isFullBleed ? '' : 'p-6'}`}>
           <Outlet />
         </main>
       </div>
@@ -42,7 +44,7 @@ export function AppLayout() {
         richColors
         closeButton
         toastOptions={{
-          className: 'dark:bg-slate-800 dark:text-slate-100',
+          className: 'dark:bg-[#1f1f1f] dark:text-white',
         }}
       />
     </div>

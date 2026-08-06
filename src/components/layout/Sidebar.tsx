@@ -69,16 +69,18 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
   return (
     <aside
-      className={`flex h-full flex-col border-r border-slate-200 bg-white transition-all duration-300 dark:border-slate-700 dark:bg-slate-800 ${
+      className={`flex h-full flex-col border-r border-slate-200 bg-white transition-all duration-300 dark:border-white/10 dark:bg-black ${
         collapsed ? 'w-16' : 'w-60'
       }`}
     >
       {/* Logo */}
-      <div className="flex h-14 items-center border-b border-slate-200 px-4 dark:border-slate-700">
+      <div className="flex h-14 items-center border-b border-slate-200 px-4 dark:border-white/10">
         {!collapsed && (
-          <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">Template</span>
+          <span className="text-lg font-semibold text-black dark:text-white">Template</span>
         )}
-        {collapsed && <span className="mx-auto text-lg font-bold text-cyan-600">T</span>}
+        {collapsed && (
+          <span className="mx-auto text-lg font-bold text-slate-900 dark:text-white">T</span>
+        )}
       </div>
 
       {/* Navigation */}
@@ -92,8 +94,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                    : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                    ? 'bg-black/10 text-black dark:bg-white/10 dark:text-white'
+                    : 'text-black hover:bg-black/10 dark:text-white dark:hover:bg-white/10'
                 } ${collapsed ? 'justify-center' : ''}`
               }
               title={collapsed ? label : undefined}
@@ -106,7 +108,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       {/* 底部区域：语言 + 主题 + 折叠 */}
-      <div className="space-y-1 border-t border-slate-200 p-2 dark:border-slate-700">
+      <div className="space-y-1 border-t border-slate-200 p-2 dark:border-white/10">
         {/* 语言切换 */}
         <div className="relative" ref={langRef}>
           <button
@@ -115,9 +117,9 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             title={t('language.title')}
             className={`flex w-full items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium transition-colors ${
               langOpen
-                ? 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-100'
-                : 'text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
-            } ${collapsed ? '' : 'border border-slate-200 dark:border-slate-700'}`}
+                ? 'bg-black/10 text-black dark:bg-white/10 dark:text-white'
+                : 'text-black hover:bg-black/10 dark:text-white dark:hover:bg-white/10'
+            } ${collapsed ? '' : 'border border-slate-200 dark:border-white/10'}`}
           >
             <Languages className="h-3.5 w-3.5 shrink-0" />
             {!collapsed && <span>{currentLabel}</span>}
@@ -131,7 +133,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           {/* 下拉菜单：向上展开，避免超出窗口 */}
           {langOpen && (
             <div
-              className={`absolute z-50 min-w-[9rem] overflow-hidden rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-700 dark:bg-slate-800 ${
+              className={`absolute z-50 min-w-[9rem] overflow-hidden rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-white/10 dark:bg-[#111111] ${
                 collapsed ? 'left-full top-0 ml-1.5' : 'bottom-full right-0 mb-1.5'
               }`}
             >
@@ -147,8 +149,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                     }}
                     className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
                       active
-                        ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                        : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                        ? 'bg-black/10 text-black dark:bg-white/10 dark:text-white'
+                        : 'text-black hover:bg-black/10 dark:text-white dark:hover:bg-white/10'
                     }`}
                   >
                     <span>{label}</span>
@@ -173,8 +175,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 title={collapsed ? label : undefined}
                 className={`flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium transition-colors ${
                   active
-                    ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                    : 'text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                    ? 'bg-black/10 text-black dark:bg-white/10 dark:text-white'
+                    : 'text-black hover:bg-black/10 dark:text-white dark:hover:bg-white/10'
                 }`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -189,7 +191,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           type="button"
           onClick={onToggle}
           title={collapsed ? t('nav.expandMenu') : undefined}
-          className={`flex w-full items-center justify-center rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700 ${
+          className={`flex w-full items-center justify-center rounded-xl p-2 text-black transition-colors hover:bg-black/10 dark:text-white dark:hover:bg-white/10 ${
             collapsed ? '' : 'gap-2'
           }`}
         >

@@ -1,4 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
+import {
+  ASSISTANT_STREAM_CHANNEL,
+  type AssistantStreamEvent,
+  type AssistantStreamRequest,
+} from '../shared/assistant'
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
@@ -35,18 +40,32 @@ contextBridge.exposeInMainWorld('logAPI', {
   },
 })
 
-// AI 能力 API（主进程 pi-ai 桥接：流式对话 / 中断 / 模型列表 / Key 管理）
+// AI 配置 API（模型列表 / API Key 管理；对话走 assistantAI 的 MessagePort 流）
 contextBridge.exposeInMainWorld('ai', {
-  chat: (req: unknown) => ipcRenderer.send('ai:chat', req),
-  abort: (requestId: string) => ipcRenderer.send('ai:abort', requestId),
   listModels: () => ipcRenderer.invoke('ai:list-models') as Promise<unknown>,
   setKey: (provider: string, key: string) =>
     ipcRenderer.invoke('ai:set-key', provider, key) as Promise<boolean>,
   authStatus: () => ipcRenderer.invoke('ai:auth-status') as Promise<unknown>,
-  onEvent: (listener: (event: unknown) => void) => {
-    const handler = (_event: Electron.IpcRendererEvent, payload: unknown) => listener(payload)
-    ipcRenderer.on('ai:event', handler)
-    return () => ipcRenderer.off('ai:event', handler)
+})
+
+// assistant-ui 流式桥（Electron 本地主进程模式，官方推荐：MessagePort + 数据协议）
+// 回调只收到结构化克隆安全的纯数据事件，绝不暴露 Electron 的 IPC 事件对象。
+contextBridge.exposeInMainWorld('assistantAI', {
+  streamChat(request: AssistantStreamRequest, onEvent: (event: AssistantStreamEvent) => void) {
+    const { port1, port2 } = new MessageChannel()
+    const onMessage = (event: MessageEvent<AssistantStreamEvent>) => onEvent(event.data)
+
+    port1.addEventListener('message', onMessage)
+    port1.start()
+    ipcRenderer.postMessage(ASSISTANT_STREAM_CHANNEL, request, [port2])
+
+    let stopped = false
+    return () => {
+      if (stopped) return
+      stopped = true
+      port1.removeEventListener('message', onMessage)
+      port1.close()
+    }
   },
 })
 

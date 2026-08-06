@@ -3,6 +3,11 @@
     "shadcn": {
       "command": "npx",
       "args": ["shadcn@latest", "mcp"]
+    },
+    "assistant-ui": {
+      "command": "npx",
+      "args": ["-y", "@assistant-ui/mcp-docs-server"],
+      "type": "stdio"
     }
   }
 }

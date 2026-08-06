@@ -22,12 +22,12 @@ const MAX_ENTRIES = 2000
 
 const LEVEL_STYLES: Record<LogEntry['level'], { badge: string; text: string }> = {
   debug: {
-    badge: 'bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-400',
-    text: 'text-slate-500 dark:text-slate-500',
+    badge: 'bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-white',
+    text: 'text-slate-500 dark:text-white',
   },
   info: {
     badge: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-400',
-    text: 'text-slate-700 dark:text-slate-300',
+    text: 'text-slate-700 dark:text-white',
   },
   warn: {
     badge: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
@@ -179,8 +179,8 @@ export function Logs() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <ScrollText className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
-          <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t('title')}</h1>
-          <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-700/60 dark:text-slate-400">
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-white">{t('title')}</h1>
+          <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-700/60 dark:text-white">
             {t('count', { count: filtered.length })}
           </span>
         </div>
@@ -196,7 +196,7 @@ export function Logs() {
                 className={`px-3 py-1.5 text-xs font-medium transition-colors ${
                   filter === value
                     ? 'bg-cyan-500 text-white'
-                    : 'bg-white text-slate-600 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
+                    : 'bg-white text-slate-600 hover:bg-slate-50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700'
                 }`}
               >
                 {label === 'all' ? t('filters.all') : label.toUpperCase()}
@@ -212,7 +212,7 @@ export function Logs() {
             className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
               paused
                 ? 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
+                : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700'
             }`}
           >
             {paused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
@@ -223,7 +223,7 @@ export function Logs() {
           <button
             type="button"
             onClick={handleCopy}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
           >
             {copied ? (
               <Check className="h-3.5 w-3.5 text-green-500" />
@@ -289,7 +289,7 @@ export function Logs() {
                       hasData ? 'cursor-pointer' : 'cursor-default'
                     }`}
                   >
-                    <span className="shrink-0 pt-0.5 text-slate-400 dark:text-slate-500">
+                    <span className="shrink-0 pt-0.5 text-slate-400 dark:text-white">
                       {formatTime(entry.ts)}
                     </span>
                     <span
@@ -297,7 +297,7 @@ export function Logs() {
                     >
                       {entry.level.toUpperCase()}
                     </span>
-                    <span className="shrink-0 pt-0.5 text-slate-500 dark:text-slate-400">
+                    <span className="shrink-0 pt-0.5 text-slate-500 dark:text-white">
                       [{entry.scope}]
                     </span>
                     <span className={`min-w-0 flex-1 break-all pt-0.5 ${style.text}`}>
@@ -305,7 +305,7 @@ export function Logs() {
                     </span>
                     {/* 折叠时右侧显示部分内容预览 */}
                     {!isExpanded && hasData && (
-                      <span className="max-w-[220px] shrink-0 truncate pt-0.5 text-xs text-slate-400 dark:text-slate-500">
+                      <span className="max-w-[220px] shrink-0 truncate pt-0.5 text-xs text-slate-400 dark:text-white">
                         {previewData(entry.data)}
                       </span>
                     )}
@@ -333,7 +333,7 @@ export function Logs() {
                       ))}
                   </div>
                   {isExpanded && hasData && (
-                    <pre className="whitespace-pre-wrap break-words border-b border-slate-100 bg-slate-50 px-4 py-2 text-xs leading-5 text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300">
+                    <pre className="whitespace-pre-wrap break-words border-b border-slate-100 bg-slate-50 px-4 py-2 text-xs leading-5 text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-white">
                       {JSON.stringify(entry.data, null, 2)}
                     </pre>
                   )}

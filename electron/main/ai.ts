@@ -3,40 +3,26 @@ import {
   type CredentialInfo,
   type CredentialStore,
   createModels,
-  type Message,
+  type MutableModels,
 } from '@earendil-works/pi-ai'
 import { anthropicProvider } from '@earendil-works/pi-ai/providers/anthropic'
 import { deepseekProvider } from '@earendil-works/pi-ai/providers/deepseek'
 import { openaiProvider } from '@earendil-works/pi-ai/providers/openai'
 import { openrouterProvider } from '@earendil-works/pi-ai/providers/openrouter'
 import { xiaomiProvider } from '@earendil-works/pi-ai/providers/xiaomi'
-import { ipcMain, type WebContents } from 'electron'
+import { ipcMain } from 'electron'
 import Store from 'electron-store'
+import {
+  ASSISTANT_STREAM_CHANNEL,
+  type AssistantStreamEvent,
+  type AssistantStreamRequest,
+  isAssistantStreamRequest,
+} from '../shared/assistant'
 import { createLogger } from './logger'
 
 const logger = createLogger('ai')
 
 // ---------- 与渲染层共享的类型（IPC 载荷） ----------
-
-/** 渲染进程会话消息（简化结构，timestamp 由主进程补齐） */
-export interface AiRenderMessage {
-  role: 'user' | 'assistant'
-  content: string
-}
-
-export interface AiChatRequest {
-  requestId: string
-  provider: string
-  model: string
-  systemPrompt?: string
-  messages: AiRenderMessage[]
-}
-
-/** 推送给渲染层的流式事件 */
-export type AiEvent =
-  | { type: 'text_delta'; requestId: string; delta: string }
-  | { type: 'done'; requestId: string; text: string }
-  | { type: 'error'; requestId: string; message: string; reason?: 'error' | 'aborted' }
 
 export interface AiListEntry {
   provider: string
@@ -100,42 +86,38 @@ function getModels(): MutableModels | undefined {
   return models
 }
 
-/** 进行中的请求：requestId -> AbortController */
-const inflight = new Map<string, AbortController>()
-
-function toContextMessages(messages: AiRenderMessage[]): Message[] {
-  return messages.map((m) => ({ role: m.role, content: m.content, timestamp: Date.now() }))
-}
-
-function sendTo(sender: WebContents, event: AiEvent) {
-  if (!sender.isDestroyed()) sender.send('ai:event', event)
-}
-
-async function runChat(requestId: string, req: AiChatRequest, sender: WebContents) {
+/**
+ * 通过 MessagePort 流式跑一次 pi-ai 对话（assistant-ui LocalRuntime 用）。
+ * 端口关闭 → abort；事件只用结构化克隆安全的纯数据。
+ */
+async function runAssistantStream(request: AssistantStreamRequest, port: MessagePort) {
   const controller = new AbortController()
-  inflight.set(requestId, controller)
+  port.once('close', () => controller.abort())
+  port.start()
+  const send = (event: AssistantStreamEvent) => port.postMessage(event)
 
   const collection = getModels()
   if (!collection) {
-    sendTo(sender, { type: 'error', requestId, message: modelsInitError ?? 'AI not initialized' })
-    inflight.delete(requestId)
+    send({ type: 'error', message: modelsInitError ?? 'AI not initialized' })
+    port.close()
     return
   }
 
   try {
-    const model = collection.getModel(req.provider, req.model)
+    const model = collection.getModel(request.provider, request.model)
     if (!model) {
-      sendTo(sender, {
-        type: 'error',
-        requestId,
-        message: `Model not found: ${req.provider}/${req.model}`,
-      })
+      send({ type: 'error', message: `Model not found: ${request.provider}/${request.model}` })
+      port.close()
       return
     }
 
     const context = {
-      systemPrompt: req.systemPrompt,
-      messages: toContextMessages(req.messages),
+      systemPrompt: request.system,
+      messages: request.messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+        timestamp: Date.now(),
+      })),
     }
 
     const stream = collection.streamSimple(model, context, { signal: controller.signal })
@@ -143,7 +125,7 @@ async function runChat(requestId: string, req: AiChatRequest, sender: WebContent
     for await (const event of stream) {
       if (event.type === 'text_delta') {
         text += event.delta
-        sendTo(sender, { type: 'text_delta', requestId, delta: event.delta })
+        send({ type: 'delta', text: event.delta })
       }
     }
 
@@ -151,38 +133,50 @@ async function runChat(requestId: string, req: AiChatRequest, sender: WebContent
     if (result.stopReason === 'error' || result.stopReason === 'aborted') {
       const reason = result.stopReason
       const message = result.errorMessage ?? (reason === 'aborted' ? 'aborted' : 'Request failed')
-      sendTo(sender, { type: 'error', requestId, message, reason })
-      logger.error('chat-error', { provider: req.provider, model: req.model, reason, message })
+      send({ type: 'error', message })
+      logger.error('assistant-error', {
+        provider: request.provider,
+        model: request.model,
+        reason,
+        message,
+      })
     } else {
-      sendTo(sender, { type: 'done', requestId, text })
-      logger.info('chat-done', { provider: req.provider, model: req.model, chars: text.length })
+      send({ type: 'done' })
+      logger.info('assistant-done', {
+        provider: request.provider,
+        model: request.model,
+        chars: text.length,
+      })
     }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    sendTo(sender, { type: 'error', requestId, message })
-    logger.error('chat-failed', { provider: req.provider, model: req.model, message })
+    send({ type: 'error', message })
+    logger.error('assistant-failed', { provider: request.provider, model: request.model, message })
   } finally {
-    inflight.delete(requestId)
+    port.close()
   }
 }
 
 /**
  * 注册 AI IPC 通道（只调用一次）：
- * - ai:chat      渲染层发起一次流式对话
- * - ai:abort     按 requestId 中断
- * - ai:list-models  列出已注册厂商与模型（供模型选择器）
- * - ai:set-key   持久化某厂商的 API Key（主进程持有）
- * - ai:auth-status  返回各厂商是否已配置 Key
+ * - assistant:stream  渲染层经 MessagePort 发起流式对话（assistant-ui 用）
+ * - ai:list-models    列出已注册厂商与模型（供模型选择器）
+ * - ai:set-key        持久化某厂商的 API Key（主进程持有）
+ * - ai:auth-status    返回各厂商是否已配置 Key
  */
 export function initAi() {
-  ipcMain.on('ai:chat', (event, req: AiChatRequest) => {
-    if (!req || typeof req !== 'object' || typeof req.requestId !== 'string') return
-    void runChat(req.requestId, req, event.sender)
-  })
-
-  ipcMain.on('ai:abort', (_event, requestId: string) => {
-    const controller = inflight.get(requestId)
-    if (controller) controller.abort()
+  ipcMain.on(ASSISTANT_STREAM_CHANNEL, (event, request: unknown) => {
+    const [port] = event.ports
+    if (!port) return
+    if (!isAssistantStreamRequest(request)) {
+      port.postMessage({
+        type: 'error',
+        message: 'Invalid chat request.',
+      } satisfies AssistantStreamEvent)
+      port.close()
+      return
+    }
+    void runAssistantStream(request, port)
   })
 
   ipcMain.handle('ai:list-models', () => {

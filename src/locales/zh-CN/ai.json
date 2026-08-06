@@ -15,6 +15,17 @@
   "stop": "停止",
   "placeholder": "输入消息，Enter 发送，Shift+Enter 换行",
   "empty": "还没有对话，输入消息开始吧",
+  "welcome": "有什么可以帮你？",
+  "disclaimer": "AI 生成内容仅供参考，请自行核对重要信息",
+  "settings": "设置",
+  "close": "关闭",
+  "copy": "复制",
+  "modeWrite": "写作",
+  "modeLearn": "学习",
+  "modeCode": "代码",
+  "modeDrive": "云盘",
+  "modeCalendar": "日程",
+  "refresh": "重新生成",
   "error": "出错了",
   "clear": "清空对话"
 }

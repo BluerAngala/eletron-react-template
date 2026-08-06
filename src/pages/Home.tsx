@@ -41,7 +41,7 @@ export function Home() {
         </div>
 
         <div className="relative space-y-5">
-          <h1 className="animate-rise mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-x-4 text-4xl font-semibold tracking-tight text-slate-900 [animation-delay:80ms] dark:text-slate-100 md:text-5xl">
+          <h1 className="animate-rise mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-x-4 text-4xl font-semibold tracking-tight text-slate-900 [animation-delay:80ms] dark:text-white md:text-5xl">
             <span className="inline-flex items-center gap-3">
               <GreetingIcon className="h-8 w-8 md:h-10 md:w-10" />
               {greeting}
@@ -49,7 +49,7 @@ export function Home() {
             <span>{t('welcomeBack')}</span>
           </h1>
 
-          <p className="animate-rise mx-auto max-w-xl text-base leading-7 text-slate-600 [animation-delay:160ms] dark:text-slate-400 md:text-lg">
+          <p className="animate-rise mx-auto max-w-xl text-base leading-7 text-slate-600 [animation-delay:160ms] dark:text-white md:text-lg">
             {t('subtitle')}
           </p>
         </div>
@@ -59,10 +59,10 @@ export function Home() {
       <section className="animate-rise space-y-6 [animation-delay:240ms]">
         <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
           <div className="min-w-0 space-y-2">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
               {t('project.name')}
             </h2>
-            <p className="text-sm leading-6 text-slate-600 dark:text-slate-400">
+            <p className="text-sm leading-6 text-slate-600 dark:text-white">
               {t('project.description')}
             </p>
           </div>
@@ -80,7 +80,7 @@ export function Home() {
 
         {/* 技术栈 */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
-          <div className="mb-5 flex items-center gap-2 text-sm font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+          <div className="mb-5 flex items-center gap-2 text-sm font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-white">
             <Layers className="h-4 w-4" />
             {t('techStack.title')}
           </div>
@@ -90,11 +90,9 @@ export function Home() {
                 key={name}
                 className="flex items-baseline justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-colors hover:border-cyan-300 dark:border-slate-600 dark:bg-slate-700/60 dark:hover:border-cyan-600"
               >
-                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                  {name}
-                </span>
+                <span className="text-sm font-medium text-slate-700 dark:text-white">{name}</span>
                 {version && (
-                  <span className="text-xs text-slate-500 dark:text-slate-400">{version}</span>
+                  <span className="text-xs text-slate-500 dark:text-white">{version}</span>
                 )}
               </div>
             ))}
