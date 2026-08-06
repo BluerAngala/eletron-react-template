@@ -9,66 +9,84 @@ English | [简体中文](README.zh-CN.md)
 
 ## Overview
 
-基于 [electron-vite-react](https://github.com/electron-vite/electron-vite-react) 模板二次开发的 Electron + React + TypeScript 桌面应用模板。
+A desktop application template built on Electron + React + TypeScript, derived from [electron-vite-react](https://github.com/electron-vite/electron-vite-react).
 
-### 特性
+### Features
 
-- ⚡ Vite 构建，开发体验流畅
-- 🖥️ Electron 主进程 + React 渲染进程
-- 🎨 TailwindCSS v4 样式方案
-- 🧪 Vitest 单元测试 + Playwright E2E 测试
-- 🔄 Electron 自动更新
-- 📦 electron-builder 打包发布
+- ⚡ Vite-powered fast development experience
+- 🖥️ Electron main process + React renderer process
+- 🎨 TailwindCSS v4 styling with dark mode support
+- 🌍 Built-in i18n (i18next) with zh-CN / en-US and runtime switching
+- 📝 Unified structured logging (main process + renderer) with a dedicated log viewer page
+- 🧪 Vitest unit tests + Playwright E2E tests
+- 🛡️ Biome for linting & formatting (single tool, zero config traps)
+- 📦 electron-builder packaging with GitHub Release publishing + auto-update
 
 ## Quick Start
 
 ```sh
-# 克隆项目
+# Clone the repository
 git clone https://github.com/BluerAngala/eletron-react-template.git
 
-# 进入项目目录
+# Enter the project directory
 cd eletron-react-template
 
-# 安装依赖
+# Install dependencies
 pnpm install
 
-# 启动开发
+# Start development server
 pnpm dev
 ```
 
 ## Available Scripts
 
-| 命令 | 说明 |
-|------|------|
-| `pnpm dev` | 启动 Vite 开发服务器 |
-| `pnpm build` | 构建渲染进程并打包应用 |
-| `pnpm preview` | 本地预览生产构建 |
-| `pnpm test` | 运行 Vitest 单元测试 |
-| `pnpm test:e2e` | 运行 Playwright 端到端测试 |
-| `pnpm typecheck` | TypeScript 类型检查 |
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start Vite dev server |
+| `pnpm build` | Build renderer + package the app |
+| `pnpm preview` | Preview production build locally |
+| `pnpm test` | Run Vitest unit tests |
+| `pnpm test:e2e` | Run Playwright end-to-end tests |
+| `pnpm typecheck` | TypeScript type checking |
+| `pnpm lint` | Biome code check (incl. import sorting) |
+| `pnpm lint:fix` | Biome auto-fix |
+| `pnpm format` | Biome format (write) |
+| `pnpm format:check` | Biome format check |
 
 ## Project Structure
 
 ```tree
-├── docs/               模板参考文件
-├── dev_docs/           开发文档
-├── dist-electron/      编译后的 Electron 输出
-├── electron/           主进程和 preload 源码
-│   ├── main/
-│   └── preload/
-├── public/             静态资源
-├── src/                渲染进程源码
-│   ├── assets/
-│   ├── components/
-│   ├── demos/
-│   └── type/
-└── test/               测试
-    └── e2e/
+├── docs/               Standards (e.g. logging-standard.md)
+├── dist-electron/      Compiled Electron output
+├── electron/           Main process & preload source
+│   ├── main/           Window, IPC, logger, auto-update
+│   └── preload/        contextBridge scripts
+├── public/             Static assets
+├── src/                Renderer process source
+│   ├── components/     Reusable components
+│   ├── pages/          Page components (Home / Logs)
+│   ├── contexts/       React Context (Theme)
+│   ├── i18n/           i18n init & language config
+│   ├── locales/        Language resources (zh-CN / en-US)
+│   ├── lib/            Utilities (logger)
+│   └── routes/         Router config
+└── test/               Tests
+    ├── e2e/            Playwright E2E
+    └── *.test.ts       Vitest unit tests
 ```
+
+## CI / CD
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `quality.yml` | PR / push to `main` | Format + lint + typecheck + test + renderer build |
+| `release.yml` | Push `v*` tag / manual | 3-platform packaging + GitHub Release publishing |
+
+Quality gates must pass before changes can merge. Tag `v*` to trigger a release.
 
 ## Upstream
 
-本项目基于 [electron-vite/electron-vite-react](https://github.com/electron-vite/electron-vite-react) 模板开发，感谢原作者。
+Built on top of [electron-vite/electron-vite-react](https://github.com/electron-vite/electron-vite-react). Thanks to the original author.
 
 ## License
 

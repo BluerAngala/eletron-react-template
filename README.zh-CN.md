@@ -15,10 +15,12 @@
 
 - ⚡ Vite 构建，开发体验流畅
 - 🖥️ Electron 主进程 + React 渲染进程
-- 🎨 TailwindCSS v4 样式方案
+- 🎨 TailwindCSS v4 样式方案，支持暗色模式
+- 🌍 内置国际化（i18next），zh-CN / en-US 运行时切换
+- 📝 统一结构化日志（主进程 + 渲染进程），含日志查看页面
 - 🧪 Vitest 单元测试 + Playwright E2E 测试
-- 🔄 Electron 自动更新
-- 📦 electron-builder 打包发布
+- 🛡️ Biome 统一代码检查与格式化（单一工具，零配置陷阱）
+- 📦 electron-builder 打包 + GitHub Release 发布 + 自动更新
 
 ## 快速开始
 
@@ -46,25 +48,41 @@ pnpm dev
 | `pnpm test` | 运行 Vitest 单元测试 |
 | `pnpm test:e2e` | 运行 Playwright 端到端测试 |
 | `pnpm typecheck` | TypeScript 类型检查 |
+| `pnpm lint` | Biome 代码检查（含导入排序） |
+| `pnpm lint:fix` | Biome 自动修复 |
+| `pnpm format` | Biome 格式化（写入） |
+| `pnpm format:check` | Biome 格式化检查 |
 
 ## 项目结构
 
 ```tree
-├── docs/               模板参考文件
-├── dev_docs/           开发文档
+├── docs/               规范文档（如 logging-standard.md）
 ├── dist-electron/      编译后的 Electron 输出
 ├── electron/           主进程和 preload 源码
-│   ├── main/
-│   └── preload/
+│   ├── main/           窗口、IPC、日志、自动更新
+│   └── preload/        contextBridge 脚本
 ├── public/             静态资源
 ├── src/                渲染进程源码
-│   ├── assets/
-│   ├── components/
-│   ├── demos/
-│   └── type/
+│   ├── components/     可复用组件
+│   ├── pages/          页面组件（Home / Logs）
+│   ├── contexts/       React Context（主题）
+│   ├── i18n/           i18n 初始化与语言配置
+│   ├── locales/        语言资源（zh-CN / en-US）
+│   ├── lib/            工具库（logger）
+│   └── routes/         路由配置
 └── test/               测试
-    └── e2e/
+    ├── e2e/            Playwright E2E
+    └── *.test.ts       Vitest 单元测试
 ```
+
+## CI / CD
+
+| 工作流 | 触发 | 用途 |
+|--------|------|------|
+| `quality.yml` | PR / push 到 main | 格式化 + lint + 类型检查 + 测试 + 渲染层构建 |
+| `release.yml` | push `v*` 标签 / 手动 | 三平台打包 + 发布 GitHub Release |
+
+质量门禁通过后才能合并。打 `v*` 标签触发发布。
 
 ## 上游项目
 
