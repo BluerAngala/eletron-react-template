@@ -1,5 +1,5 @@
+import { ArrowUpRight, FolderGit, Layers, Moon, Sun } from 'lucide-react'
 import { useEffect } from 'react'
-import { Sun, Moon, FolderGit, ArrowUpRight, Layers } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { createLogger } from '@/lib/logger'
 

@@ -1,4 +1,4 @@
-import { appendFile, mkdir, readFile, rm, readdir, stat } from 'node:fs/promises'
+import { appendFile, mkdir, readdir, readFile, rm, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { app } from 'electron'
 

@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import {
+  Check,
+  ChevronDown,
+  ChevronRight,
   Copy,
-  Trash2,
   Pause,
   Play,
   ScrollText,
-  Check,
-  ChevronRight,
-  ChevronDown,
+  Trash2,
 } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useVirtualizer } from '@tanstack/react-virtual'
 import { createLogger, type LogEntry } from '@/lib/logger'
 
 const log = createLogger('logs')
@@ -121,7 +121,7 @@ export function Logs() {
   useEffect(() => {
     if (paused || filtered.length === 0) return
     virtualizer.scrollToIndex(filtered.length - 1, { align: 'end' })
-  }, [entries, filter, paused]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [filtered.length, paused, virtualizer])
 
   const toggleExpand = useCallback((index: number) => {
     setExpanded((prev) => {
@@ -174,6 +174,7 @@ export function Logs() {
           <div className="flex items-center overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
             {FILTERS.map(({ value, label }) => (
               <button
+                type="button"
                 key={value}
                 onClick={() => setFilter(value)}
                 className={`px-3 py-1.5 text-xs font-medium transition-colors ${
@@ -189,6 +190,7 @@ export function Logs() {
 
           {/* 暂停滚动 */}
           <button
+            type="button"
             onClick={() => setPaused((v) => !v)}
             title={paused ? t('actions.resume') : t('actions.pause')}
             className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
@@ -203,6 +205,7 @@ export function Logs() {
 
           {/* 复制 */}
           <button
+            type="button"
             onClick={handleCopy}
             className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
           >
@@ -216,6 +219,7 @@ export function Logs() {
 
           {/* 清空 */}
           <button
+            type="button"
             onClick={handleClear}
             className="flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-900/50 dark:bg-slate-800 dark:text-red-400 dark:hover:bg-red-900/30"
           >
@@ -255,6 +259,7 @@ export function Logs() {
                   style={{ transform: `translateY(${vi.start}px)` }}
                 >
                   <button
+                    type="button"
                     onClick={() => hasData && toggleExpand(vi.index)}
                     className={`flex w-full items-start gap-2 border-b border-slate-100 px-3 py-1.5 text-left transition-colors last:border-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60 ${
                       hasData ? 'cursor-pointer' : 'cursor-default'

@@ -1,4 +1,4 @@
-import { ipcRenderer, contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
@@ -143,6 +143,7 @@ function useLoading() {
 
 // ----------------------------------------------------------------------
 
+// biome-ignore lint/correctness/useHookAtTopLevel: 非 React hook，仅名称以 use 开头的加载屏辅助函数
 const { appendLoading, removeLoading } = useLoading()
 domReady().then(appendLoading)
 

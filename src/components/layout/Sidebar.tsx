@@ -1,20 +1,20 @@
-import { useEffect, useRef, useState } from 'react'
-import { NavLink } from 'react-router-dom'
 import {
-  Home,
-  ScrollText,
+  Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ChevronDown,
-  Sun,
-  Moon,
-  Monitor,
+  Home,
   Languages,
-  Check,
+  Monitor,
+  Moon,
+  ScrollText,
+  Sun,
 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useTheme, type Theme } from '@/contexts/ThemeContext'
-import { setLanguage, SUPPORTED_LANGUAGES, type LanguageCode } from '@/i18n'
+import { NavLink } from 'react-router-dom'
+import { type Theme, useTheme } from '@/contexts/ThemeContext'
+import { type LanguageCode, SUPPORTED_LANGUAGES, setLanguage } from '@/i18n'
 
 interface SidebarProps {
   collapsed: boolean
@@ -108,6 +108,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         {/* 语言切换 */}
         <div className="relative" ref={langRef}>
           <button
+            type="button"
             onClick={() => setLangOpen((v) => !v)}
             title={t('language.title')}
             className={`flex w-full items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium transition-colors ${
@@ -132,6 +133,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 const active = code === currentLang
                 return (
                   <button
+                    type="button"
                     key={code}
                     onClick={() => {
                       setLanguage(code as LanguageCode)
@@ -159,6 +161,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             const label = t(key)
             return (
               <button
+                type="button"
                 key={value}
                 onClick={() => setTheme(value)}
                 title={collapsed ? label : undefined}
@@ -177,6 +180,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
         {/* 折叠切换 */}
         <button
+          type="button"
           onClick={onToggle}
           title={collapsed ? t('nav.expandMenu') : undefined}
           className={`flex w-full items-center justify-center rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700 ${

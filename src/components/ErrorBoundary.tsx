@@ -1,6 +1,6 @@
+import { AlertTriangle, Copy, RotateCcw } from 'lucide-react'
 import { Component, type ErrorInfo, type ReactNode } from 'react'
-import { AlertTriangle, RotateCcw, Copy } from 'lucide-react'
-import { withTranslation, type WithTranslation } from 'react-i18next'
+import { type WithTranslation, withTranslation } from 'react-i18next'
 import { createLogger } from '@/lib/logger'
 
 const log = createLogger('error-boundary')
@@ -65,6 +65,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
             <div className="flex gap-3">
               <button
+                type="button"
                 onClick={this.handleReload}
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-cyan-500 px-4 py-2.5 font-medium text-white transition hover:bg-cyan-600"
               >
@@ -72,6 +73,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 {t('reload')}
               </button>
               <button
+                type="button"
                 onClick={this.handleCopy}
                 className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
               >

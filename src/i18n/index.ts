@@ -1,13 +1,13 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import zhCNCommon from '@/locales/zh-CN/common.json'
-import zhCNHome from '@/locales/zh-CN/home.json'
-import zhCNLogs from '@/locales/zh-CN/logs.json'
-import zhCNErrors from '@/locales/zh-CN/errors.json'
 import enUSCommon from '@/locales/en-US/common.json'
+import enUSErrors from '@/locales/en-US/errors.json'
 import enUSHome from '@/locales/en-US/home.json'
 import enUSLogs from '@/locales/en-US/logs.json'
-import enUSErrors from '@/locales/en-US/errors.json'
+import zhCNCommon from '@/locales/zh-CN/common.json'
+import zhCNErrors from '@/locales/zh-CN/errors.json'
+import zhCNHome from '@/locales/zh-CN/home.json'
+import zhCNLogs from '@/locales/zh-CN/logs.json'
 
 export const SUPPORTED_LANGUAGES = [
   { code: 'zh-CN', label: '中文' },

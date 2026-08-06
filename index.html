@@ -8,7 +8,7 @@
     <title>Electron + Vite + React</title>
     <script>
       // 防 FOUC：在页面渲染前应用主题
-      (function() {
+      (() => {
         var theme = localStorage.getItem('theme');
         var isDark = theme === 'dark' || (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
         if (isDark) document.documentElement.classList.add('dark');

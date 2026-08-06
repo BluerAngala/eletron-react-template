@@ -1,15 +1,13 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
-import { createRequire } from 'node:module'
-import { fileURLToPath } from 'node:url'
-import path from 'node:path'
 import os from 'node:os'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import Store from 'electron-store'
+import { clearLogs, createLogger, type LogEntry, onLog, readLogs, writeLogEntry } from './logger'
 import { update } from './update'
-import { createLogger, readLogs, clearLogs, writeLogEntry, onLog, type LogEntry } from './logger'
 
 const logger = createLogger('main')
 
-const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // 强制 DevTools 使用中文，不弹语言选择

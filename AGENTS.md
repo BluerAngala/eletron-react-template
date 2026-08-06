@@ -72,8 +72,8 @@ dev_docs/               开发日志（Build in Public）
 
 | 工具 | 命令 | 用途 |
 |------|------|------|
-| ESLint | `pnpm lint` / `pnpm lint:fix` | 代码检查 |
-| Prettier | `pnpm format` / `pnpm format:check` | 格式化 |
+| Biome | `pnpm lint` / `pnpm lint:fix` | 代码检查（含导入排序） |
+| Biome | `pnpm format` / `pnpm format:check` | 格式化 |
 | TypeScript | `pnpm typecheck` | 类型检查 |
 | Vitest | `pnpm test` | 单元测试 |
 | Playwright | `pnpm test:e2e` | E2E 测试 |
@@ -106,6 +106,5 @@ ipcMain.handle('channel-name', (event, ...args) => { ... })
 | [`vite.config.ts`](vite.config.ts) | Vite + Electron 构建配置 |
 | [`tsconfig.json`](tsconfig.json) | TypeScript 严格编译选项 |
 | [`electron-builder.json`](electron-builder.json) | 打包发布配置 |
-| [`eslint.config.js`](eslint.config.js) | ESLint 配置 |
-| [`.prettierrc`](.prettierrc) | Prettier 配置 |
+| [`biome.json`](biome.json) | Biome 代码检查与格式化配置 |
 | [`.github/workflows/`](.github/workflows/) | CI/CD 流水线 |
