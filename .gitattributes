@@ -1,0 +1,18 @@
+# 二进制文件不进行行尾转换（避免 Windows checkout 时被 CRLF 损坏）
+*.bmp binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.icns binary
+*.exe binary
+*.dll binary
+*.zip binary
+*.dmg binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary

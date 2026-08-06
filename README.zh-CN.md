@@ -50,7 +50,6 @@ pnpm rename --name my-app --appId com.example.myapp --repo owner/repo
 
 # 3. 将 assets/logo.svg 替换为自己的图标（可从 iconfont 下载），再生成全套图标
 pnpm icons
-pnpm installer-assets  # 生成安装器品牌素材（NSIS 侧图/横幅、DMG 背景）
 ```
 
 `pnpm rename` 一次性改写 name / productName / appId / 仓库地址 / README。
@@ -72,7 +71,6 @@ pnpm installer-assets  # 生成安装器品牌素材（NSIS 侧图/横幅、DMG 
 | `pnpm format:check` | Biome 格式化检查 |
 | `pnpm rename` | 交互式改名（包名 / appId / 仓库等） |
 | `pnpm icons` | 从 assets/logo.svg 生成全套图标 |
-| `pnpm installer-assets` | 生成安装器品牌素材（NSIS 侧图/横幅、DMG 背景） |
 
 ## 项目结构
 

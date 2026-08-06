@@ -10,19 +10,6 @@
     "artifactName": "${productName}_${version}.${ext}",
     "target": ["dmg", "zip"]
   },
-  "dmg": {
-    "background": "build/dmg-background.png",
-    "title": "${productName} ${version}",
-    "iconSize": 100,
-    "window": {
-      "width": 660,
-      "height": 400
-    },
-    "contents": [
-      { "x": 170, "y": 300, "type": "file" },
-      { "x": 430, "y": 300, "type": "link", "path": "/Applications" }
-    ]
-  },
   "win": {
     "target": [
       {
@@ -36,16 +23,7 @@
     "oneClick": false,
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false,
-    "createDesktopShortcut": true,
-    "createStartMenuShortcut": true,
-    "installerLanguages": ["zh_CN", "en_US"],
-    "installerIcon": "build/icon.ico",
-    "uninstallerIcon": "build/icon.ico",
-    "installerHeader": "build/installerHeader.bmp",
-    "installerSidebar": "build/installerSidebar.bmp",
-    "uninstallerSidebar": "build/uninstallerSidebar.bmp",
-    "differentialPackage": true
+    "deleteAppDataOnUninstall": false
   },
   "publish": {
     "provider": "github",

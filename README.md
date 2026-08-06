@@ -52,7 +52,6 @@ pnpm rename --name my-app --appId com.example.myapp --repo owner/repo
 # 3. Replace assets/logo.svg with your own icon (e.g. download from iconfont),
 #    then generate the full icon set
 pnpm icons
-pnpm installer-assets  # installer branding (NSIS sidebar/header, DMG background)
 ```
 
 `pnpm rename` rewrites name / productName / appId / repo / README in one pass.
@@ -74,7 +73,6 @@ pnpm installer-assets  # installer branding (NSIS sidebar/header, DMG background
 | `pnpm format:check` | Biome format check |
 | `pnpm rename` | Rename project (name / appId / repo) interactively |
 | `pnpm icons` | Generate full icon set from assets/logo.svg |
-| `pnpm installer-assets` | Generate installer branding (NSIS sidebar/header, DMG background) |
 
 ## Project Structure
 
