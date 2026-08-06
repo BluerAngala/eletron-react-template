@@ -1,3 +1,6 @@
+# 统一文本文件行尾为 LF（避免 Windows checkout 产生 CRLF，导致 biome 等格式检查报错）
+* text=auto eol=lf
+
 # 二进制文件不进行行尾转换（避免 Windows checkout 时被 CRLF 损坏）
 *.bmp binary
 *.png binary
