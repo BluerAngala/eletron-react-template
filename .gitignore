@@ -26,8 +26,8 @@ release
 
 #lockfile
 package-lock.json
-pnpm-lock.yaml
 yarn.lock
+# pnpm-lock.yaml 需提交，用于 CI 可复现安装与缓存
 /test-results/
 /playwright-report/
 /playwright/.cache/
