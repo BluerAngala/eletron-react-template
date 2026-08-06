@@ -7,17 +7,33 @@ const autoUpdater = updater.autoUpdater
 let cancellationToken = new updater.CancellationToken()
 let isDownloading = false
 
+// IPC handler 与事件监听只注册一次，避免 createWindow 多次调用时重复注册
+let initialized = false
+// 当前窗口引用：用于把更新事件推送到前台窗口
+let winRef: Electron.BrowserWindow | null = null
+
+function sendToWindow(channel: string, payload: unknown) {
+  if (winRef && !winRef.isDestroyed()) {
+    winRef.webContents.send(channel, payload)
+  }
+}
+
 export function update(win: Electron.BrowserWindow) {
+  winRef = win
+
   // When set to false, the update download will be triggered through the API
   autoUpdater.autoDownload = false
   autoUpdater.disableWebInstaller = false
   autoUpdater.allowDowngrade = false
 
+  if (initialized) return
+  initialized = true
+
   // start check
   autoUpdater.on('checking-for-update', () => {})
   // update available
   autoUpdater.on('update-available', (arg: UpdateInfo) => {
-    win.webContents.send('update-can-available', {
+    sendToWindow('update-can-available', {
       update: true,
       version: app.getVersion(),
       newVersion: arg?.version,
@@ -25,7 +41,7 @@ export function update(win: Electron.BrowserWindow) {
   })
   // update not available
   autoUpdater.on('update-not-available', (arg: UpdateInfo) => {
-    win.webContents.send('update-can-available', {
+    sendToWindow('update-can-available', {
       update: false,
       version: app.getVersion(),
       newVersion: arg?.version,

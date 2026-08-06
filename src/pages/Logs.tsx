@@ -54,8 +54,10 @@ export function Logs() {
   const [paused, setPaused] = useState(false)
   const [copied, setCopied] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  // 默认展开所有带详情的日志；collapsed 记录被手动折叠的条目
-  const [collapsed, setCollapsed] = useState<Set<number>>(new Set())
+  // 默认折叠详情；expanded 记录被手动展开的条目
+  const [expanded, setExpanded] = useState<Set<number>>(new Set())
+  // 最近被复制单条的标识（用于按钮短暂显示“已复制”状态）
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
 
   const containerRef = useRef<HTMLDivElement>(null)
   const pendingRef = useRef<LogEntry[]>([])
@@ -125,7 +127,7 @@ export function Logs() {
   }, [filtered.length, paused, virtualizer])
 
   const toggleExpand = useCallback((index: number) => {
-    setCollapsed((prev) => {
+    setExpanded((prev) => {
       const next = new Set(prev)
       if (next.has(index)) {
         next.delete(index)
@@ -146,6 +148,18 @@ export function Logs() {
       log.error('copy-failed', {})
     }
   }, [filtered])
+
+  // 复制单条日志
+  const handleCopyEntry = useCallback(async (entry: LogEntry) => {
+    const text = JSON.stringify({ ...entry, data: entry.data ?? undefined })
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedKey(entry.ts)
+      setTimeout(() => setCopiedKey((cur) => (cur === entry.ts ? null : cur)), 1500)
+    } catch {
+      log.error('copy-failed', {})
+    }
+  }, [])
 
   const handleClear = useCallback(async () => {
     try {
@@ -250,7 +264,7 @@ export function Logs() {
               if (!entry) return null
               const style = LEVEL_STYLES[entry.level]
               const hasData = entry.data && Object.keys(entry.data).length > 0
-              const isExpanded = hasData && !collapsed.has(vi.index)
+              const isExpanded = hasData && expanded.has(vi.index)
               return (
                 <div
                   key={vi.key}
@@ -259,9 +273,17 @@ export function Logs() {
                   className="absolute left-0 top-0 w-full"
                   style={{ transform: `translateY(${vi.start}px)` }}
                 >
-                  <button
-                    type="button"
+                  {/* biome-ignore lint/a11y/useSemanticElements: 日志行是“整行可点击展开 + 内部操作按钮”的容器，role=group 语义合适 */}
+                  <div
+                    role="group"
+                    tabIndex={hasData ? 0 : -1}
                     onClick={() => hasData && toggleExpand(vi.index)}
+                    onKeyDown={(e) => {
+                      if (hasData && (e.key === 'Enter' || e.key === ' ')) {
+                        e.preventDefault()
+                        toggleExpand(vi.index)
+                      }
+                    }}
                     className={`flex w-full items-start gap-2 border-b border-slate-100 px-3 py-1.5 text-left transition-colors last:border-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60 ${
                       hasData ? 'cursor-pointer' : 'cursor-default'
                     }`}
@@ -280,13 +302,35 @@ export function Logs() {
                     <span className={`min-w-0 flex-1 break-all pt-0.5 ${style.text}`}>
                       {entry.message}
                     </span>
+                    {/* 折叠时右侧显示部分内容预览 */}
+                    {!isExpanded && hasData && (
+                      <span className="max-w-[220px] shrink-0 truncate pt-0.5 text-xs text-slate-400 dark:text-slate-500">
+                        {previewData(entry.data)}
+                      </span>
+                    )}
+                    {/* 单条复制按钮（外层为可点展开的整行，用 role=button 避免嵌套 button） */}
+                    <button
+                      type="button"
+                      title={t('actions.copy')}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        void handleCopyEntry(entry)
+                      }}
+                      className="inline-flex shrink-0 items-center rounded bg-transparent p-0.5 text-slate-400 transition-colors hover:bg-slate-200/70 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-300"
+                    >
+                      {copiedKey === entry.ts ? (
+                        <Check className="h-3.5 w-3.5 text-green-500" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                    </button>
                     {hasData &&
                       (isExpanded ? (
                         <ChevronDown className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400" />
                       ) : (
                         <ChevronRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400" />
                       ))}
-                  </button>
+                  </div>
                   {isExpanded && hasData && (
                     <pre className="whitespace-pre-wrap break-words border-b border-slate-100 bg-slate-50 px-4 py-2 text-xs leading-5 text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300">
                       {JSON.stringify(entry.data, null, 2)}
@@ -306,4 +350,12 @@ function formatTime(iso: string): string {
   const d = new Date(iso)
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+}
+
+/** 折叠时右侧显示的内容预览：data 的 JSON 截断 */
+function previewData(data: Record<string, unknown> | undefined): string {
+  if (!data) return ''
+  const text = JSON.stringify(data)
+  const MAX = 80
+  return text.length > MAX ? `${text.slice(0, MAX)}…` : text
 }
