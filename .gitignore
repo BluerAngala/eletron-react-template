@@ -45,3 +45,6 @@ dev_docs/.drafts/
 # Python 缓存
 __pycache__/
 *.pyc
+
+# 参考资料（不纳入版本管理）
+参考/

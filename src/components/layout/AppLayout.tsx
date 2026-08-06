@@ -6,8 +6,7 @@ import { TopBar } from './TopBar'
 
 const pageTitles: Record<string, string> = {
   '/': '首页',
-  '/settings': '设置',
-  '/about': '关于',
+  '/logs': '日志',
 }
 
 const SIDEBAR_KEY = 'sidebar-collapsed'

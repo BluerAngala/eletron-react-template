@@ -5,6 +5,9 @@ import path from 'node:path'
 import os from 'node:os'
 import Store from 'electron-store'
 import { update } from './update'
+import { createLogger, readLogs, clearLogs, writeLogEntry, onLog, type LogEntry } from './logger'
+
+const logger = createLogger('main')
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -43,6 +46,22 @@ if (!app.requestSingleInstanceLock()) {
   app.quit()
   process.exit(0)
 }
+
+// 崩溃 / 未捕获异常兜底：记录到日志后继续运行（未捕获的异常不再让主进程静默崩溃）
+process.on('uncaughtException', (error) => {
+  logger.error('uncaught-exception', {
+    name: error.name,
+    message: error.message,
+    stack: error.stack,
+  })
+})
+
+process.on('unhandledRejection', (reason) => {
+  logger.error('unhandled-rejection', {
+    reason: reason instanceof Error ? reason.message : String(reason),
+    stack: reason instanceof Error ? reason.stack : undefined,
+  })
+})
 
 let win: BrowserWindow | null = null
 const preload = path.join(__dirname, '../preload/index.mjs')
@@ -118,6 +137,16 @@ async function createWindow() {
     win.loadFile(indexHtml)
   }
 
+  logger.info('window-created', {
+    width: windowState.width,
+    height: windowState.height,
+    dev: !!VITE_DEV_SERVER_URL,
+  })
+
+  win.webContents.on('did-fail-load', (_e, errorCode, errorDescription) => {
+    logger.error('window-load-failed', { errorCode, errorDescription })
+  })
+
   // Test actively push message to the Electron-Renderer
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString())
@@ -154,6 +183,32 @@ app.on('activate', () => {
     allWindows[0].focus()
   } else {
     createWindow()
+  }
+})
+
+// 渲染进程日志转发：统一落盘到主进程日志目录
+ipcMain.on('log:write', (_event, entry: LogEntry) => {
+  if (!entry || typeof entry !== 'object') return
+  void writeLogEntry(entry)
+})
+
+// 日志页面：读取当天日志
+ipcMain.handle('log:read', async () => {
+  return await readLogs()
+})
+
+// 日志页面：清空当天日志
+ipcMain.handle('log:clear', async () => {
+  await clearLogs()
+  logger.info('logs-cleared', { by: 'log-page' })
+})
+
+// 实时推送新日志到所有窗口（供日志页面订阅）
+onLog((entry) => {
+  for (const win of BrowserWindow.getAllWindows()) {
+    if (!win.isDestroyed()) {
+      win.webContents.send('log:event', entry)
+    }
   }
 })
 

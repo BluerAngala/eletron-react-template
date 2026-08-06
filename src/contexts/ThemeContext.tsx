@@ -1,12 +1,11 @@
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'
 
-type Theme = 'system' | 'light' | 'dark'
+export type Theme = 'system' | 'light' | 'dark'
 
 interface ThemeContextType {
   theme: Theme
   resolvedTheme: 'light' | 'dark'
   setTheme: (theme: Theme) => void
-  cycleTheme: () => void
 }
 
 const ThemeContext = createContext<ThemeContextType | null>(null)
@@ -44,10 +43,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(STORAGE_KEY, newTheme)
   }, [])
 
-  const cycleTheme = useCallback(() => {
-    setTheme(theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system')
-  }, [theme, setTheme])
-
   // 应用主题到 DOM（初始化 + 主题变化时）
   useEffect(() => {
     if (!initialized.current) {
@@ -75,9 +70,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     return () => mediaQuery.removeEventListener('change', handler)
   }, [theme])
 
-  return (
-    <ThemeContext value={{ theme, resolvedTheme, setTheme, cycleTheme }}>{children}</ThemeContext>
-  )
+  return <ThemeContext value={{ theme, resolvedTheme, setTheme }}>{children}</ThemeContext>
 }
 
 export function useTheme() {

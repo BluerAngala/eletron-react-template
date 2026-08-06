@@ -1,5 +1,8 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { AlertTriangle, RotateCcw, Copy } from 'lucide-react'
+import { createLogger } from '@/lib/logger'
+
+const log = createLogger('error-boundary')
 
 interface Props {
   children: ReactNode
@@ -22,7 +25,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('[ErrorBoundary]', error, errorInfo)
+    log.error('render-error', { message: error.message, stack: errorInfo.componentStack })
     this.setState({ errorInfo })
   }
 

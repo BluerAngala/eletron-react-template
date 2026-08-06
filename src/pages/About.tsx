@@ -1,11 +1,6 @@
 export function About() {
   return (
     <div className="mx-auto max-w-2xl space-y-8">
-      <div>
-        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">关于</h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">项目信息和技术栈</p>
-      </div>
-
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
         <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           eletron-react-template

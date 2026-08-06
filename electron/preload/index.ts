@@ -1,5 +1,40 @@
 import { ipcRenderer, contextBridge } from 'electron'
 
+type LogLevel = 'debug' | 'info' | 'warn' | 'error'
+
+function sendLog(level: LogLevel, scope: string, message: string, data?: Record<string, unknown>) {
+  ipcRenderer.send('log:write', {
+    ts: new Date().toISOString(),
+    level,
+    scope,
+    message,
+    ...(data && Object.keys(data).length > 0 ? { data } : {}),
+  })
+}
+
+// 渲染进程统一日志入口（转发到主进程统一落盘）
+contextBridge.exposeInMainWorld('logger', {
+  debug: (scope: string, message: string, data?: Record<string, unknown>) =>
+    sendLog('debug', scope, message, data),
+  info: (scope: string, message: string, data?: Record<string, unknown>) =>
+    sendLog('info', scope, message, data),
+  warn: (scope: string, message: string, data?: Record<string, unknown>) =>
+    sendLog('warn', scope, message, data),
+  error: (scope: string, message: string, data?: Record<string, unknown>) =>
+    sendLog('error', scope, message, data),
+})
+
+// 日志查看 API（供日志页面使用）
+contextBridge.exposeInMainWorld('logAPI', {
+  read: () => ipcRenderer.invoke('log:read') as Promise<unknown[]>,
+  clear: () => ipcRenderer.invoke('log:clear') as Promise<void>,
+  onLogEvent: (listener: (entry: unknown) => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, entry: unknown) => listener(entry)
+    ipcRenderer.on('log:event', handler)
+    return () => ipcRenderer.off('log:event', handler)
+  },
+})
+
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {
   on(...args: Parameters<typeof ipcRenderer.on>) {
