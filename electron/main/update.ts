@@ -21,6 +21,9 @@ function sendToWindow(channel: string, payload: unknown) {
 export function update(win: Electron.BrowserWindow) {
   winRef = win
 
+  // 开发环境不启用更新功能：不注册 IPC handler、不挂 autoUpdater 监听
+  if (!app.isPackaged) return
+
   // When set to false, the update download will be triggered through the API
   autoUpdater.autoDownload = false
   autoUpdater.disableWebInstaller = false
@@ -49,12 +52,8 @@ export function update(win: Electron.BrowserWindow) {
   })
 
   // Checking for updates
+  // 注意：仅在打包版注册；dev 环境 update() 已提前返回，不会注册此通道
   ipcMain.handle('check-update', async () => {
-    if (!app.isPackaged) {
-      const error = new Error('The update feature is only available after the package.')
-      return { message: error.message, error }
-    }
-
     try {
       return await autoUpdater.checkForUpdates()
     } catch (error) {

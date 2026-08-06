@@ -165,8 +165,9 @@ export function Logs() {
     try {
       await window.logAPI?.clear()
       setEntries([])
+      // 同步清空 ref，避免后续实时日志把旧条目又合并回来
+      entriesRef.current = []
       pendingRef.current = []
-      log.info('logs-cleared', { by: 'log-page' })
     } catch {
       log.error('clear-failed', {})
     }

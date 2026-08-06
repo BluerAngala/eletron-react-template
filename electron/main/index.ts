@@ -216,10 +216,9 @@ ipcMain.handle('log:read', async () => {
   return await readLogs()
 })
 
-// 日志页面：清空当天日志
+// 日志页面：清空当天日志（不再写确认日志，清空后保持干净）
 ipcMain.handle('log:clear', async () => {
   await clearLogs()
-  logger.info('logs-cleared', { by: 'log-page' })
 })
 
 // 实时推送新日志到所有窗口（供日志页面订阅）
