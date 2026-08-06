@@ -7,6 +7,7 @@
   "author": "BluerAngala",
   "type": "module",
   "main": "dist-electron/main/index.js",
+  "packageManager": "pnpm@11.13.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/BluerAngala/eletron-react-template.git"
