@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
 import { Sun, Moon, FolderGit, ArrowUpRight, Layers } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { createLogger } from '@/lib/logger'
 
 const log = createLogger('home')
 
-function getGreeting(): { text: string; icon: typeof Sun } {
+function getGreetingKey(): { key: string; icon: typeof Sun } {
   const hour = new Date().getHours()
-  if (hour >= 5 && hour < 12) return { text: '早上好', icon: Sun }
-  if (hour >= 12 && hour < 18) return { text: '下午好', icon: Sun }
-  return { text: '晚上好', icon: Moon }
+  if (hour >= 5 && hour < 12) return { key: 'greeting.morning', icon: Sun }
+  if (hour >= 12 && hour < 18) return { key: 'greeting.afternoon', icon: Sun }
+  return { key: 'greeting.evening', icon: Moon }
 }
 
 const techStack: { name: string; version: string }[] = [
@@ -21,7 +22,9 @@ const techStack: { name: string; version: string }[] = [
 ]
 
 export function Home() {
-  const { text: greeting, icon: GreetingIcon } = getGreeting()
+  const { t } = useTranslation('home')
+  const { key: greetingKey, icon: GreetingIcon } = getGreetingKey()
+  const greeting = t(greetingKey)
 
   useEffect(() => {
     log.info('page-view', { greeting, ts: Date.now() })
@@ -43,11 +46,11 @@ export function Home() {
               <GreetingIcon className="h-8 w-8 md:h-10 md:w-10" />
               {greeting}
             </span>
-            <span>欢迎回来</span>
+            <span>{t('welcomeBack')}</span>
           </h1>
 
           <p className="animate-rise mx-auto max-w-xl text-base leading-7 text-slate-600 [animation-delay:160ms] dark:text-slate-400 md:text-lg">
-            从这开始今天的桌面开发之旅。这里是一切开始的地方。
+            {t('subtitle')}
           </p>
         </div>
       </section>
@@ -57,10 +60,10 @@ export function Home() {
         <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
           <div className="min-w-0 space-y-2">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-              eletron-react-template
+              {t('project.name')}
             </h2>
             <p className="text-sm leading-6 text-slate-600 dark:text-slate-400">
-              基于 electron-vite-react 模板二次开发的 Electron + React + TypeScript 桌面应用模板。
+              {t('project.description')}
             </p>
           </div>
           <a
@@ -70,7 +73,7 @@ export function Home() {
             className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-cyan-600"
           >
             <FolderGit className="h-4 w-4" />
-            GitHub 仓库
+            {t('project.github')}
             <ArrowUpRight className="h-4 w-4" />
           </a>
         </div>
@@ -79,7 +82,7 @@ export function Home() {
         <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
           <div className="mb-5 flex items-center gap-2 text-sm font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
             <Layers className="h-4 w-4" />
-            技术栈
+            {t('techStack.title')}
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {techStack.map(({ name, version }) => (

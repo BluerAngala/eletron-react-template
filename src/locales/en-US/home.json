@@ -1,0 +1,17 @@
+{
+  "greeting": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening"
+  },
+  "welcomeBack": "Welcome back",
+  "subtitle": "Start your desktop development journey here. This is where it all begins.",
+  "project": {
+    "name": "eletron-react-template",
+    "description": "A desktop application template built on Electron + React + TypeScript, derived from electron-vite-react.",
+    "github": "GitHub repo"
+  },
+  "techStack": {
+    "title": "Tech Stack"
+  }
+}

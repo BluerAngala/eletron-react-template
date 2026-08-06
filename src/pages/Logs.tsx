@@ -1,50 +1,66 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Copy, Trash2, Pause, Play, ScrollText, Check } from 'lucide-react'
+import {
+  Copy,
+  Trash2,
+  Pause,
+  Play,
+  ScrollText,
+  Check,
+  ChevronRight,
+  ChevronDown,
+} from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { createLogger, type LogEntry } from '@/lib/logger'
 
 const log = createLogger('logs')
 
 type LevelFilter = 'all' | LogEntry['level']
 
-const LEVEL_STYLES: Record<LogEntry['level'], { label: string; badge: string; text: string }> = {
+/** 内存中最多保留的日志条数，超出后丢弃最旧的，防止无限增长 */
+const MAX_ENTRIES = 2000
+
+const LEVEL_STYLES: Record<LogEntry['level'], { badge: string; text: string }> = {
   debug: {
-    label: 'DEBUG',
     badge: 'bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-400',
     text: 'text-slate-500 dark:text-slate-500',
   },
   info: {
-    label: 'INFO',
     badge: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-400',
     text: 'text-slate-700 dark:text-slate-300',
   },
   warn: {
-    label: 'WARN',
     badge: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
     text: 'text-amber-700 dark:text-amber-400',
   },
   error: {
-    label: 'ERROR',
     badge: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400',
     text: 'text-red-600 dark:text-red-400',
   },
 }
 
 const FILTERS: { value: LevelFilter; label: string }[] = [
-  { value: 'all', label: '全部' },
-  { value: 'debug', label: 'DEBUG' },
-  { value: 'info', label: 'INFO' },
-  { value: 'warn', label: 'WARN' },
-  { value: 'error', label: 'ERROR' },
+  { value: 'all', label: 'all' },
+  { value: 'debug', label: 'debug' },
+  { value: 'info', label: 'info' },
+  { value: 'warn', label: 'warn' },
+  { value: 'error', label: 'error' },
 ]
 
 export function Logs() {
+  const { t } = useTranslation('logs')
   const [entries, setEntries] = useState<LogEntry[]>([])
   const [filter, setFilter] = useState<LevelFilter>('all')
   const [paused, setPaused] = useState(false)
   const [copied, setCopied] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [expanded, setExpanded] = useState<Set<number>>(new Set())
+
   const containerRef = useRef<HTMLDivElement>(null)
   const pendingRef = useRef<LogEntry[]>([])
+  const rafRef = useRef<number | null>(null)
+  const entriesRef = useRef<LogEntry[]>([])
+  const pausedRef = useRef(paused)
 
   // 加载历史日志
   useEffect(() => {
@@ -52,6 +68,7 @@ export function Logs() {
     window.logAPI?.read().then((history) => {
       if (cancelled) return
       setEntries(history)
+      entriesRef.current = history
       setLoaded(true)
     })
     return () => {
@@ -59,28 +76,64 @@ export function Logs() {
     }
   }, [])
 
-  // 订阅实时日志
+  // 订阅实时日志：批量收集后用 rAF 合并更新，避免高频日志造成频繁重渲染
+  useEffect(() => {
+    pausedRef.current = paused
+  }, [paused])
+
   useEffect(() => {
     const unsubscribe = window.logAPI?.onLogEvent((entry) => {
       pendingRef.current.push(entry)
-      if (paused) return
-      setEntries((prev) => [...prev, ...pendingRef.current])
-      pendingRef.current = []
-    })
-    return () => unsubscribe?.()
-  }, [paused])
 
-  // 自动滚动到底部
-  useEffect(() => {
-    if (paused) return
-    const el = containerRef.current
-    if (el) el.scrollTop = el.scrollHeight
-  }, [entries, paused])
+      if (rafRef.current !== null) return
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null
+        const batch = pendingRef.current
+        pendingRef.current = []
+        if (pausedRef.current) return // 暂停时丢弃实时追加，历史仍可查
+
+        const merged = [...entriesRef.current, ...batch]
+        const trimmed = merged.length > MAX_ENTRIES ? merged.slice(-MAX_ENTRIES) : merged
+        entriesRef.current = trimmed
+        setEntries(trimmed)
+      })
+    })
+    return () => {
+      unsubscribe?.()
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
+    }
+  }, [])
 
   const filtered = useMemo(
     () => (filter === 'all' ? entries : entries.filter((e) => e.level === filter)),
     [entries, filter],
   )
+
+  // 虚拟滚动：只渲染可视区域的日志行，大量日志也不卡
+  const virtualizer = useVirtualizer({
+    count: filtered.length,
+    getScrollElement: () => containerRef.current,
+    estimateSize: () => 30,
+    overscan: 12,
+  })
+
+  // 自动滚动到底部（暂停时不滚动）
+  useEffect(() => {
+    if (paused || filtered.length === 0) return
+    virtualizer.scrollToIndex(filtered.length - 1, { align: 'end' })
+  }, [entries, filter, paused]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const toggleExpand = useCallback((index: number) => {
+    setExpanded((prev) => {
+      const next = new Set(prev)
+      if (next.has(index)) {
+        next.delete(index)
+      } else {
+        next.add(index)
+      }
+      return next
+    })
+  }, [])
 
   const handleCopy = useCallback(async () => {
     const text = filtered.map((e) => JSON.stringify({ ...e, data: e.data ?? undefined })).join('\n')
@@ -110,9 +163,9 @@ export function Logs() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <ScrollText className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
-          <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">运行日志</h1>
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t('title')}</h1>
           <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-700/60 dark:text-slate-400">
-            {filtered.length} 条
+            {t('count', { count: filtered.length })}
           </span>
         </div>
 
@@ -129,7 +182,7 @@ export function Logs() {
                     : 'bg-white text-slate-600 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
                 }`}
               >
-                {label}
+                {label === 'all' ? t('filters.all') : label.toUpperCase()}
               </button>
             ))}
           </div>
@@ -137,7 +190,7 @@ export function Logs() {
           {/* 暂停滚动 */}
           <button
             onClick={() => setPaused((v) => !v)}
-            title={paused ? '继续滚动' : '暂停滚动'}
+            title={paused ? t('actions.resume') : t('actions.pause')}
             className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
               paused
                 ? 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
@@ -145,7 +198,7 @@ export function Logs() {
             }`}
           >
             {paused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
-            {paused ? '继续' : '暂停'}
+            {paused ? t('actions.resume') : t('actions.pause')}
           </button>
 
           {/* 复制 */}
@@ -158,7 +211,7 @@ export function Logs() {
             ) : (
               <Copy className="h-3.5 w-3.5" />
             )}
-            {copied ? '已复制' : '复制'}
+            {copied ? t('actions.copied') : t('actions.copy')}
           </button>
 
           {/* 清空 */}
@@ -167,49 +220,71 @@ export function Logs() {
             className="flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-900/50 dark:bg-slate-800 dark:text-red-400 dark:hover:bg-red-900/30"
           >
             <Trash2 className="h-3.5 w-3.5" />
-            清空
+            {t('actions.clear')}
           </button>
         </div>
       </div>
 
-      {/* 日志流 */}
+      {/* 日志流（虚拟滚动） */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-auto rounded-2xl border border-slate-200 bg-white font-mono text-[13px] leading-6 dark:border-slate-700 dark:bg-slate-900/70"
+        className="flex-1 overflow-auto rounded-2xl border border-slate-200 bg-white font-mono text-[13px] dark:border-slate-700 dark:bg-slate-900/70"
       >
         {!loaded ? (
           <div className="flex h-full items-center justify-center text-sm text-slate-400">
-            加载日志中…
+            {t('states.loading')}
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex h-full items-center justify-center text-sm text-slate-400">
-            暂无日志
+            {t('states.empty')}
           </div>
         ) : (
-          <div className="p-4">
-            {filtered.map((entry, i) => {
+          <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }}>
+            {virtualizer.getVirtualItems().map((vi) => {
+              const entry = filtered[vi.index]
+              if (!entry) return null
               const style = LEVEL_STYLES[entry.level]
+              const isExpanded = expanded.has(vi.index)
+              const hasData = entry.data && Object.keys(entry.data).length > 0
               return (
                 <div
-                  key={`${entry.ts}-${i}`}
-                  className="flex items-start gap-3 border-b border-slate-100 py-1 last:border-0 dark:border-slate-800"
+                  key={vi.key}
+                  data-index={vi.index}
+                  ref={virtualizer.measureElement}
+                  className="absolute left-0 top-0 w-full"
+                  style={{ transform: `translateY(${vi.start}px)` }}
                 >
-                  <span className="shrink-0 text-slate-400 dark:text-slate-500">
-                    {formatTime(entry.ts)}
-                  </span>
-                  <span
-                    className={`shrink-0 rounded px-1.5 py-0.5 text-[11px] font-semibold leading-4 ${style.badge}`}
+                  <button
+                    onClick={() => hasData && toggleExpand(vi.index)}
+                    className={`flex w-full items-start gap-2 border-b border-slate-100 px-3 py-1.5 text-left transition-colors last:border-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60 ${
+                      hasData ? 'cursor-pointer' : 'cursor-default'
+                    }`}
                   >
-                    {style.label}
-                  </span>
-                  <span className="shrink-0 text-slate-500 dark:text-slate-400">
-                    [{entry.scope}]
-                  </span>
-                  <span className={`min-w-0 flex-1 break-all ${style.text}`}>{entry.message}</span>
-                  {entry.data && Object.keys(entry.data).length > 0 && (
-                    <span className="shrink-0 text-slate-400 dark:text-slate-500">
-                      {JSON.stringify(entry.data)}
+                    <span className="shrink-0 pt-0.5 text-slate-400 dark:text-slate-500">
+                      {formatTime(entry.ts)}
                     </span>
+                    <span
+                      className={`shrink-0 rounded px-1.5 py-0.5 text-[11px] font-semibold leading-4 ${style.badge}`}
+                    >
+                      {entry.level.toUpperCase()}
+                    </span>
+                    <span className="shrink-0 pt-0.5 text-slate-500 dark:text-slate-400">
+                      [{entry.scope}]
+                    </span>
+                    <span className={`min-w-0 flex-1 break-all pt-0.5 ${style.text}`}>
+                      {entry.message}
+                    </span>
+                    {hasData &&
+                      (isExpanded ? (
+                        <ChevronDown className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400" />
+                      ) : (
+                        <ChevronRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400" />
+                      ))}
+                  </button>
+                  {isExpanded && hasData && (
+                    <pre className="overflow-x-auto border-b border-slate-100 bg-slate-50 px-4 py-2 text-xs leading-5 text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300">
+                      {JSON.stringify(entry.data, null, 2)}
+                    </pre>
                   )}
                 </div>
               )

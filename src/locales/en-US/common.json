@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "home": "Home",
+    "logs": "Logs",
+    "expandMenu": "Expand menu",
+    "collapseMenu": "Collapse menu"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "title": "Theme"
+  },
+  "language": {
+    "title": "Language",
+    "zhCN": "中文",
+    "enUS": "English"
+  },
+  "pages": {
+    "home": "Home",
+    "logs": "Logs",
+    "unknown": "Page"
+  }
+}

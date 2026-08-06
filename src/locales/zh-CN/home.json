@@ -1,0 +1,17 @@
+{
+  "greeting": {
+    "morning": "早上好",
+    "afternoon": "下午好",
+    "evening": "晚上好"
+  },
+  "welcomeBack": "欢迎回来",
+  "subtitle": "从这开始今天的桌面开发之旅。这里是一切开始的地方。",
+  "project": {
+    "name": "eletron-react-template",
+    "description": "基于 electron-vite-react 模板二次开发的 Electron + React + TypeScript 桌面应用模板。",
+    "github": "GitHub 仓库"
+  },
+  "techStack": {
+    "title": "技术栈"
+  }
+}

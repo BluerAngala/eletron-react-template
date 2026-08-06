@@ -1,0 +1,24 @@
+{
+  "title": "Run Logs",
+  "count": "{{count}} entries",
+  "filters": {
+    "all": "All",
+    "debug": "DEBUG",
+    "info": "INFO",
+    "warn": "WARN",
+    "error": "ERROR"
+  },
+  "actions": {
+    "pause": "Pause",
+    "resume": "Resume",
+    "copy": "Copy",
+    "copied": "Copied",
+    "clear": "Clear",
+    "expand": "Show details",
+    "collapse": "Hide details"
+  },
+  "states": {
+    "loading": "Loading logs…",
+    "empty": "No logs"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "home": "首页",
+    "logs": "日志",
+    "expandMenu": "展开菜单",
+    "collapseMenu": "折叠菜单"
+  },
+  "theme": {
+    "light": "浅色",
+    "dark": "暗色",
+    "system": "系统",
+    "title": "主题"
+  },
+  "language": {
+    "title": "语言",
+    "zhCN": "中文",
+    "enUS": "English"
+  },
+  "pages": {
+    "home": "首页",
+    "logs": "日志",
+    "unknown": "页面"
+  }
+}

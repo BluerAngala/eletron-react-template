@@ -1,10 +1,11 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { AlertTriangle, RotateCcw, Copy } from 'lucide-react'
+import { withTranslation, type WithTranslation } from 'react-i18next'
 import { createLogger } from '@/lib/logger'
 
 const log = createLogger('error-boundary')
 
-interface Props {
+interface Props extends WithTranslation {
   children: ReactNode
 }
 
@@ -40,6 +41,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      const { t } = this.props
       return (
         <div className="flex min-h-screen items-center justify-center bg-slate-50 p-8 dark:bg-slate-900">
           <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-lg dark:border-slate-700 dark:bg-slate-800">
@@ -49,9 +51,9 @@ export class ErrorBoundary extends Component<Props, State> {
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                  页面出错了
+                  {t('title')}
                 </h1>
-                <p className="text-sm text-slate-500 dark:text-slate-400">渲染过程中发生错误</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{t('subtitle')}</p>
               </div>
             </div>
 
@@ -67,14 +69,14 @@ export class ErrorBoundary extends Component<Props, State> {
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-cyan-500 px-4 py-2.5 font-medium text-white transition hover:bg-cyan-600"
               >
                 <RotateCcw className="h-4 w-4" />
-                重新加载
+                {t('reload')}
               </button>
               <button
                 onClick={this.handleCopy}
                 className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
               >
                 <Copy className="h-4 w-4" />
-                复制错误
+                {t('copyError')}
               </button>
             </div>
           </div>
@@ -85,3 +87,5 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children
   }
 }
+
+export default withTranslation('errors')(ErrorBoundary)

@@ -1,0 +1,24 @@
+{
+  "title": "运行日志",
+  "count": "{{count}} 条",
+  "filters": {
+    "all": "全部",
+    "debug": "DEBUG",
+    "info": "INFO",
+    "warn": "WARN",
+    "error": "ERROR"
+  },
+  "actions": {
+    "pause": "暂停",
+    "resume": "继续",
+    "copy": "复制",
+    "copied": "已复制",
+    "clear": "清空",
+    "expand": "展开详情",
+    "collapse": "收起详情"
+  },
+  "states": {
+    "loading": "加载日志中…",
+    "empty": "暂无日志"
+  }
+}
