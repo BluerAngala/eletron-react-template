@@ -13,7 +13,7 @@ Electron + React + TypeScript 桌面应用模板。
 
 ## 实现约定
 
-- 组件 → `src/components/<name>/index.tsx`；页面 → `src/pages/<Name>.tsx`；路由 → `src/routes/index.tsx` 注册
+- 组件 → `src/components/<name>/index.tsx`（shadcn 原子组件可单文件 `src/components/ui/<name>.tsx`）；页面 → `src/pages/<Name>.tsx`；路由 → `src/routes/index.tsx` 注册
 - IPC 通道：kebab-case
 - 样式：Tailwind v4，不硬编码颜色
 - **i18n**：新文案必须走 i18n（`src/locales/` 按命名空间拆分，组件用 `useTranslation('ns')`，新增语言在 `src/i18n/index.ts` 注册）

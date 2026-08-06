@@ -6,7 +6,7 @@ import {
   useRemoteThreadListRuntime,
 } from '@assistant-ui/react'
 import { DevToolsModal } from '@assistant-ui/react-devtools'
-import { useMemo, type ReactNode } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import type { AssistantStreamMessage } from '@/lib/assistant'
 import { useAssistantConfig } from '@/lib/assistant-config'
 

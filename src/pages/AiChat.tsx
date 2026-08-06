@@ -1,4 +1,5 @@
-import { KeyRound, Settings, X } from 'lucide-react'
+import { Select } from '@base-ui/react/select'
+import { ChevronDown, KeyRound, Settings, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ElectronRuntimeProvider } from '@/components/assistant/ElectronRuntimeProvider'
@@ -12,7 +13,13 @@ const log = createLogger('ai-page')
 
 // 紧凑控件：中性灰、无暖色（GPT 风格）
 const selectCls =
-  'h-8 rounded-lg border border-black/10 bg-transparent px-2 text-sm text-black outline-none transition-colors hover:bg-black/10 dark:border-white/10 dark:bg-[#1f1f1f] dark:text-white dark:hover:bg-white/10'
+  'flex h-8 min-w-[8rem] items-center justify-between gap-1 rounded-lg border border-black/10 bg-transparent px-2 text-sm text-black outline-none transition-colors hover:bg-black/10 data-[popup-open]:bg-black/10 dark:border-white/10 dark:bg-[#1f1f1f] dark:text-white dark:hover:bg-white/10 dark:data-[popup-open]:bg-white/10'
+
+const popupCls =
+  'max-h-[280px] overflow-y-auto rounded-xl border border-black/10 bg-white p-1 text-slate-900 shadow-lg outline-none dark:border-white/10 dark:bg-[#1f1f1f] dark:text-white'
+
+const itemCls =
+  'flex w-full cursor-default items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-sm outline-none data-[highlighted]:bg-black/10 dark:data-[highlighted]:bg-white/10'
 
 const iconBtnCls =
   'flex h-8 w-8 items-center justify-center rounded-lg text-black transition-colors hover:bg-black/10 hover:text-black dark:text-white dark:hover:bg-white/10 dark:hover:text-white'
@@ -97,31 +104,67 @@ export function AiChat() {
           {/* 顶部 toolbar */}
           <div className="flex flex-wrap items-center gap-2 px-4 pt-3">
             {!sidebarOpen && <span className="w-2" />}
-            <select
+            <Select.Root
               value={provider}
-              onChange={(e) => handleChangeProvider(e.target.value)}
-              className={selectCls}
-              aria-label={t('provider')}
+              onValueChange={(v) => handleChangeProvider(v as string)}
+              items={providers.reduce<Record<string, React.ReactNode>>((acc, p) => {
+                acc[p.provider] = p.name
+                return acc
+              }, {})}
             >
-              {providers.map((p) => (
-                <option key={p.provider} value={p.provider}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-            <select
+              <Select.Trigger className={selectCls} aria-label={t('provider')}>
+                <Select.Value placeholder={t('provider')} />
+                <Select.Icon>
+                  <ChevronDown className="size-3.5 opacity-60" />
+                </Select.Icon>
+              </Select.Trigger>
+              <Select.Portal>
+                <Select.Positioner sideOffset={4} align="start">
+                  <Select.Popup className={popupCls}>
+                    <Select.List>
+                      {providers.map((p) => (
+                        <Select.Item key={p.provider} value={p.provider} className={itemCls}>
+                          <Select.ItemText>{p.name}</Select.ItemText>
+                          <Select.ItemIndicator />
+                        </Select.Item>
+                      ))}
+                    </Select.List>
+                  </Select.Popup>
+                </Select.Positioner>
+              </Select.Portal>
+            </Select.Root>
+            <Select.Root
               value={model}
-              onChange={(e) => setModel(e.target.value)}
-              className={selectCls}
-              aria-label={t('model')}
+              onValueChange={(v) => setModel(v as string)}
+              items={(() => {
+                const acc: Record<string, React.ReactNode> = {}
+                for (const m of currentProvider?.models ?? []) {
+                  acc[m.id] = m.reasoning ? `${m.name} 🧠` : m.name
+                }
+                return acc
+              })()}
             >
-              {(currentProvider?.models ?? []).map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                  {m.reasoning ? ' 🧠' : ''}
-                </option>
-              ))}
-            </select>
+              <Select.Trigger className={selectCls} aria-label={t('model')}>
+                <Select.Value placeholder={t('model')} />
+                <Select.Icon>
+                  <ChevronDown className="size-3.5 opacity-60" />
+                </Select.Icon>
+              </Select.Trigger>
+              <Select.Portal>
+                <Select.Positioner sideOffset={4} align="start">
+                  <Select.Popup className={popupCls}>
+                    <Select.List>
+                      {(currentProvider?.models ?? []).map((m) => (
+                        <Select.Item key={m.id} value={m.id} className={itemCls}>
+                          <Select.ItemText>{m.reasoning ? `${m.name} 🧠` : m.name}</Select.ItemText>
+                          <Select.ItemIndicator />
+                        </Select.Item>
+                      ))}
+                    </Select.List>
+                  </Select.Popup>
+                </Select.Positioner>
+              </Select.Portal>
+            </Select.Root>
             <div className="ml-auto flex items-center gap-1">
               <button
                 type="button"
