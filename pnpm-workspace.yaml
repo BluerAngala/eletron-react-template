@@ -1,2 +1,4 @@
 allowBuilds:
   electron-winstaller: true
+overrides:
+  '@electron/get': 4.0.0

@@ -19,6 +19,7 @@
   "homepage": "https://github.com/BluerAngala/eletron-react-template#readme",
   "scripts": {
     "icons": "node scripts/generate-icons.mjs",
+    "installer-assets": "node scripts/generate-installer-assets.mjs",
     "rename": "node scripts/rename.mjs",
     "dev": "vite",
     "build": "vite build && electron-builder",

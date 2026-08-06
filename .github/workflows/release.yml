@@ -15,12 +15,18 @@ concurrency:
 
 jobs:
   release:
-    name: Build & Publish (${{ matrix.os }})
+    name: Build & Publish (${{ matrix.name }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - name: macOS
+            os: macos-latest
+            args: --mac
+          - name: Windows
+            os: windows-latest
+            args: --win nsis --x64
 
     steps:
       - name: Checkout Code
@@ -52,9 +58,25 @@ jobs:
       - name: Unit Test
         run: pnpm test
 
-      # 个人项目暂不配置代码签名/公证，跳过证书发现
-      - name: Build & Publish Release
-        run: pnpm build
+      - name: Build Renderer
+        run: pnpm exec vite build
+
+      # 个人项目暂不配置代码签名/公证，跳过证书发现。
+      # -p onTagOrDraft：仅 tag 触发时发布 GitHub Release，手动 dispatch 只产出安装包。
+      - name: Package (${{ matrix.name }})
+        run: pnpm exec electron-builder ${{ matrix.args }} -p onTagOrDraft
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - name: Upload Installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: installers-${{ matrix.name }}
+          path: |
+            release/**/*.exe
+            release/**/*.dmg
+            release/**/*.zip
+            release/**/*.blockmap
+          if-no-files-found: error
+
