@@ -128,7 +128,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
           {/* 下拉菜单：向上展开，避免超出窗口 */}
           {langOpen && (
-            <div className="absolute bottom-full right-0 z-50 mb-1.5 min-w-[9rem] overflow-hidden rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+            <div
+              className={`absolute z-50 min-w-[9rem] overflow-hidden rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-700 dark:bg-slate-800 ${
+                collapsed ? 'left-full top-0 ml-1.5' : 'bottom-full right-0 mb-1.5'
+              }`}
+            >
               {SUPPORTED_LANGUAGES.map(({ code, label }) => {
                 const active = code === currentLang
                 return (

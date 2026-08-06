@@ -54,7 +54,8 @@ export function Logs() {
   const [paused, setPaused] = useState(false)
   const [copied, setCopied] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const [expanded, setExpanded] = useState<Set<number>>(new Set())
+  // 默认展开所有带详情的日志；collapsed 记录被手动折叠的条目
+  const [collapsed, setCollapsed] = useState<Set<number>>(new Set())
 
   const containerRef = useRef<HTMLDivElement>(null)
   const pendingRef = useRef<LogEntry[]>([])
@@ -124,7 +125,7 @@ export function Logs() {
   }, [filtered.length, paused, virtualizer])
 
   const toggleExpand = useCallback((index: number) => {
-    setExpanded((prev) => {
+    setCollapsed((prev) => {
       const next = new Set(prev)
       if (next.has(index)) {
         next.delete(index)
@@ -248,8 +249,8 @@ export function Logs() {
               const entry = filtered[vi.index]
               if (!entry) return null
               const style = LEVEL_STYLES[entry.level]
-              const isExpanded = expanded.has(vi.index)
               const hasData = entry.data && Object.keys(entry.data).length > 0
+              const isExpanded = hasData && !collapsed.has(vi.index)
               return (
                 <div
                   key={vi.key}
@@ -287,7 +288,7 @@ export function Logs() {
                       ))}
                   </button>
                   {isExpanded && hasData && (
-                    <pre className="overflow-x-auto border-b border-slate-100 bg-slate-50 px-4 py-2 text-xs leading-5 text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300">
+                    <pre className="whitespace-pre-wrap break-words border-b border-slate-100 bg-slate-50 px-4 py-2 text-xs leading-5 text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300">
                       {JSON.stringify(entry.data, null, 2)}
                     </pre>
                   )}
