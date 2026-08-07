@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  release:
-    name: Build & Publish (${{ matrix.name }})
+  build:
+    name: Build (${{ matrix.name }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -62,11 +62,11 @@ jobs:
         run: pnpm exec vite build
 
       # 个人项目暂不配置代码签名/公证，跳过证书发现。
-      # -p onTagOrDraft：仅 tag 触发时发布 GitHub Release，手动 dispatch 只产出安装包。
+      # 只产安装包，不发布（-p never）。发布由下方独立 publish job 统一处理，
+      # 避免 macOS/Windows 并行 job 抢同一个 GitHub Release 导致 422/资产丢失。
       - name: Package (${{ matrix.name }})
-        run: pnpm exec electron-builder ${{ matrix.args }} -p onTagOrDraft
+        run: pnpm exec electron-builder ${{ matrix.args }} -p never
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
       - name: Upload Installers
@@ -78,5 +78,33 @@ jobs:
             release/**/*.dmg
             release/**/*.zip
             release/**/*.blockmap
+            release/**/latest*.yml
           if-no-files-found: error
+
+  publish:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    # 仅 tag 触发时发布；手动 dispatch（分支触发）只构建不发布。
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - name: Download Installers
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Upload Assets to GitHub Release
+        run: |
+          set -euo pipefail
+          FILES=$(find artifacts -type f \( -name '*.dmg' -o -name '*.zip' -o -name '*.exe' -o -name '*.blockmap' -o -name 'latest*.yml' \) | sort | tr '\n' ' ')
+          echo "Uploading assets: $FILES"
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" $FILES --repo "$GITHUB_REPOSITORY" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" $FILES --repo "$GITHUB_REPOSITORY" --generate-notes
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
