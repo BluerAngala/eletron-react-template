@@ -22,16 +22,20 @@ Electron + React + TypeScript 桌面应用模板。
 ## 目录
 
 ```
-app/       宿主应用源码
+app/       宿主应用源码（唯一源码入口，新代码一律放这里）
 	renderer/ React 页面、组件、i18n、路由与功能加载入口
 	electron/ Electron main、preload 与 IPC
 	shared/   跨进程共享配置
-packages/  可独立安装和发布的 workspace 功能包
+packages/  可插拔功能包（pnpm feature:add|remove 一键增删）
+	feature-contract/ 宿主↔功能注册契约（稳定）
+	feature-ai-chat/  可选功能实现（AI）
 resources/ assets/ 源图与 public/ 静态资源
-tooling/   项目脚本
+scripts/   项目脚本（rename / icons / feature）
 tests/     Vitest、E2E 与自动化脚本
 docs/      规范与架构决策
 ```
+
+根目录其余成员（`build/`、`dist/`、`dist-electron/`、`release/`、`test-results/`）都是构建/测试产物，自动生成、可随时删除，一律不要手动改。
 
 ## 质量检查
 

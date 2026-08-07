@@ -100,22 +100,39 @@ AI 位于独立 workspace 包 `packages/feature-ai-chat`，其页面、IPC、pre
 
 ## 项目结构
 
+> 两行读懂：**`app/` 是你要日常改的宿主应用；`packages/` 是可选功能包，一条命令即可插拔。**
+
 ```tree
-├── docs/               规范文档（如 logging-standard.md）
-├── dist-electron/      编译后的 Electron 输出
-├── app/                宿主应用源码
-│   ├── electron/       主进程、preload 与 IPC
-│   ├── renderer/       React 页面、组件、i18n 与路由
-│   └── shared/         跨进程共享配置
-├── packages/           可独立安装和发布的功能包
-│   ├── feature-contract/ 宿主与功能包的稳定注册契约
-│   └── feature-ai-chat/ AI 页面、IPC、preload 与专属依赖
-├── resources/          源图与 Vite 静态资源
-├── tooling/            项目维护脚本
-└── tests/              测试
-    ├── e2e/            Playwright E2E
-    └── *.test.ts       Vitest 单元测试
+eletron-react-template/
+├── app/                  ★ 宿主应用源码
+│   ├── renderer/         React 界面 — 页面、组件、i18n、路由
+│   ├── electron/         主进程、preload 与 IPC
+│   └── shared/           跨进程共享配置
+├── packages/             ★ 可插拔功能包（feature 命令一键增删）
+│   ├── feature-contract/ 宿主↔功能包的稳定注册契约
+│   └── feature-ai-chat/  可选 AI 功能 — 页面、IPC、preload、凭据
+├── resources/            源图 + Vite 静态资源
+├── scripts/              维护脚本（rename / icons / feature）
+├── tests/                单元 + E2E + 自动化测试
+├── docs/                 规范与架构决策（ADRs）
+├── build/                ⚙ 打包图标 — 由 `pnpm icons` 再生成
+├── dist/                 ⚙ 编译后的渲染进程 — 自动生成
+├── dist-electron/        ⚙ 编译后的 Electron — 自动生成
+├── release/              ⚙ 打包产物安装包 — 自动生成
+└── test-results/         ⚙ Playwright 产物 — 自动生成
 ```
+
+> ⚙ = 构建/工具自动生成的产物，随时可删。这些目录已在 `.vscode/settings.json` 的 `files.exclude` 中从资源管理器隐藏，让侧边栏保持清爽——想重新看到它们，删掉对应条目即可。其余根目录文件（`package.json`、`vite.config.ts`、`tsconfig.json` 等）是必须留在根目录的工具配置。
+
+### 为什么是"可插拔"
+
+模板不会把可选功能写死在宿主里，每个生成的项目都保持精简：
+
+- 一个功能包在自己的 `packages/feature-<id>/` 内**拥有一切**：UI、IPC 处理、preload 桥、多语言与专属依赖。
+- `packages/feature-contract/` 定义宿主加载功能所用的稳定接口。
+- `pnpm feature:add <id>` 生成宿主加载入口；`pnpm feature:remove <id>` 移除入口并删除宿主依赖。
+
+**想加一个新能力**：把它写成一个 `packages/` 下的包，然后一条命令接入宿主——完全不用改宿主源码。
 
 ## CI / CD
 
