@@ -1,0 +1,4 @@
+# 独立子项目（Docusaurus 文档站），与宿主工作区隔离安装。
+# pnpm 11 默认拦截依赖构建脚本，这里放行需要执行 postinstall 的包。
+allowBuilds:
+  core-js: true
