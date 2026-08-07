@@ -1,7 +1,7 @@
 {
   "name": "eletron-react-template",
   "productName": "Electron React Template",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "Electron + React + TypeScript 桌面应用模板，基于 electron-vite-react 二次开发。",
   "license": "MIT",
