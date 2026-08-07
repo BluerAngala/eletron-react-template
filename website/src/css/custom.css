@@ -1,0 +1,67 @@
+@import '@fontsource-variable/geist';
+
+/**
+ * 落地页设计系统（Design Read：developer-tool landing）
+ * - 字体：Geist Variable（与主应用一致），代码用系统等宽栈
+ * - 强调色：teal（青碧），单一 accent，避开 AI 紫渐变
+ * - 中性底：zinc（接近黑 / 冷白）
+ */
+
+:root {
+  --ifm-font-family-base: 'Geist Variable', system-ui, -apple-system, sans-serif;
+  --ifm-font-family-monospace:
+    ui-monospace, 'SF Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  /* 亮色主题：teal accent */
+  --ifm-color-primary: #0f766e;
+  --ifm-color-primary-dark: #0d6b64;
+  --ifm-color-primary-darker: #0b5d57;
+  --ifm-color-primary-darkest: #094c47;
+  --ifm-color-primary-light: #1c8a80;
+  --ifm-color-primary-lighter: #25958b;
+  --ifm-color-primary-lightest: #3aa89e;
+  --ifm-background-color: #fafafa;
+  --ifm-background-surface-color: #ffffff;
+  --ifm-navbar-background-color: rgba(255, 255, 255, 0.85);
+  --ifm-code-font-size: 95%;
+
+  --doc-hero-fg: #18181b;
+  --doc-hero-sub: #52525b;
+  --doc-surface: #ffffff;
+  --doc-border: rgba(0, 0, 0, 0.08);
+  --doc-accent: #0d9488;
+  --doc-accent-soft: rgba(13, 148, 136, 0.12);
+}
+
+[data-theme='dark'] {
+  /* 暗色主题：teal accent（更亮） */
+  --ifm-color-primary: #2dd4bf;
+  --ifm-color-primary-dark: #26c2ae;
+  --ifm-color-primary-darker: #22b3a1;
+  --ifm-color-primary-darkest: #1c9384;
+  --ifm-color-primary-light: #3fe0cb;
+  --ifm-color-primary-lighter: #4ce4d1;
+  --ifm-color-primary-lightest: #66e9d9;
+  --ifm-background-color: #0c0c0d;
+  --ifm-background-surface-color: #121214;
+  --ifm-navbar-background-color: rgba(12, 12, 13, 0.85);
+
+  --doc-hero-fg: #f4f4f5;
+  --doc-hero-sub: #a1a1aa;
+  --doc-surface: #141416;
+  --doc-border: rgba(255, 255, 255, 0.08);
+  --doc-accent: #2dd4bf;
+  --doc-accent-soft: rgba(45, 212, 191, 0.1);
+}
+
+/* 细滚动条与选中色统一 */
+::selection {
+  background: var(--doc-accent-soft);
+}
+
+/* 落地页通用卡片 */
+.doc-card {
+  background: var(--doc-surface);
+  border: 1px solid var(--doc-border);
+  border-radius: 16px;
+}

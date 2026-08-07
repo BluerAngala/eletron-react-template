@@ -1,0 +1,411 @@
+/* 落地页样式（index.tsx 的 CSS Module） */
+
+.hero {
+  position: relative;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  padding: 4rem 0 5rem;
+  overflow: hidden;
+}
+
+/* 极淡的 teal 光晕 + 细网格线（developer-tool 气质，克制，非紫渐变） */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 50% at 78% 18%, var(--doc-accent-soft), transparent 60%),
+    radial-gradient(40% 40% at 12% 88%, var(--doc-accent-soft), transparent 55%);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--doc-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--doc-border) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(60% 60% at 50% 40%, black, transparent 75%);
+  pointer-events: none;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 4rem;
+  align-items: center;
+}
+
+.heroEyebrow {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--doc-accent);
+  margin: 0 0 1.25rem;
+}
+
+.heroTitle {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  color: var(--doc-hero-fg);
+  margin: 0 0 1.5rem;
+  max-width: 16ch;
+}
+
+.heroTitleAccent {
+  color: var(--doc-accent);
+}
+
+.heroSub {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--doc-hero-sub);
+  max-width: 46ch;
+  margin: 0 0 2rem;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.heroCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.heroCta:hover {
+  text-decoration: none;
+}
+
+.heroCta:active {
+  transform: translateY(1px);
+}
+
+.heroCtaPrimary {
+  background: var(--doc-accent);
+  color: #061514;
+  border: 1px solid transparent;
+}
+
+.heroCtaPrimary:hover {
+  background: var(--ifm-color-primary-light);
+}
+
+.heroCtaGhost {
+  background: transparent;
+  color: var(--doc-hero-fg);
+  border: 1px solid var(--doc-border);
+}
+
+.heroCtaGhost:hover {
+  border-color: var(--doc-accent);
+  color: var(--doc-accent);
+}
+
+/* 右侧命令面板：真实展示 pnpm feature:new */
+.cmdPanel {
+  border-radius: 16px;
+  border: 1px solid var(--doc-border);
+  background: #0b0b0d;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.03) inset,
+    0 24px 60px -24px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  animation: floatY 7s ease-in-out infinite;
+}
+
+.cmdTopbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.cmdDot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.cmdDot:nth-child(1) { background: #ff5f57; }
+.cmdDot:nth-child(2) { background: #febc2e; }
+.cmdDot:nth-child(3) { background: #28c840; }
+
+.cmdTitle {
+  margin-left: 0.5rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.72rem;
+  color: #71717a;
+}
+
+.cmdBody {
+  padding: 1.1rem 1.1rem 1.3rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.82rem;
+  line-height: 1.9;
+  overflow-x: auto;
+}
+
+.cmdLine { white-space: pre; }
+.cmdPrompt { color: #2dd4bf; }
+.cmdText { color: #e4e4e7; }
+.cmdComment { color: #71717a; }
+.cmdOk { color: #34d399; }
+.cmdDim { color: #a1a1aa; }
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* 通用 section */
+.section {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 5.5rem 1.5rem;
+}
+
+.sectionHead {
+  max-width: 640px;
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: var(--doc-hero-fg);
+  margin: 0 0 0.75rem;
+}
+
+.sectionLead {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--doc-hero-sub);
+  margin: 0;
+}
+
+/* 特性 bento：不对称网格，避免三张等宽卡 */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.25rem;
+}
+
+.bentoCell {
+  border-radius: 16px;
+  border: 1px solid var(--doc-border);
+  background: var(--doc-surface);
+  padding: 1.5rem;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.bentoCell:hover {
+  border-color: var(--doc-accent);
+  transform: translateY(-2px);
+}
+
+.bentoBig {
+  grid-column: span 7;
+  min-height: 240px;
+}
+
+.bentoTint {
+  background: var(--doc-accent-soft);
+  border-color: transparent;
+}
+
+.bentoSmall { grid-column: span 5; }
+.bentoHalf { grid-column: span 4; }
+
+.bentoTitle {
+  font-size: 1.15rem;
+  font-weight: 650;
+  color: var(--doc-hero-fg);
+  margin: 0;
+}
+
+.bentoDesc {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--doc-hero-sub);
+  margin: 0;
+  max-width: 46ch;
+}
+
+.bentoCode {
+  margin-top: auto;
+  border-radius: 12px;
+  background: #0b0b0d;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 0.85rem 1rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+  line-height: 1.8;
+  overflow-x: auto;
+}
+
+/* 三步：横向，非卡片（用分隔线） */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--doc-border);
+}
+
+.step {
+  padding: 2rem 2rem 0 0;
+  position: relative;
+}
+
+.step + .step {
+  padding-left: 2rem;
+  border-left: 1px solid var(--doc-border);
+}
+
+.stepNum {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  color: var(--doc-accent);
+}
+
+.stepTitle {
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--doc-hero-fg);
+  margin: 0.5rem 0 0.5rem;
+}
+
+.stepDesc {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--doc-hero-sub);
+  margin: 0;
+}
+
+.stepCmd {
+  display: inline-block;
+  margin-top: 0.9rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  background: var(--doc-accent-soft);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+  color: var(--doc-accent);
+}
+
+/* 能力清单：非卡片，分隔行 */
+.caps {
+  border-top: 1px solid var(--doc-border);
+}
+
+.capRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--doc-border);
+}
+
+.capName {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  color: var(--doc-hero-fg);
+  margin: 0;
+}
+
+.capIcon {
+  color: var(--doc-accent);
+  display: inline-flex;
+}
+
+.capDesc {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--doc-hero-sub);
+  margin: 0;
+}
+
+/* 收尾 CTA */
+.ctaBlock {
+  border-radius: 20px;
+  border: 1px solid var(--doc-border);
+  background: linear-gradient(135deg, var(--doc-accent-soft), transparent 55%);
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.ctaTitle {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: var(--doc-hero-fg);
+  margin: 0 0 0.75rem;
+}
+
+.ctaSub {
+  color: var(--doc-hero-sub);
+  font-size: 1rem;
+  margin: 0 auto 2rem;
+  max-width: 44ch;
+}
+
+/* 响应式 */
+@media (max-width: 960px) {
+  .heroInner {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .bentoBig,
+  .bentoSmall,
+  .bentoHalf {
+    grid-column: span 12;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .step + .step {
+    padding-left: 0;
+    padding-top: 2rem;
+    border-left: none;
+    border-top: 1px solid var(--doc-border);
+  }
+
+  .capRow {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+}

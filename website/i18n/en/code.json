@@ -1,0 +1,113 @@
+{
+  "一套壳，装下你的": {
+    "message": "One shell, for all your"
+  },
+  "所有小工具": {
+    "message": "little tools"
+  },
+  "一个可插拔的桌面应用模板：配置即开关，一条命令加一个新工具。不用懂架构，照着文档写页面就行。": {
+    "message": "A pluggable desktop app template: toggle by config, add a tool with one command. No architecture knowledge needed — read the docs and write your page."
+  },
+  "快速开始": {
+    "message": "Get Started"
+  },
+  "查看文档": {
+    "message": "Docs"
+  },
+  "为\"攒工具\"而设计": {
+    "message": "Designed for collecting tools"
+  },
+  "每个工具是一个独立模块，互不干扰；加一个、关一个都只改一行配置。": {
+    "message": "Every tool is an independent module. Add or hide one by editing a single line of config."
+  },
+  "可插拔功能": {
+    "message": "Pluggable features"
+  },
+  "每个功能包自带页面、IPC 与多语言。一条命令生成骨架并自动接入宿主，不用碰任何注册逻辑。": {
+    "message": "Each feature owns its page, IPC, and i18n. One command scaffolds it and wires it into the host — no registration logic to touch."
+  },
+  "配置即开关": {
+    "message": "Config as the switch"
+  },
+  "改一行 enabledFeatures，工具上架或下架，无需任何命令。": {
+    "message": "Edit one line in enabledFeatures to show or hide a tool. No commands."
+  },
+  "中英双语": {
+    "message": "Bilingual"
+  },
+  "内置 i18n，运行时切换 zh-CN / en-US，文案按命名空间拆分。": {
+    "message": "Built-in i18n, runtime switch between zh-CN / en-US, copy split by namespace."
+  },
+  "主题 · 日志 · 测试": {
+    "message": "Theme · Logs · Tests"
+  },
+  "暗色模式、统一结构化日志、Vitest + Playwright 开箱即用。": {
+    "message": "Dark mode, unified structured logging, Vitest + Playwright out of the box."
+  },
+  "三步加一个新工具": {
+    "message": "Add a tool in three steps"
+  },
+  "创建": {
+    "message": "Create"
+  },
+  "一条命令生成功能包骨架，自动接入宿主。": {
+    "message": "One command scaffolds the feature package and wires it into the host."
+  },
+  "启动": {
+    "message": "Run"
+  },
+  "启动应用，侧边栏就能看到你的新工具。": {
+    "message": "Start the app and your new tool appears in the sidebar."
+  },
+  "开发": {
+    "message": "Build"
+  },
+  "只改一个文件（renderer.tsx），把示例换成你的逻辑。": {
+    "message": "Edit a single file (renderer.tsx) and replace the sample with your logic."
+  },
+  "开箱即用的地基": {
+    "message": "A solid foundation out of the box"
+  },
+  "国际化": {
+    "message": "i18n"
+  },
+  "中英双语，命名空间拆分，新增语言即插即用。": {
+    "message": "Bilingual, namespaced copy, drop in more languages anytime."
+  },
+  "统一日志": {
+    "message": "Unified logging"
+  },
+  "主进程与渲染进程统一 logger，内置日志查看页。": {
+    "message": "One logger across main and renderer, with a built-in log viewer."
+  },
+  "主题系统": {
+    "message": "Theming"
+  },
+  "亮色 / 暗色 / 跟随系统，Tailwind v4 变量驱动。": {
+    "message": "Light / dark / system, driven by Tailwind v4 variables."
+  },
+  "测试": {
+    "message": "Testing"
+  },
+  "Vitest 单元测试 + Playwright E2E，CI 自动跑。": {
+    "message": "Vitest unit tests + Playwright E2E, run automatically in CI."
+  },
+  "单一工具链": {
+    "message": "One toolchain"
+  },
+  "Biome 同时管 lint 与 format，零配置陷阱。": {
+    "message": "Biome handles both lint and format — no config traps."
+  },
+  "一键发布": {
+    "message": "One-command release"
+  },
+  "electron-builder 三平台打包 + GitHub Release + 自动更新。": {
+    "message": "electron-builder three-platform packaging + GitHub Release + auto-update."
+  },
+  "开始攒你的第一个工具": {
+    "message": "Start building your first tool"
+  },
+  "三分钟跑通，之后就是一个个往上加。": {
+    "message": "Up and running in three minutes, then keep adding."
+  }
+}
