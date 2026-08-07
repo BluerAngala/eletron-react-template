@@ -25,9 +25,9 @@ Electron + React + TypeScript 桌面应用模板。
 
 ```
 app/       宿主应用源码（唯一源码入口，新代码一律放这里）
-	renderer/ React 页面、组件、i18n、路由与功能加载入口
-	electron/ Electron main、preload 与 IPC
-	shared/   跨进程共享配置
+	renderer/ React 页面、组件、i18n、路由与功能加载入口（桌面 + 网页共享的 UI 层）
+	electron/ 桌面壳 —— Electron main、preload 与 IPC
+	shared/   跨进程 / 跨端共享配置（enabledFeatures 开关）
 packages/  可插拔功能包（app/shared/features.ts 的 enabledFeatures 一键开关）
 	feature-contract/ 宿主↔功能注册契约（稳定）
 	feature-ai-chat/  可选功能实现（AI）
@@ -35,7 +35,8 @@ packages/  可插拔功能包（app/shared/features.ts 的 enabledFeatures 一�
 resources/ assets/ 源图与 public/ 静态资源
 scripts/   项目脚本（rename / icons / feature:list / feature:new 脚手架）
 tests/     Vitest、E2E 与自动化脚本
-docs/      规范与架构决策
+docs/      规范与架构决策（总纲见 project-standards.md）
+website/   文档网站（Docusaurus，独立子项目，GitHub Pages 部署）
 ```
 
 根目录其余成员（`build/`、`dist/`、`dist-electron/`、`release/`、`test-results/`）都是构建/测试产物，自动生成、可随时删除，一律不要手动改。
