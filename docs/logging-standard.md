@@ -54,7 +54,7 @@
 
 ## 4. 主进程使用
 
-`electron/main/logger.ts` 提供 `createLogger(scope)`：
+`app/electron/main/logger.ts` 提供 `createLogger(scope)`：
 
 ```ts
 import { createLogger } from './logger'
@@ -72,7 +72,7 @@ log.error('window-load-failed', { errorCode: -3, errorDescription: 'ERR_ABORTED'
 
 ## 5. 渲染进程使用
 
-`src/lib/logger.ts` 提供 `createLogger(scope)`，内部经 preload 的 `window.logger` 转发到主进程统一落盘：
+`app/renderer/lib/logger.ts` 提供 `createLogger(scope)`，内部经 preload 的 `window.logger` 转发到主进程统一落盘：
 
 ```ts
 import { createLogger } from '@/lib/logger'

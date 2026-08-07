@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Toaster } from 'sonner'
+import { fullBleedFeaturePaths } from '@/features/renderer'
 import { Sidebar } from './Sidebar'
 import { TopBar } from './TopBar'
 
@@ -20,8 +21,7 @@ export function AppLayout() {
   const { t } = useTranslation()
   const location = useLocation()
   const title = t(pageTitleKeys[location.pathname] ?? 'pages.unknown')
-  // AI 对话页全屏沉浸（无内边距），其余页面保留 p-6
-  const isFullBleed = location.pathname === '/ai'
+  const isFullBleed = fullBleedFeaturePaths.has(location.pathname)
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_KEY, String(collapsed))

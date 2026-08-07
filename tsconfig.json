@@ -19,9 +19,9 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./app/renderer/*"]
     }
   },
-  "include": ["src"],
+  "include": ["app/renderer"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

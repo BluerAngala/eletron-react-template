@@ -32,7 +32,7 @@ yarn.lock
 /playwright-report/
 /playwright/.cache/
 
-test/screenshots
+tests/screenshots
 
 # AI 工具配置
 .claude/

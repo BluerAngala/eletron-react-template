@@ -49,13 +49,39 @@ pnpm install
 #    (--dry-run previews without writing)
 pnpm rename --name my-app --appId com.example.myapp --repo owner/repo
 
-# 3. Replace assets/logo.svg with your own icon (e.g. download from iconfont),
+# 3. Replace resources/assets/logo.svg with your own icon (e.g. download from iconfont),
 #    then generate the full icon set
 pnpm icons
 ```
 
 `pnpm rename` rewrites name / productName / appId / repo / README in one pass.
 `pnpm icons` generates `.icns` / `.ico` / favicon / multi-size PNGs from one SVG.
+
+## Optional Features
+
+AI chat is disabled by default. Enable it for a project with:
+
+```bash
+pnpm feature:add ai-chat
+pnpm install
+```
+
+Remove the feature and its host dependency with:
+
+```bash
+pnpm feature:remove ai-chat
+pnpm install
+```
+
+List available features:
+
+```bash
+pnpm feature:list
+```
+
+AI lives in the independent workspace package `packages/feature-ai-chat`. Its page, IPC handlers, preload bridge, credential storage, and `pi-ai` dependency are outside the template shell. The commands generate the host loading entries and manage the root dependency on the package; after removal, AI code is excluded from the host build. Restart the Electron development process after enabling or removing a feature.
+
+Develop AI only inside `packages/feature-ai-chat`. The package can later be published to a private npm registry and upgraded independently through its version.
 
 ## Available Scripts
 
@@ -72,26 +98,23 @@ pnpm icons
 | `pnpm format` | Biome format (write) |
 | `pnpm format:check` | Biome format check |
 | `pnpm rename` | Rename project (name / appId / repo) interactively |
-| `pnpm icons` | Generate full icon set from assets/logo.svg |
+| `pnpm icons` | Generate full icon set from resources/assets/logo.svg |
 
 ## Project Structure
 
 ```tree
 ├── docs/               Standards (e.g. logging-standard.md)
 ├── dist-electron/      Compiled Electron output
-├── electron/           Main process & preload source
-│   ├── main/           Window, IPC, logger, auto-update
-│   └── preload/        contextBridge scripts
-├── public/             Static assets
-├── src/                Renderer process source
-│   ├── components/     Reusable components
-│   ├── pages/          Page components (Home / Logs)
-│   ├── contexts/       React Context (Theme)
-│   ├── i18n/           i18n init & language config
-│   ├── locales/        Language resources (zh-CN / en-US)
-│   ├── lib/            Utilities (logger)
-│   └── routes/         Router config
-└── test/               Tests
+├── app/                Host application source
+│   ├── electron/       Main process, preload, and IPC
+│   ├── renderer/       React pages, components, i18n, and routes
+│   └── shared/         Cross-process shared configuration
+├── packages/           Independently installable and publishable feature packages
+│   ├── feature-contract/ Host-to-feature registration contract
+│   └── feature-ai-chat/ AI page, IPC, preload, and feature-only dependencies
+├── resources/          Source artwork and Vite static assets
+├── tooling/            Project maintenance scripts
+└── tests/              Tests
     ├── e2e/            Playwright E2E
     └── *.test.ts       Vitest unit tests
 ```

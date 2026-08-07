@@ -48,12 +48,38 @@ pnpm install
 # 2. 改名（默认交互式引导，也可直接传参；--dry-run 仅预览不写入）
 pnpm rename --name my-app --appId com.example.myapp --repo owner/repo
 
-# 3. 将 assets/logo.svg 替换为自己的图标（可从 iconfont 下载），再生成全套图标
+# 3. 将 resources/assets/logo.svg 替换为自己的图标（可从 iconfont 下载），再生成全套图标
 pnpm icons
 ```
 
 `pnpm rename` 一次性改写 name / productName / appId / 仓库地址 / README。
 `pnpm icons` 从一个 SVG 生成 `.icns` / `.ico` / favicon / 多尺寸 PNG。
+
+## 可选功能
+
+模板默认不启用 AI 聊天。需要在某个项目中使用时执行：
+
+```bash
+pnpm feature:add ai-chat
+pnpm install
+```
+
+移除功能与其宿主依赖：
+
+```bash
+pnpm feature:remove ai-chat
+pnpm install
+```
+
+查看可选功能：
+
+```bash
+pnpm feature:list
+```
+
+AI 位于独立 workspace 包 `packages/feature-ai-chat`，其页面、IPC、preload bridge、凭据存储和 `pi-ai` 依赖均不在模板壳中。命令会生成宿主加载入口，并维护根项目对该包的依赖；移除后，AI 代码不会被宿主构建打包。启用或移除后需重启 Electron 开发进程。
+
+开发 AI 功能时只修改 `packages/feature-ai-chat`；未来可将这个包发布到私有 npm registry，并通过提升其版本实现定向更新。
 
 ## 可用脚本
 
@@ -70,26 +96,23 @@ pnpm icons
 | `pnpm format` | Biome 格式化（写入） |
 | `pnpm format:check` | Biome 格式化检查 |
 | `pnpm rename` | 交互式改名（包名 / appId / 仓库等） |
-| `pnpm icons` | 从 assets/logo.svg 生成全套图标 |
+| `pnpm icons` | 从 resources/assets/logo.svg 生成全套图标 |
 
 ## 项目结构
 
 ```tree
 ├── docs/               规范文档（如 logging-standard.md）
 ├── dist-electron/      编译后的 Electron 输出
-├── electron/           主进程和 preload 源码
-│   ├── main/           窗口、IPC、日志、自动更新
-│   └── preload/        contextBridge 脚本
-├── public/             静态资源
-├── src/                渲染进程源码
-│   ├── components/     可复用组件
-│   ├── pages/          页面组件（Home / Logs）
-│   ├── contexts/       React Context（主题）
-│   ├── i18n/           i18n 初始化与语言配置
-│   ├── locales/        语言资源（zh-CN / en-US）
-│   ├── lib/            工具库（logger）
-│   └── routes/         路由配置
-└── test/               测试
+├── app/                宿主应用源码
+│   ├── electron/       主进程、preload 与 IPC
+│   ├── renderer/       React 页面、组件、i18n 与路由
+│   └── shared/         跨进程共享配置
+├── packages/           可独立安装和发布的功能包
+│   ├── feature-contract/ 宿主与功能包的稳定注册契约
+│   └── feature-ai-chat/ AI 页面、IPC、preload 与专属依赖
+├── resources/          源图与 Vite 静态资源
+├── tooling/            项目维护脚本
+└── tests/              测试
     ├── e2e/            Playwright E2E
     └── *.test.ts       Vitest 单元测试
 ```

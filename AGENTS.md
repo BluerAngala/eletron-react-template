@@ -13,19 +13,24 @@ Electron + React + TypeScript 桌面应用模板。
 
 ## 实现约定
 
-- 组件 → `src/components/<name>/index.tsx`（shadcn 原子组件可单文件 `src/components/ui/<name>.tsx`）；页面 → `src/pages/<Name>.tsx`；路由 → `src/routes/index.tsx` 注册
+- 组件 → `app/renderer/components/<name>/index.tsx`（shadcn 原子组件可单文件 `app/renderer/components/ui/<name>.tsx`）；页面 → `app/renderer/pages/<Name>.tsx`；路由 → `app/renderer/routes/index.tsx` 注册
 - IPC 通道：kebab-case
 - 样式：Tailwind v4，不硬编码颜色
-- **i18n**：新文案必须走 i18n（`src/locales/` 按命名空间拆分，组件用 `useTranslation('ns')`，新增语言在 `src/i18n/index.ts` 注册）
-- **日志**：关键路径用统一 logger（`electron/main/logger.ts` 与 `src/lib/logger.ts` 的 `createLogger(scope)`），禁止裸 `console.log`；规范见 `docs/logging-standard.md`
+- **i18n**：新文案必须走 i18n（`app/renderer/locales/` 按命名空间拆分，组件用 `useTranslation('ns')`，新增语言在 `app/renderer/i18n/index.ts` 注册）
+- **日志**：关键路径用统一 logger（`app/electron/main/logger.ts` 与 `app/renderer/lib/logger.ts` 的 `createLogger(scope)`），禁止裸 `console.log`；规范见 `docs/logging-standard.md`
 
 ## 目录
 
 ```
-src/      components/ pages/ contexts/ i18n/ locales/ lib/ routes/
-electron/ main/ preload/
-test/     e2e/ + vitest
-docs/     logging-standard.md
+app/       宿主应用源码
+	renderer/ React 页面、组件、i18n、路由与功能加载入口
+	electron/ Electron main、preload 与 IPC
+	shared/   跨进程共享配置
+packages/  可独立安装和发布的 workspace 功能包
+resources/ assets/ 源图与 public/ 静态资源
+tooling/   项目脚本
+tests/     Vitest、E2E 与自动化脚本
+docs/      规范与架构决策
 ```
 
 ## 质量检查

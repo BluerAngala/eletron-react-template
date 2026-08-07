@@ -20,9 +20,10 @@ export default defineConfig(({ command }) => {
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG
 
   return {
+    publicDir: 'resources/public',
     resolve: {
       alias: {
-        '@': path.join(import.meta.dirname, 'src'),
+        '@': path.join(import.meta.dirname, 'app/renderer'),
       },
     },
     plugins: [
@@ -30,7 +31,7 @@ export default defineConfig(({ command }) => {
       tailwindcss(),
       electronSimple({
         main: {
-          input: 'electron/main/index.ts',
+          input: 'app/electron/main/index.ts',
           plugins: [notBundle()],
           options: {
             build: {
@@ -44,7 +45,7 @@ export default defineConfig(({ command }) => {
           },
         },
         preload: {
-          input: 'electron/preload/index.ts',
+          input: 'app/electron/preload/index.ts',
           plugins: [notBundle()],
           options: {
             build: {

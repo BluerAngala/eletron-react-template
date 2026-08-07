@@ -7,7 +7,7 @@
       "url": "https://json.schemastore.org/electron-builder"
     }
   ],
-  "i18n-ally.localesPaths": ["src/locales"],
+  "i18n-ally.localesPaths": ["app/renderer/locales"],
   "i18n-ally.sourceLanguage": "zh-CN",
   "i18n-ally.keystyle": "nested",
   "i18n-ally.enabledParsers": ["json"],

@@ -1,0 +1,23 @@
+{
+  "name": "@electron-template/feature-ai-chat",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./renderer": "./src/renderer/index.ts",
+    "./main": "./src/main/index.ts",
+    "./preload": "./src/preload/index.ts"
+  },
+  "dependencies": {
+    "@earendil-works/pi-ai": "^0.83.0",
+    "@electron-template/feature-contract": "workspace:*",
+    "electron-store": "^11.0.2"
+  },
+  "peerDependencies": {
+    "electron": "^42.1.0",
+    "i18next": "^26.3.6",
+    "lucide-react": "^1.25.0",
+    "react": "^19.2.7",
+    "react-i18next": "^17.0.11"
+  }
+}
