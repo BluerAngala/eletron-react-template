@@ -21,6 +21,7 @@
     "icons": "node scripts/generate-icons.mjs",
     "rename": "node scripts/rename.mjs",
     "feature:list": "node scripts/feature.mjs",
+    "feature:new": "node scripts/new-feature.mjs",
     "dev": "vite",
     "build": "vite build && electron-builder",
     "preview": "vite preview",

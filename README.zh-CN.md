@@ -57,6 +57,8 @@ pnpm icons
 
 ## 可选功能
 
+> 📖 **功能开发指南**：[`docs/feature-development.md`](docs/feature-development.md) —— 三步加一个自己的小工具，不用懂架构。
+
 可选功能放在 `packages/feature-*` 独立 workspace 包中——每个包自带页面、IPC、preload 桥、多语言与专属依赖，宿主保持精简。启用/禁用只需**改一个配置文件**，不需要任何命令。
 
 **开关**：`app/shared/features.ts` 的 `enabledFeatures`：
@@ -74,6 +76,12 @@ export const enabledFeatures = ['ai-chat', 'example'] as const
 
 ```bash
 pnpm feature:list
+```
+
+新建一个功能模块（生成 `packages/feature-<id>` 骨架并自动接入宿主——开关、四处注册表、workspace 依赖一步到位）：
+
+```bash
+pnpm feature:new <id>
 ```
 
 宿主对每个进程只维护一张很薄的注册表（`app/renderer/features/*` 与 `app/electron/*/features.ts`），把 id 映射到加载器。每个新模块只需在每张注册表加一行。
@@ -97,6 +105,8 @@ pnpm feature:list
 | `pnpm format:check` | Biome 格式化检查 |
 | `pnpm rename` | 交互式改名（包名 / appId / 仓库等） |
 | `pnpm icons` | 从 resources/assets/logo.svg 生成全套图标 |
+| `pnpm feature:list` | 列出可插拔模块（自动扫描 packages/feature-*） |
+| `pnpm feature:new <id>` | 生成新功能包骨架并自动接入宿主 |
 
 ## 项目结构
 

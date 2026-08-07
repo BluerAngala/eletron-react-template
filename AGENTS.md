@@ -18,6 +18,7 @@ Electron + React + TypeScript 桌面应用模板。
 - 样式：Tailwind v4，不硬编码颜色
 - **i18n**：新文案必须走 i18n（`app/renderer/locales/` 按命名空间拆分，组件用 `useTranslation('ns')`，新增语言在 `app/renderer/i18n/index.ts` 注册）
 - **可插拔功能**：可选模块放 `packages/feature-<id>/`，实现 `feature-contract` 契约（renderer / main / preload 三部分）；启用/禁用只改 `app/shared/features.ts` 的 `enabledFeatures`，并在 `app/renderer/features/renderer.ts`、`app/renderer/features/i18n.ts`、`app/electron/main/features.ts`、`app/electron/preload/features.ts` 四处注册表各加一行 loader（参考 `packages/feature-example`）
+- **新工具开发**：`pnpm feature:new <id>` 一键生成模块骨架；开发指南见 `docs/feature-development.md`
 - **日志**：关键路径用统一 logger（`app/electron/main/logger.ts` 与 `app/renderer/lib/logger.ts` 的 `createLogger(scope)`），禁止裸 `console.log`；规范见 `docs/logging-standard.md`
 
 ## 目录
@@ -32,7 +33,7 @@ packages/  可插拔功能包（app/shared/features.ts 的 enabledFeatures 一�
 	feature-ai-chat/  可选功能实现（AI）
 	feature-example/  最小可插拔功能示例（写新模块时复制它）
 resources/ assets/ 源图与 public/ 静态资源
-scripts/   项目脚本（rename / icons / feature）
+scripts/   项目脚本（rename / icons / feature:list / feature:new 脚手架）
 tests/     Vitest、E2E 与自动化脚本
 docs/      规范与架构决策
 ```

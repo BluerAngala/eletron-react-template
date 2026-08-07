@@ -59,6 +59,8 @@ pnpm icons
 
 ## Optional Features
 
+> 📖 **Feature development guide:** [`docs/feature-development.md`](docs/feature-development.md) — add your own tool in 3 steps, no architecture knowledge needed.
+
 Optional functionality lives in independent workspace packages under `packages/feature-*` — each owns its page, IPC handlers, preload bridge, locales, and dependencies, so the host stays lean. Enable or disable them by editing **one config file** — no commands needed.
 
 **The switch:** `app/shared/features.ts` → `enabledFeatures`:
@@ -76,6 +78,12 @@ List available modules (auto-discovered from `packages/feature-*`):
 
 ```bash
 pnpm feature:list
+```
+
+Scaffold a new feature (generates `packages/feature-<id>` and wires it into the host — switch, registries, workspace dependency):
+
+```bash
+pnpm feature:new <id>
 ```
 
 The host only knows one thin "registry" per process (`app/renderer/features/*` and `app/electron/*/features.ts`), mapping each id to a loader. Every new module adds one line per registry.
@@ -99,6 +107,8 @@ The host only knows one thin "registry" per process (`app/renderer/features/*` a
 | `pnpm format:check` | Biome format check |
 | `pnpm rename` | Rename project (name / appId / repo) interactively |
 | `pnpm icons` | Generate full icon set from resources/assets/logo.svg |
+| `pnpm feature:list` | List pluggable modules (auto-scans packages/feature-*) |
+| `pnpm feature:new <id>` | Scaffold a new feature package and wire it into the host |
 
 ## Project Structure
 
