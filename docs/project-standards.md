@@ -127,6 +127,7 @@ packages/feature-<id>/
 - 新文案必须走 i18n（中英双语）
 - 关键路径用统一 logger，禁止裸 `console.log`（规范见 `docs/logging-standard.md`）
 - 新功能开发照 `docs/feature-development.md`，用 `pnpm feature:new` 生成骨架
+- **目录文档**：每个关键目录带 `README.md`（说清用途 + 指向相关文档）；全站文档索引见 `docs/README.md`，新增文档记得登记
 
 ## 6. 演进路线
 

@@ -20,6 +20,7 @@ Electron + React + TypeScript 桌面应用模板。
 - **可插拔功能**：可选模块放 `packages/feature-<id>/`，实现 `feature-contract` 契约（renderer / main / preload 三部分）；启用/禁用只改 `app/shared/features.ts` 的 `enabledFeatures`，并在 `app/renderer/features/renderer.ts`、`app/renderer/features/i18n.ts`、`app/electron/main/features.ts`、`app/electron/preload/features.ts` 四处注册表各加一行 loader（参考 `packages/feature-example`）
 - **新工具开发**：`pnpm feature:new <id>` 一键生成模块骨架；开发指南见 `docs/feature-development.md`
 - **日志**：关键路径用统一 logger（`app/electron/main/logger.ts` 与 `app/renderer/lib/logger.ts` 的 `createLogger(scope)`），禁止裸 `console.log`；规范见 `docs/logging-standard.md`
+- **目录文档**：每个关键目录带 `README.md`（5 行内说清用途 + 指向相关文档）；文档地图见 `docs/README.md`，新增文档记得在索引里登记
 
 ## 目录
 
