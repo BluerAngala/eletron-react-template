@@ -1,7 +1,6 @@
 {
   "nav": {
     "home": "Home",
-    "ai": "AI Chat",
     "logs": "Logs",
     "expandMenu": "Expand menu",
     "collapseMenu": "Collapse menu"

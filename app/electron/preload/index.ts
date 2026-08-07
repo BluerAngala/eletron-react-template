@@ -1,5 +1,4 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { isFeatureEnabled } from '../../shared/features'
 import { exposeEnabledPreloadFeatures } from './features'
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
@@ -37,7 +36,7 @@ contextBridge.exposeInMainWorld('logAPI', {
   },
 })
 
-if (isFeatureEnabled('ai-chat')) exposeEnabledPreloadFeatures()
+exposeEnabledPreloadFeatures()
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {

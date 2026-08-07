@@ -1,0 +1,10 @@
+{
+  "title": "Example Feature",
+  "description": "A minimal pluggable feature: page, IPC, and i18n all live in packages/feature-example, toggled by enabledFeatures in app/shared/features.ts.",
+  "pingButton": "Call IPC (main ⇄ renderer demo)",
+  "pongAt": "Main process replied: pong @ {{time}}",
+  "bridgeMissing": "Example bridge unavailable. Enable the feature and restart the app.",
+  "nav": {
+    "example": "Example"
+  }
+}

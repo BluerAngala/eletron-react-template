@@ -1,0 +1,10 @@
+{
+  "title": "示例功能",
+  "description": "这是一个最小可插拔功能示例：页面、IPC 与多语言全部收在 packages/feature-example 内，通过 app/shared/features.ts 的 enabledFeatures 一键开关。",
+  "pingButton": "调用 IPC（主进程 ⇄ 渲染进程演示）",
+  "pongAt": "主进程响应：pong @ {{time}}",
+  "bridgeMissing": "示例桥接不可用，请确认该功能已启用并重启应用。",
+  "nav": {
+    "example": "示例"
+  }
+}

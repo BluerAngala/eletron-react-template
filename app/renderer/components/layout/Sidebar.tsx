@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 import { type Theme, useTheme } from '@/contexts/ThemeContext'
 import { featureNavigation } from '@/features/renderer'
+import type { FeatureNavigationItem } from '@/features/types'
 import { type LanguageCode, SUPPORTED_LANGUAGES, setLanguage } from '@/i18n'
 
 interface SidebarProps {
@@ -22,7 +23,7 @@ interface SidebarProps {
   onToggle: () => void
 }
 
-const navItems = [
+const navItems: FeatureNavigationItem[] = [
   { to: '/', icon: Home, key: 'nav.home' },
   ...featureNavigation,
   { to: '/logs', icon: ScrollText, key: 'nav.logs' },
@@ -85,8 +86,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 p-2">
-        {navItems.map(({ to, icon: Icon, key }) => {
-          const label = t(key)
+        {navItems.map(({ to, icon: Icon, key, ns }) => {
+          const label = ns ? t(key, { ns }) : t(key)
           return (
             <NavLink
               key={to}

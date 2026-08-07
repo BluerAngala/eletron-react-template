@@ -4,7 +4,7 @@ import type { RouteObject } from 'react-router-dom'
 
 export interface RendererFeatureRegistration {
   routes: RouteObject[]
-  navigation: { to: string; icon: LucideIcon; key: string }[]
+  navigation: { to: string; icon: LucideIcon; key: string; ns?: string }[]
   fullBleedPaths: string[]
   locales: Resource
 }

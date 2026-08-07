@@ -59,29 +59,29 @@ pnpm icons
 
 ## Optional Features
 
-AI chat is disabled by default. Enable it for a project with:
+Optional functionality lives in independent workspace packages under `packages/feature-*` — each owns its page, IPC handlers, preload bridge, locales, and dependencies, so the host stays lean. Enable or disable them by editing **one config file** — no commands needed.
 
-```bash
-pnpm feature:add ai-chat
-pnpm install
+**The switch:** `app/shared/features.ts` → `enabledFeatures`:
+
+```ts
+export const enabledFeatures = ['ai-chat', 'example'] as const
 ```
 
-Remove the feature and its host dependency with:
+- An id in the array = that feature is **enabled**.
+- Remove an id = that feature is **disabled** (its route, nav entry, IPC handlers, and preload bridge are simply not registered).
+- Add a new package `packages/feature-<id>` plus its id here = a new module appears.
+- Restart `pnpm dev` after editing (main-process changes need a restart).
 
-```bash
-pnpm feature:remove ai-chat
-pnpm install
-```
-
-List available features:
+List available modules (auto-discovered from `packages/feature-*`):
 
 ```bash
 pnpm feature:list
 ```
 
-AI lives in the independent workspace package `packages/feature-ai-chat`. Its page, IPC handlers, preload bridge, credential storage, and `pi-ai` dependency are outside the template shell. The commands generate the host loading entries and manage the root dependency on the package; after removal, AI code is excluded from the host build. Restart the Electron development process after enabling or removing a feature.
+The host only knows one thin "registry" per process (`app/renderer/features/*` and `app/electron/*/features.ts`), mapping each id to a loader. Every new module adds one line per registry.
 
-Develop AI only inside `packages/feature-ai-chat`. The package can later be published to a private npm registry and upgraded independently through its version.
+- `packages/feature-ai-chat` — the AI chat feature (page, IPC, preload bridge, credential storage, `pi-ai`). Develop AI only inside this package; it can later be published to a private registry and upgraded independently.
+- `packages/feature-example` — a minimal pluggable-feature sample (page + IPC + i18n). Copy it as the starting point for your own module.
 
 ## Available Scripts
 
@@ -102,7 +102,7 @@ Develop AI only inside `packages/feature-ai-chat`. The package can later be publ
 
 ## Project Structure
 
-> Two lines to get oriented: **`app/` is the host application you edit day-to-day; `packages/` are optional, pluggable feature modules you add or remove with a single command.**
+> Two lines to get oriented: **`app/` is the host application you edit day-to-day; `packages/` are optional, pluggable feature modules you toggle in one config file.**
 
 ```tree
 eletron-react-template/
@@ -110,9 +110,10 @@ eletron-react-template/
 │   ├── renderer/         React UI — pages, components, i18n, routes
 │   ├── electron/         Main process, preload, and IPC
 │   └── shared/           Cross-process shared configuration
-├── packages/             ★ Pluggable feature packages (add/remove via feature command)
+├── packages/             ★ Pluggable feature packages (toggle in app/shared/features.ts)
 │   ├── feature-contract/ Stable host↔feature registration contract
-│   └── feature-ai-chat/  Optional AI feature — page, IPC, preload, credentials
+│   ├── feature-ai-chat/  Optional AI feature — page, IPC, preload, credentials
+│   └── feature-example/  Minimal pluggable-feature sample (page + IPC + i18n)
 ├── resources/            Source artwork + Vite static assets
 ├── scripts/              Maintenance scripts (rename / icons / feature)
 ├── tests/                Unit + E2E + automation tests
@@ -132,9 +133,9 @@ The template never bakes optional functionality into the host, so every generate
 
 - A feature owns **everything** inside its own `packages/feature-<id>/`: UI, IPC handlers, preload bridge, locales, and its dependencies.
 - `packages/feature-contract/` defines the stable interfaces the host uses to load a feature.
-- `pnpm feature:add <id>` generates the host loading entries; `pnpm feature:remove <id>` strips them and drops the host dependency.
+- Toggling is **pure configuration**: `enabledFeatures` in `app/shared/features.ts` is the single switch; the per-process registries map each id to its loader.
 
-**To add a new capability:** write it as a package under `packages/`, then plug it into the host with one command — no host source changes required.
+**To add a new capability:** copy `packages/feature-example/` as a scaffold, implement the contract, register it in the three registries, and add its id to `enabledFeatures` — no command, no `pnpm install`.
 
 ## CI / CD
 

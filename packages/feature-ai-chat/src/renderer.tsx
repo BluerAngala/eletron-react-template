@@ -203,7 +203,7 @@ function AiChatPage() {
 export function createRendererFeature(): RendererFeatureRegistration {
   return {
     routes: [{ path: 'ai', Component: AiChatPage }],
-    navigation: [{ to: '/ai', icon: Bot, key: 'nav.ai' }],
+    navigation: [{ to: '/ai', icon: Bot, key: 'nav.ai', ns: 'ai' }],
     fullBleedPaths: ['/ai'],
     locales: {
       'zh-CN': { ai: zhCN },

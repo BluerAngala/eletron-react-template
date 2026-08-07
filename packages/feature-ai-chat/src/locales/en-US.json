@@ -1,3 +1,6 @@
 {
-  "title": "AI Chat"
+  "title": "AI Chat",
+  "nav": {
+    "ai": "AI Chat"
+  }
 }

@@ -57,29 +57,29 @@ pnpm icons
 
 ## 可选功能
 
-模板默认不启用 AI 聊天。需要在某个项目中使用时执行：
+可选功能放在 `packages/feature-*` 独立 workspace 包中——每个包自带页面、IPC、preload 桥、多语言与专属依赖，宿主保持精简。启用/禁用只需**改一个配置文件**，不需要任何命令。
 
-```bash
-pnpm feature:add ai-chat
-pnpm install
+**开关**：`app/shared/features.ts` 的 `enabledFeatures`：
+
+```ts
+export const enabledFeatures = ['ai-chat', 'example'] as const
 ```
 
-移除功能与其宿主依赖：
+- 数组里有某 id = 该功能**启用**。
+- 从数组移除某 id = 该功能**禁用**（其路由、导航、IPC 与 preload 桥都不会注册）。
+- 新建 `packages/feature-<id>` 并把 id 加进来 = 出现新模块。
+- 改完**重启 `pnpm dev`** 生效（主进程改动需要重启）。
 
-```bash
-pnpm feature:remove ai-chat
-pnpm install
-```
-
-查看可选功能：
+查看可选模块（自动扫描 `packages/feature-*`）：
 
 ```bash
 pnpm feature:list
 ```
 
-AI 位于独立 workspace 包 `packages/feature-ai-chat`，其页面、IPC、preload bridge、凭据存储和 `pi-ai` 依赖均不在模板壳中。命令会生成宿主加载入口，并维护根项目对该包的依赖；移除后，AI 代码不会被宿主构建打包。启用或移除后需重启 Electron 开发进程。
+宿主对每个进程只维护一张很薄的注册表（`app/renderer/features/*` 与 `app/electron/*/features.ts`），把 id 映射到加载器。每个新模块只需在每张注册表加一行。
 
-开发 AI 功能时只修改 `packages/feature-ai-chat`；未来可将这个包发布到私有 npm registry，并通过提升其版本实现定向更新。
+- `packages/feature-ai-chat` — AI 聊天功能（页面、IPC、preload 桥、凭据存储、`pi-ai`）。开发 AI 只改这个包；未来可发布到私有 registry 独立升级。
+- `packages/feature-example` — 最小可插拔功能示例（页面 + IPC + i18n）。写自己的模块时可复制它当起点。
 
 ## 可用脚本
 
@@ -100,7 +100,7 @@ AI 位于独立 workspace 包 `packages/feature-ai-chat`，其页面、IPC、pre
 
 ## 项目结构
 
-> 两行读懂：**`app/` 是你要日常改的宿主应用；`packages/` 是可选功能包，一条命令即可插拔。**
+> 两行读懂：**`app/` 是你要日常改的宿主应用；`packages/` 是可选功能包，改一个配置文件即可插拔。**
 
 ```tree
 eletron-react-template/
@@ -108,9 +108,10 @@ eletron-react-template/
 │   ├── renderer/         React 界面 — 页面、组件、i18n、路由
 │   ├── electron/         主进程、preload 与 IPC
 │   └── shared/           跨进程共享配置
-├── packages/             ★ 可插拔功能包（feature 命令一键增删）
+├── packages/             ★ 可插拔功能包（app/shared/features.ts 一键开关）
 │   ├── feature-contract/ 宿主↔功能包的稳定注册契约
-│   └── feature-ai-chat/  可选 AI 功能 — 页面、IPC、preload、凭据
+│   ├── feature-ai-chat/  可选 AI 功能 — 页面、IPC、preload、凭据
+│   └── feature-example/  最小可插拔功能示例 — 页面 + IPC + i18n
 ├── resources/            源图 + Vite 静态资源
 ├── scripts/              维护脚本（rename / icons / feature）
 ├── tests/                单元 + E2E + 自动化测试
@@ -130,9 +131,9 @@ eletron-react-template/
 
 - 一个功能包在自己的 `packages/feature-<id>/` 内**拥有一切**：UI、IPC 处理、preload 桥、多语言与专属依赖。
 - `packages/feature-contract/` 定义宿主加载功能所用的稳定接口。
-- `pnpm feature:add <id>` 生成宿主加载入口；`pnpm feature:remove <id>` 移除入口并删除宿主依赖。
+- 开关是**纯配置**：`app/shared/features.ts` 里的 `enabledFeatures` 是唯一开关，各进程的注册表把 id 映射到加载器。
 
-**想加一个新能力**：把它写成一个 `packages/` 下的包，然后一条命令接入宿主——完全不用改宿主源码。
+**想加一个新能力**：复制 `packages/feature-example/` 当脚手架，实现契约，在三处注册表各加一行，再把 id 加进 `enabledFeatures`——不需要任何命令，也不需要 `pnpm install`。
 
 ## CI / CD
 

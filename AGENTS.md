@@ -17,6 +17,7 @@ Electron + React + TypeScript 桌面应用模板。
 - IPC 通道：kebab-case
 - 样式：Tailwind v4，不硬编码颜色
 - **i18n**：新文案必须走 i18n（`app/renderer/locales/` 按命名空间拆分，组件用 `useTranslation('ns')`，新增语言在 `app/renderer/i18n/index.ts` 注册）
+- **可插拔功能**：可选模块放 `packages/feature-<id>/`，实现 `feature-contract` 契约（renderer / main / preload 三部分）；启用/禁用只改 `app/shared/features.ts` 的 `enabledFeatures`，并在 `app/renderer/features/renderer.ts`、`app/renderer/features/i18n.ts`、`app/electron/main/features.ts`、`app/electron/preload/features.ts` 四处注册表各加一行 loader（参考 `packages/feature-example`）
 - **日志**：关键路径用统一 logger（`app/electron/main/logger.ts` 与 `app/renderer/lib/logger.ts` 的 `createLogger(scope)`），禁止裸 `console.log`；规范见 `docs/logging-standard.md`
 
 ## 目录
@@ -26,9 +27,10 @@ app/       宿主应用源码（唯一源码入口，新代码一律放这里）
 	renderer/ React 页面、组件、i18n、路由与功能加载入口
 	electron/ Electron main、preload 与 IPC
 	shared/   跨进程共享配置
-packages/  可插拔功能包（pnpm feature:add|remove 一键增删）
+packages/  可插拔功能包（app/shared/features.ts 的 enabledFeatures 一键开关）
 	feature-contract/ 宿主↔功能注册契约（稳定）
 	feature-ai-chat/  可选功能实现（AI）
+	feature-example/  最小可插拔功能示例（写新模块时复制它）
 resources/ assets/ 源图与 public/ 静态资源
 scripts/   项目脚本（rename / icons / feature）
 tests/     Vitest、E2E 与自动化脚本
