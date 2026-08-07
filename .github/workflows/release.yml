@@ -98,13 +98,18 @@ jobs:
       - name: Upload Assets to GitHub Release
         run: |
           set -euo pipefail
-          FILES=$(find artifacts -type f \( -name '*.dmg' -o -name '*.zip' -o -name '*.exe' -o -name '*.blockmap' -o -name 'latest*.yml' \) | sort | tr '\n' ' ')
-          echo "Uploading assets: $FILES"
-          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" $FILES --repo "$GITHUB_REPOSITORY" --clobber
-          else
-            gh release create "$GITHUB_REF_NAME" $FILES --repo "$GITHUB_REPOSITORY" --generate-notes
-          fi
+          # 只上传安装包与更新元数据；排除 win-unpacked 解包目录（其 exe 含空格且非安装器）
+          FILES=$(find artifacts -type f \( -name '*.dmg' -o -name '*.zip' -o -name '*.exe' -o -name '*.blockmap' -o -name 'latest*.yml' \) ! -path '*/win-unpacked/*' | sort)
+          echo "Assets to upload:"
+          echo "$FILES"
+          # 确保 release 存在（已存在则忽略报错）
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --generate-notes --title "$GITHUB_REF_NAME" 2>/dev/null || true
+          # 逐文件上传，避免文件名含空格被 shell 分词
+          while IFS= read -r f; do
+            [ -n "$f" ] || continue
+            echo "Uploading: $f"
+            gh release upload "$GITHUB_REF_NAME" "$f" --repo "$GITHUB_REPOSITORY" --clobber
+          done <<< "$FILES"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
