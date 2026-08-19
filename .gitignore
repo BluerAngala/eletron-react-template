@@ -45,3 +45,8 @@ dev_docs/.drafts/
 # Python 缓存
 __pycache__/
 *.pyc
+
+
+ZTools
+ZTools-doc
+ZTools-plugins

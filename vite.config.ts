@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { electronSimple } from 'vite-plugin-electron/multi-env'
 import { notBundle } from 'vite-plugin-electron/plugin'
-import pkg from './package.json'
+import pkg from './package.json' with { type: 'json' }
 
 const external = Object.keys(
   'dependencies' in pkg ? (pkg.dependencies as Record<string, string>) : {},
@@ -22,7 +22,7 @@ export default defineConfig(({ command }) => {
   return {
     resolve: {
       alias: {
-        '@': path.join(__dirname, 'src'),
+        '@': path.join(import.meta.dirname, 'src'),
       },
     },
     plugins: [
@@ -63,6 +63,10 @@ export default defineConfig(({ command }) => {
         // renderer: {},
       }),
     ],
+    optimizeDeps: {
+      // ZTools-plugins 中的第三方插件页引用了未安装的依赖，排除它们以避免依赖预打包扫描失败
+      exclude: ['psd', '@emotion/is-prop-valid'],
+    },
     clearScreen: false,
   }
 })

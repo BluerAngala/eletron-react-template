@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/BluerAngala/eletron-react-template#readme",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev.mjs",
     "build": "vite build && electron-builder",
     "preview": "vite preview",
     "pretest": "vite build --mode=test",

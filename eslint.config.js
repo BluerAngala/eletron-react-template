@@ -14,6 +14,9 @@ export default [
       'release/**',
       'node_modules/**',
       'test/e2e/**',
+      'ZTools/**',
+      'ZTools-doc/**',
+      'ZTools-plugins/**',
       '*.config.js',
       '*.config.ts',
       '.claude/**',
@@ -67,6 +70,26 @@ export default [
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
       'no-undef': 'off', // TypeScript 类型系统已覆盖
+    },
+  },
+
+  // Node.js 脚本（scripts/ 目录）
+  {
+    files: ['scripts/**/*.{mjs,js,cjs}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+        require: 'readonly',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tseslint,
+    },
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 
