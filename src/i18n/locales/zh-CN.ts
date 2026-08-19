@@ -26,6 +26,41 @@ const zhCN = {
   'common.loading': '加载中...',
   'common.error': '错误',
   'common.success': '成功',
+
+  // 首页
+  'home.badge': 'Electron + Vite + React + Tailwind',
+  'home.hero.title': '现代脚手架，更舒适的节奏，统一的视觉语言。',
+  'home.hero.desc': '精调间距、均衡对比与一致的卡片风格，让页面更精致，同时保留全部演示功能。',
+  'home.hero.repo': '打开项目仓库',
+  'home.counter.title': '计数器演示',
+  'home.counter.btn': '点击计数',
+  'home.counter.hint': '编辑 src/App.tsx 并保存以测试 HMR。',
+  'home.card.assets.title': '静态资源',
+  'home.card.assets.desc': '将静态文件放入 /public 文件夹。',
+  'home.card.tailwind.title': 'Tailwind 体系',
+  'home.card.tailwind.desc': '统一的工具类驱动布局、层级与组件一致性。',
+  'home.card.update.title': '更新面板',
+  'home.card.update.desc': '内置更新 UI 遵循相同的间距与排版规则，体验更和谐。',
+
+  // 设置页
+  'settings.title': '设置',
+  'settings.desc': '管理应用外观和偏好',
+  'settings.theme.title': '外观主题',
+  'settings.theme.system': '跟随系统',
+  'settings.theme.system.desc': '自动匹配操作系统主题',
+  'settings.theme.light': '浅色模式',
+  'settings.theme.light.desc': '明亮清爽的界面风格',
+  'settings.theme.dark': '深色模式',
+  'settings.theme.dark.desc': '护眼舒适的暗色风格',
+
+  // 关于页
+  'about.title': '关于',
+  'about.desc': '项目信息和技术栈',
+  'about.name': 'eletron-react-template',
+  'about.intro':
+    '基于 electron-vite-react 模板二次开发的 Electron + React + TypeScript 桌面应用模板。',
+  'about.stack': '技术栈',
+  'about.repo': 'GitHub 仓库',
 } as const
 
 export default zhCN

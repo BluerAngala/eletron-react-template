@@ -137,7 +137,7 @@ const Update = () => {
       <button
         disabled={checking}
         onClick={checkUpdate}
-        className="inline-flex items-center justify-center rounded-2xl border border-cyan-700/15 bg-cyan-600 px-5 py-3 font-semibold text-white shadow-sm shadow-cyan-800/20 transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-cyan-300 disabled:text-cyan-700"
+        className="flex w-full items-center justify-center rounded-2xl border border-cyan-700/15 bg-cyan-600 p-4 font-semibold text-white shadow-sm shadow-cyan-800/20 transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-cyan-300 disabled:text-cyan-700"
       >
         {checking ? 'Checking...' : 'Check update'}
       </button>

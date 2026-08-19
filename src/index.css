@@ -126,7 +126,7 @@
   }
 }
 
-/* 主题切换圆弧动画 — 从左下角展开，先慢后快 */
+/* 主题切换圆弧动画 */
 ::view-transition-old(root) {
   animation: none;
   mix-blend-mode: normal;
@@ -137,7 +137,6 @@
   mix-blend-mode: normal;
 }
 
-/* 暗→亮时旧页面淡出 */
 html.dark::view-transition-old(root) {
   animation: reveal-out 0.6s cubic-bezier(0.4, 0, 1, 1) both;
 }

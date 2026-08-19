@@ -30,9 +30,11 @@ function applyThemeToDom(resolved: 'light' | 'dark') {
     }
   }
 
-  // Electron (Chromium) 支持 View Transition API
   if (document.startViewTransition) {
-    document.startViewTransition(apply)
+    const transition = document.startViewTransition(apply)
+    transition.ready.catch(() => {})
+    transition.updateCallbackDone.catch(() => {})
+    transition.finished.catch(() => {})
   } else {
     apply()
   }

@@ -26,6 +26,44 @@ const enUS = {
   'common.loading': 'Loading...',
   'common.error': 'Error',
   'common.success': 'Success',
+
+  // Home
+  'home.badge': 'Electron + Vite + React + Tailwind',
+  'home.hero.title': 'Modern starter, cleaner rhythm, unified visual language.',
+  'home.hero.desc':
+    'Refined spacing, balanced contrast, and consistent cards make the page feel more polished while keeping all demo functionality intact.',
+  'home.hero.repo': 'Open project repository',
+  'home.counter.title': 'Counter demo',
+  'home.counter.btn': 'Increment counter',
+  'home.counter.hint': 'Edit src/App.tsx and save to test HMR.',
+  'home.card.assets.title': 'Public assets',
+  'home.card.assets.desc': 'Place static files into the /public folder.',
+  'home.card.tailwind.title': 'Tailwind system',
+  'home.card.tailwind.desc':
+    'Unified utility classes now drive layout, hierarchy, and component consistency across the app.',
+  'home.card.update.title': 'Update panel',
+  'home.card.update.desc':
+    'Built-in updater UI follows the same spacing and typography rules for a more harmonious experience.',
+
+  // Settings
+  'settings.title': 'Settings',
+  'settings.desc': 'Manage app appearance and preferences',
+  'settings.theme.title': 'Appearance',
+  'settings.theme.system': 'System',
+  'settings.theme.system.desc': 'Match operating system theme automatically',
+  'settings.theme.light': 'Light mode',
+  'settings.theme.light.desc': 'Bright and clean interface style',
+  'settings.theme.dark': 'Dark mode',
+  'settings.theme.dark.desc': 'Comfortable dark style for your eyes',
+
+  // About
+  'about.title': 'About',
+  'about.desc': 'Project info and tech stack',
+  'about.name': 'eletron-react-template',
+  'about.intro':
+    'An Electron + React + TypeScript desktop app template based on electron-vite-react.',
+  'about.stack': 'Tech stack',
+  'about.repo': 'GitHub repository',
 } as const
 
 export default enUS

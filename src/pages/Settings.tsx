@@ -1,26 +1,45 @@
 import { Sun, Moon, Monitor } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
-
-const themes = [
-  { value: 'system' as const, icon: Monitor, label: '跟随系统', desc: '自动匹配操作系统主题' },
-  { value: 'light' as const, icon: Sun, label: '浅色模式', desc: '明亮清爽的界面风格' },
-  { value: 'dark' as const, icon: Moon, label: '深色模式', desc: '护眼舒适的暗色风格' },
-]
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export function Settings() {
   const { theme, setTheme } = useTheme()
+  const { t } = useLanguage()
+
+  const themes = [
+    {
+      value: 'system' as const,
+      icon: Monitor,
+      label: t('settings.theme.system'),
+      desc: t('settings.theme.system.desc'),
+    },
+    {
+      value: 'light' as const,
+      icon: Sun,
+      label: t('settings.theme.light'),
+      desc: t('settings.theme.light.desc'),
+    },
+    {
+      value: 'dark' as const,
+      icon: Moon,
+      label: t('settings.theme.dark'),
+      desc: t('settings.theme.dark.desc'),
+    },
+  ]
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">设置</h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">管理应用外观和偏好</p>
+        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
+          {t('settings.title')}
+        </h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('settings.desc')}</p>
       </div>
 
       {/* 主题设置 */}
       <section className="space-y-4">
         <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-          外观主题
+          {t('settings.theme.title')}
         </h3>
         <div className="grid gap-3 sm:grid-cols-3">
           {themes.map(({ value, icon: Icon, label, desc }) => (
