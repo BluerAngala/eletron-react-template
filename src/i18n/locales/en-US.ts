@@ -64,6 +64,18 @@ const enUS = {
     'An Electron + React + TypeScript desktop app template based on electron-vite-react.',
   'about.stack': 'Tech stack',
   'about.repo': 'GitHub repository',
+
+  // Update
+  'update.check': 'Check update',
+  'update.checking': 'Checking...',
+  'update.title': 'Updater',
+  'update.cancel': 'Cancel',
+  'update.ok': 'Update',
+  'update.later': 'Later',
+  'update.install': 'Install now',
+  'update.error': 'Error downloading the latest version.',
+  'update.latest': 'The latest version is v{version}',
+  'update.progress': 'Update progress:',
 } as const
 
 export default enUS

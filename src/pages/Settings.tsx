@@ -33,12 +33,12 @@ export function Settings() {
         <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
           {t('settings.title')}
         </h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('settings.desc')}</p>
+        <p className="mt-1 text-sm text-slate-500 dark:text-white">{t('settings.desc')}</p>
       </div>
 
       {/* 主题设置 */}
       <section className="space-y-4">
-        <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+        <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-white">
           {t('settings.theme.title')}
         </h3>
         <div className="grid gap-3 sm:grid-cols-3">
@@ -64,12 +64,12 @@ export function Settings() {
                   className={`text-sm font-medium ${
                     theme === value
                       ? 'text-cyan-700 dark:text-cyan-300'
-                      : 'text-slate-700 dark:text-slate-300'
+                      : 'text-slate-700 dark:text-white'
                   }`}
                 >
                   {label}
                 </div>
-                <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">{desc}</div>
+                <div className="mt-1 text-xs text-slate-500 dark:text-white">{desc}</div>
               </div>
             </button>
           ))}

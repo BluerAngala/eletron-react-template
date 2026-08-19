@@ -61,6 +61,18 @@ const zhCN = {
     '基于 electron-vite-react 模板二次开发的 Electron + React + TypeScript 桌面应用模板。',
   'about.stack': '技术栈',
   'about.repo': 'GitHub 仓库',
+
+  // 更新
+  'update.check': '检查更新',
+  'update.checking': '检查中...',
+  'update.title': '更新程序',
+  'update.cancel': '取消',
+  'update.ok': '更新',
+  'update.later': '稍后',
+  'update.install': '立即安装',
+  'update.error': '下载最新版本时出错。',
+  'update.latest': '最新版本为 v{version}',
+  'update.progress': '更新进度：',
 } as const
 
 export default zhCN

@@ -53,7 +53,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                 isActive
                   ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                  : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                  : 'text-slate-600 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
               } ${collapsed ? 'justify-center' : ''}`
             }
             title={collapsed ? label : undefined}
@@ -69,7 +69,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         {/* Theme Selection */}
         <div className="mb-2">
           {!collapsed && (
-            <div className="py-1 text-center text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="py-1 text-center text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-white">
               {t('theme.select')}
             </div>
           )}
@@ -81,7 +81,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 className={`flex items-center justify-center rounded-lg p-2 transition-colors ${
                   theme === value
                     ? 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                    : 'text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                    : 'text-slate-500 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
                 } ${collapsed ? 'w-full' : 'flex-1'}`}
                 title={label}
               >
@@ -95,7 +95,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         {/* Language Selection */}
         <div className="mb-2">
           {!collapsed && (
-            <div className="py-1 text-center text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="py-1 text-center text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-white">
               {t('language.select')}
             </div>
           )}
@@ -107,7 +107,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 className={`flex items-center justify-center rounded-lg p-2 transition-colors ${
                   language === value
                     ? 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                    : 'text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
+                    : 'text-slate-500 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
                 } ${collapsed ? 'w-full' : 'flex-1'}`}
                 title={label}
               >
@@ -124,7 +124,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         {/* Collapse toggle */}
         <button
           onClick={onToggle}
-          className="flex w-full items-center justify-center rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700"
+          className="flex w-full items-center justify-center rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"
           title={collapsed ? t('sidebar.expand') : t('sidebar.collapse')}
         >
           {collapsed ? (

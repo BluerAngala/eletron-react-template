@@ -9,17 +9,17 @@ export function About() {
         <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
           {t('about.title')}
         </h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('about.desc')}</p>
+        <p className="mt-1 text-sm text-slate-500 dark:text-white">{t('about.desc')}</p>
       </div>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800">
         <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           {t('about.name')}
         </h3>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{t('about.intro')}</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-white">{t('about.intro')}</p>
 
         <div className="mt-6 space-y-3">
-          <h4 className="text-xs font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+          <h4 className="text-xs font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-white">
             {t('about.stack')}
           </h4>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -27,7 +27,7 @@ export function About() {
               (tech) => (
                 <div
                   key={tech}
-                  className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-center text-sm text-slate-700 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                  className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-center text-sm text-slate-700 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
                 >
                   {tech}
                 </div>

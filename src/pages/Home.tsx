@@ -23,7 +23,7 @@ export function Home() {
               <h1 className="text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl dark:text-slate-100">
                 {t('home.hero.title')}
               </h1>
-              <p className="text-base leading-7 text-slate-600 sm:text-lg dark:text-slate-400">
+              <p className="text-base leading-7 text-slate-600 sm:text-lg dark:text-white">
                 {t('home.hero.desc')}
               </p>
             </div>
@@ -45,7 +45,7 @@ export function Home() {
                   alt="Electron logo"
                 />
               </span>
-              <span className="text-sm font-semibold text-slate-700 transition-colors group-hover:text-cyan-700 dark:text-slate-300 dark:group-hover:text-cyan-400">
+              <span className="text-sm font-semibold text-slate-700 transition-colors group-hover:text-cyan-700 dark:text-white dark:group-hover:text-cyan-400">
                 {t('home.hero.repo')}
               </span>
             </a>
@@ -58,7 +58,7 @@ export function Home() {
       <section className="flex items-center justify-between rounded-4xl border border-slate-200 bg-white/90 p-6 shadow-[0_18px_36px_-28px_rgba(15,23,42,0.35)] backdrop-blur dark:border-slate-700 dark:bg-slate-800/90">
         <div className="flex items-center gap-4">
           <img src={logoTailwind} className="h-6 w-6 opacity-90" alt="Tailwind CSS logo" />
-          <span className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
+          <span className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-white">
             {t('home.counter.title')}
           </span>
           <span className="text-4xl font-semibold text-slate-900 dark:text-slate-100">{count}</span>

@@ -34,7 +34,7 @@ const ModalTemplate: React.FC<
           <div className="flex items-start gap-3 text-slate-900">
             <div className="min-w-0 flex-1">
               <div className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">
-                System
+                Electron
               </div>
               <div className="mt-1 text-2xl font-semibold tracking-tight">{title}</div>
             </div>
