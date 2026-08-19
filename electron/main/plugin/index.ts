@@ -52,9 +52,10 @@ export function initPluginSubsystem(
   bindRunningContext({ getRunning: () => runner.getRunning() })
 
   // 注册 plugin-icon 协议，将 plugin-icon://path 代理到 file://path
+  // request.url 已被 Electron 标准协议层解码，直接使用即可；构造 file:// URL 时需对空格等特殊字符进行编码
   protocol.handle('plugin-icon', (request) => {
     const filePath = decodeURIComponent(request.url.slice('plugin-icon://'.length))
-    return net.fetch('file://' + filePath)
+    return net.fetch('file:///' + filePath)
   })
 
   const notify = (): void => {
@@ -73,6 +74,12 @@ export function initPluginSubsystem(
     installer.installFromMarket(plugin),
   )
   ipcMain.handle('plugin:market-cancel', (_e, name: string) => installer.cancelDownload(name))
+  ipcMain.handle('plugin:market-readme', (_e, pluginName: string) =>
+    pluginMarket.fetchReadme(pluginName),
+  )
+  ipcMain.handle('plugin:market-clear-cache', () => {
+    pluginMarket.clearCache()
+  })
 
   // ── 已安装插件 ──
   ipcMain.handle('plugin:list', () => registry.list())

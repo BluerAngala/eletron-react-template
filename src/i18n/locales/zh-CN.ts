@@ -44,6 +44,8 @@ const zhCN = {
   'market.error': '加载失败',
   'market.author': '作者',
   'market.launch': '启动',
+  'market.detail': '详情',
+  'market.commands': '指令列表',
   'market.toast.installed': '插件 "{title}" 安装成功',
 
   // 我的插件

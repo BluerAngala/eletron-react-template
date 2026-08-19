@@ -37,6 +37,8 @@ interface InstalledPluginInfo {
   path: string
   storageKind: 'directory' | 'asar'
   installedAt: string
+  downloadUrl?: string
+  downloadCount?: number
 }
 
 interface PluginDownloadProgress {
@@ -49,6 +51,10 @@ interface PluginDownloadProgress {
 interface PluginBridge {
   marketList: () => Promise<MarketListResult>
   marketRecommendations: (limit?: number) => Promise<MarketPlugin[]>
+  marketReadme: (
+    pluginName: string,
+  ) => Promise<{ success: boolean; content?: string; error?: string }>
+  marketClearCache: () => Promise<void>
   installFromMarket: (plugin: {
     name: string
     downloadUrl?: string

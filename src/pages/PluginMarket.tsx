@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Search, RefreshCw, Boxes, Download, Check, Loader2, AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { PluginDetailModal, type PluginDetailData } from '@/components/plugin/PluginDetailModal'
 
 /** 简易插值：t('key', { count: 3 }) → 替换 {count} */
 type Vars = Record<string, string | number>
@@ -41,6 +42,7 @@ export function PluginMarket() {
   const [keyword, setKeyword] = useState('')
   const [pulling, setPulling] = useState(false)
   const [downloads, setDownloads] = useState<DownloadState>({})
+  const [detailPlugin, setDetailPlugin] = useState<PluginDetailData | null>(null)
 
   const installedNames = useMemo(() => new Set(installed.map((p) => p.name)), [installed])
 
@@ -97,15 +99,13 @@ export function PluginMarket() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const install = async (plugin: PluginItem) => {
+  const install = async (plugin: { name: string; downloadUrl?: string }) => {
     if (installedNames.has(plugin.name)) return
     setDownloads((prev) => ({ ...prev, [plugin.name]: 'downloading' }))
     const result = await window.plugin.installFromMarket({ name: plugin.name })
     if (!result.success) {
-      if (!result.plugin) {
-        setDownloads((prev) => ({ ...prev, [plugin.name]: 'error' }))
-        toast.error(result.error || t('market.error'))
-      }
+      setDownloads((prev) => ({ ...prev, [plugin.name]: 'error' }))
+      toast.error(result.error || t('market.error'))
     }
     await refreshInstalled()
   }
@@ -130,21 +130,23 @@ export function PluginMarket() {
   )
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <>
       {/* Header */}
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-baseline gap-2">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             {t('market.title')}
           </h1>
-          <p className="mt-1 text-sm text-foreground-secondary">
-            {formatT(t('myplugins.count'), { count: installed.length })}
-          </p>
+          <span className="text-sm text-foreground-muted">
+            （{formatT(t('myplugins.count'), { count: installed.length })} / 全部插件 {plugins.length} 个）
+          </span>
         </div>
         <button
           onClick={() => {
             setPulling(true)
-            void fetchMarket(true).finally(() => setPulling(false))
+            window.plugin.marketClearCache().then(() => {
+              void fetchMarket(true).finally(() => setPulling(false))
+            })
           }}
           className="inline-flex items-center gap-2 rounded-xl border border-border-default bg-surface px-4 py-2 text-sm font-medium text-foreground-secondary transition-colors hover:border-accent/50 hover:text-accent"
         >
@@ -154,7 +156,7 @@ export function PluginMarket() {
       </div>
 
       {/* Search */}
-      <div className="relative">
+      <div className="relative my-8">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground-muted" />
         <input
           value={keyword}
@@ -189,7 +191,21 @@ export function PluginMarket() {
             return (
               <div
                 key={plugin.name}
-                className="group flex flex-col rounded-3xl border border-border-default bg-surface/90 p-5 shadow-[0_12px_24px_-24px_rgba(15,23,42,0.5)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_20px_40px_-24px_rgba(15,23,42,0.5)]"
+                className="group flex flex-col rounded-3xl border border-border-default bg-surface/90 p-5 shadow-[0_12px_24px_-24px_rgba(15,23,42,0.5)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_20px_40px_-24px_rgba(15,23,42,0.5)] cursor-pointer"
+                onClick={() =>
+                  setDetailPlugin({
+                    name: plugin.name,
+                    title: plugin.title,
+                    version: plugin.version,
+                    description: plugin.description,
+                    author: plugin.author,
+                    homepage: plugin.homepage,
+                    logo: plugin.logo,
+                    downloadUrl: plugin.downloadUrl as string | undefined,
+                    downloadCount: plugin.downloadCount as number | undefined,
+                    installed: installedNames.has(plugin.name),
+                  })
+                }
               >
                 <div className="flex items-start gap-4">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-surface-hover">
@@ -234,7 +250,10 @@ export function PluginMarket() {
                     </button>
                   ) : (
                     <button
-                      onClick={() => void install(plugin)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        void install(plugin)
+                      }}
                       className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground transition-colors hover:opacity-90"
                     >
                       <Download className="h-3.5 w-3.5" />
@@ -247,7 +266,19 @@ export function PluginMarket() {
           })}
         </div>
       )}
-    </div>
+
+      <PluginDetailModal
+        plugin={detailPlugin || { name: '' }}
+        open={detailPlugin !== null}
+        onClose={() => setDetailPlugin(null)}
+        onInstall={() => {
+          if (detailPlugin) install(detailPlugin)
+        }}
+        onLaunch={(p) => {
+          void window.plugin.launch(p.path || '')
+        }}
+      />
+    </>
   )
 }
 

@@ -28,6 +28,8 @@ contextBridge.exposeInMainWorld('plugin', {
   marketList: () => ipcRenderer.invoke('plugin:market-list'),
   marketRecommendations: (limit?: number) =>
     ipcRenderer.invoke('plugin:market-recommendations', limit),
+  marketReadme: (pluginName: string) => ipcRenderer.invoke('plugin:market-readme', pluginName),
+  marketClearCache: () => ipcRenderer.invoke('plugin:market-clear-cache'),
   installFromMarket: (plugin: unknown) => ipcRenderer.invoke('plugin:market-install', plugin),
   cancelDownload: (name: string) => ipcRenderer.invoke('plugin:market-cancel', name),
   listInstalled: () => ipcRenderer.invoke('plugin:list'),

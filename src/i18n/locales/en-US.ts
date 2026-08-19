@@ -44,6 +44,8 @@ const enUS = {
   'market.error': 'Failed to load',
   'market.author': 'Author',
   'market.launch': 'Launch',
+  'market.detail': 'Details',
+  'market.commands': 'Commands',
   'market.toast.installed': 'Plugin "{title}" installed successfully',
 
   // My Plugins
