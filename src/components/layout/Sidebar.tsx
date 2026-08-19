@@ -1,15 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import {
-  Home,
-  Settings,
-  Info,
-  ChevronLeft,
-  ChevronRight,
-  Sun,
-  Moon,
-  Monitor,
-  Globe,
-} from 'lucide-react'
+import { Home, Settings, Info, ChevronLeft, ChevronRight, Sun, Moon, Monitor } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 
