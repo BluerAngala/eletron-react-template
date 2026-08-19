@@ -17,6 +17,8 @@ export function AppLayout() {
 
   const pageTitles: Record<string, string> = {
     '/': t('page.home'),
+    '/plugin-market': t('page.plugin-market'),
+    '/my-plugins': t('page.my-plugins'),
     '/settings': t('page.settings'),
     '/about': t('page.about'),
   }

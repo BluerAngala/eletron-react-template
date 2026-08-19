@@ -21,6 +21,44 @@ const zhCN = {
   'page.home': '首页',
   'page.settings': '设置',
   'page.about': '关于',
+  'page.plugins': '插件管理',
+  'page.plugin-market': '插件市场',
+  'page.my-plugins': '我的插件',
+
+  // 侧边栏（插件）
+  'sidebar.plugin-market': '插件市场',
+  'sidebar.my-plugins': '我的插件',
+
+  // 插件市场
+  'market.title': '插件市场',
+  'market.search': '搜索插件...',
+  'market.refresh': '刷新',
+  'market.loading': '正在加载插件市场...',
+  'market.empty': '暂无可用插件',
+  'market.failed': '插件市场加载失败，请检查网络后重试',
+  'market.install': '安装',
+  'market.installing': '安装中',
+  'market.installed': '已安装',
+  'market.uninstall': '卸载',
+  'market.downloading': '下载中',
+  'market.error': '加载失败',
+  'market.author': '作者',
+  'market.launch': '启动',
+  'market.toast.installed': '插件 "{title}" 安装成功',
+
+  // 我的插件
+  'myplugins.title': '我的插件',
+  'myplugins.empty': '还没有安装任何插件，去插件市场看看吧',
+  'myplugins.empty.cta': '前往插件市场',
+  'myplugins.count': '已安装 {count} 个插件',
+  'myplugins.version': 'v{version}',
+  'myplugins.running': '运行中',
+  'myplugins.not-running': '未运行',
+  'myplugins.stop': '停止',
+  'myplugins.status': '状态',
+  'myplugins.uninstall.confirm': '确定卸载插件 "{title}" 吗？',
+  'myplugins.uninstall.desc': '将删除插件文件，此操作不可撤销。',
+  'myplugins.author': '作者',
 
   // 通用
   'common.loading': '加载中...',

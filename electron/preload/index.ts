@@ -23,6 +23,35 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // ...
 })
 
+// --------- 插件市场 / 插件管理 API ---------
+contextBridge.exposeInMainWorld('plugin', {
+  marketList: () => ipcRenderer.invoke('plugin:market-list'),
+  marketRecommendations: (limit?: number) =>
+    ipcRenderer.invoke('plugin:market-recommendations', limit),
+  installFromMarket: (plugin: unknown) => ipcRenderer.invoke('plugin:market-install', plugin),
+  cancelDownload: (name: string) => ipcRenderer.invoke('plugin:market-cancel', name),
+  listInstalled: () => ipcRenderer.invoke('plugin:list'),
+  deletePlugin: (pluginPath: string) => ipcRenderer.invoke('plugin:delete', pluginPath),
+  launch: (pluginPath: string) => ipcRenderer.invoke('plugin:launch', pluginPath),
+  closePlugin: (pluginPath: string) => ipcRenderer.invoke('plugin:close', pluginPath),
+  runningPlugins: () => ipcRenderer.invoke('plugin:running'),
+  onPluginsChanged: (cb: () => void) => {
+    const handler = () => cb()
+    ipcRenderer.on('plugins-changed', handler)
+    return () => ipcRenderer.removeListener('plugins-changed', handler)
+  },
+  onDownloadProgress: (cb: (payload: unknown) => void) => {
+    const handler = (_e: unknown, payload: unknown) => cb(payload)
+    ipcRenderer.on('plugin-market-download-progress', handler)
+    return () => ipcRenderer.removeListener('plugin-market-download-progress', handler)
+  },
+  onToast: (cb: (payload: unknown) => void) => {
+    const handler = (_e: unknown, payload: unknown) => cb(payload)
+    ipcRenderer.on('plugin-toast', handler)
+    return () => ipcRenderer.removeListener('plugin-toast', handler)
+  },
+})
+
 // --------- Preload scripts loading ---------
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise((resolve) => {

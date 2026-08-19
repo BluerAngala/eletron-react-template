@@ -21,6 +21,44 @@ const enUS = {
   'page.home': 'Home',
   'page.settings': 'Settings',
   'page.about': 'About',
+  'page.plugins': 'Plugins',
+  'page.plugin-market': 'Plugin Market',
+  'page.my-plugins': 'My Plugins',
+
+  // Sidebar (plugins)
+  'sidebar.plugin-market': 'Plugin Market',
+  'sidebar.my-plugins': 'My Plugins',
+
+  // Plugin Market
+  'market.title': 'Plugin Market',
+  'market.search': 'Search plugins...',
+  'market.refresh': 'Refresh',
+  'market.loading': 'Loading plugin market...',
+  'market.empty': 'No plugins available',
+  'market.failed': 'Failed to load plugin market. Check your network and try again.',
+  'market.install': 'Install',
+  'market.installing': 'Installing',
+  'market.installed': 'Installed',
+  'market.uninstall': 'Uninstall',
+  'market.downloading': 'Downloading',
+  'market.error': 'Failed to load',
+  'market.author': 'Author',
+  'market.launch': 'Launch',
+  'market.toast.installed': 'Plugin "{title}" installed successfully',
+
+  // My Plugins
+  'myplugins.title': 'My Plugins',
+  'myplugins.empty': 'No plugins installed yet. Browse the market to get started.',
+  'myplugins.empty.cta': 'Go to Market',
+  'myplugins.count': '{count} plugins installed',
+  'myplugins.version': 'v{version}',
+  'myplugins.running': 'Running',
+  'myplugins.not-running': 'Not running',
+  'myplugins.stop': 'Stop',
+  'myplugins.status': 'Status',
+  'myplugins.uninstall.confirm': 'Uninstall plugin "{title}"?',
+  'myplugins.uninstall.desc': 'The plugin files will be deleted. This cannot be undone.',
+  'myplugins.author': 'Author',
 
   // Common
   'common.loading': 'Loading...',

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, protocol, net } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -6,6 +6,7 @@ import os from 'node:os'
 import Store from 'electron-store'
 import log from 'electron-log/main'
 import { update } from './update'
+import { initPluginSubsystem } from './plugin'
 
 // 初始化日志系统
 log.initialize()
@@ -25,6 +26,21 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // 强制 DevTools 使用中文，不弹语言选择
 app.commandLine.appendSwitch('lang', 'zh-CN')
+
+// 注册插件图标协议，让 file:// 图片在 http 主窗口正常显示
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'plugin-icon',
+    privileges: {
+      bypassCSP: true,
+      secure: true,
+      standard: true,
+      supportFetchAPI: true,
+      corsEnabled: true,
+      stream: false,
+    },
+  },
+])
 
 // The built directory structure
 //
@@ -168,7 +184,13 @@ ipcMain.handle('get-log-path', () => {
   return log.transports.file.getFile().path
 })
 
-app.whenReady().then(createWindow)
+app.whenReady().then(async () => {
+  // 初始化插件子系统（市场/安装/运行），主窗口就绪后启用事件广播
+  initPluginSubsystem((channel, ...args) => {
+    if (win && !win.isDestroyed()) win.webContents.send(channel, ...args)
+  })
+  await createWindow()
+})
 
 app.on('window-all-closed', () => {
   win = null

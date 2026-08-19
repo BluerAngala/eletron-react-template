@@ -2,6 +2,12 @@
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "com.bluerangala.eletron-react-template",
   "asar": true,
+  "extraResources": [
+    {
+      "from": "electron/main/plugin/plugin-preload.js",
+      "to": "plugin-preload.js"
+    }
+  ],
   "directories": {
     "output": "release/${version}"
   },

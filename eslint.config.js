@@ -14,6 +14,7 @@ export default [
       'release/**',
       'node_modules/**',
       'test/e2e/**',
+      'electron/main/plugin/plugin-preload.js',
       'ZTools/**',
       'ZTools-doc/**',
       'ZTools-plugins/**',

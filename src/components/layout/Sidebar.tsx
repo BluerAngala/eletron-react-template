@@ -1,5 +1,16 @@
 import { NavLink } from 'react-router-dom'
-import { Home, Settings, Info, ChevronLeft, ChevronRight, Sun, Moon, Monitor } from 'lucide-react'
+import {
+  Home,
+  Settings,
+  Info,
+  Store,
+  Package,
+  ChevronLeft,
+  ChevronRight,
+  Sun,
+  Moon,
+  Monitor,
+} from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 
@@ -14,6 +25,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
   const navItems = [
     { to: '/', icon: Home, label: t('sidebar.home') },
+    { to: '/plugin-market', icon: Store, label: t('sidebar.plugin-market') },
+    { to: '/my-plugins', icon: Package, label: t('sidebar.my-plugins') },
     { to: '/settings', icon: Settings, label: t('sidebar.settings') },
     { to: '/about', icon: Info, label: t('sidebar.about') },
   ]
