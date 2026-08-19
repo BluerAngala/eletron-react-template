@@ -76,6 +76,22 @@ const enUS = {
   'update.error': 'Error downloading the latest version.',
   'update.latest': 'The latest version is v{version}',
   'update.progress': 'Update progress:',
+
+  // Log
+  'log.title': 'Application Logs',
+  'log.refresh': 'Refresh',
+  'log.clear': 'Clear',
+  'log.auto': 'Auto refresh',
+  'log.manual': 'Manual',
+  'log.empty': 'No logs yet',
+  'log.search': 'Search logs...',
+  'log.allLevels': 'All levels',
+  'log.copy': 'Copy',
+  'log.export': 'Export',
+  'log.copied': 'Copied to clipboard',
+  'log.exported': 'Logs exported',
+  'log.cleared': 'Logs cleared',
+  'log.refreshed': 'Logs refreshed',
 } as const
 
 export default enUS

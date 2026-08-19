@@ -4,7 +4,21 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
 import Store from 'electron-store'
+import log from 'electron-log/main'
 import { update } from './update'
+
+// 初始化日志系统
+log.initialize()
+
+// 按环境设置日志级别
+log.transports.file.level = app.isPackaged ? 'info' : 'silly'
+log.transports.console.level = app.isPackaged ? 'info' : 'silly'
+
+// 主进程启动日志
+log.info('=== App starting ===')
+log.info(`Version: ${app.getVersion()}`)
+log.info(`Platform: ${process.platform} ${process.arch}`)
+log.info(`Electron: ${process.versions.electron}`)
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -131,7 +145,28 @@ async function createWindow() {
 
   // Auto update
   update(win)
+
+  log.info('Window created')
 }
+
+// IPC: 读取日志文件内容
+ipcMain.handle('get-logs', async (_event, lines: number = 200) => {
+  try {
+    const fs = await import('node:fs/promises')
+    const logPath = log.transports.file.getFile().path
+    const content = await fs.readFile(logPath, 'utf-8')
+    const allLines = content.split('\n').filter(Boolean)
+    return allLines.slice(-lines).join('\n')
+  } catch (err) {
+    log.warn('Failed to read log file:', err)
+    return ''
+  }
+})
+
+// IPC: 获取日志文件路径
+ipcMain.handle('get-log-path', () => {
+  return log.transports.file.getFile().path
+})
 
 app.whenReady().then(createWindow)
 

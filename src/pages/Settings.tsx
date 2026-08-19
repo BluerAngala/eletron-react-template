@@ -1,6 +1,7 @@
 import { Sun, Moon, Monitor } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { LogViewer } from '@/components/log-viewer'
 
 export function Settings() {
   const { theme, setTheme } = useTheme()
@@ -67,6 +68,9 @@ export function Settings() {
           ))}
         </div>
       </section>
+
+      {/* 日志查看 */}
+      <LogViewer />
     </div>
   )
 }

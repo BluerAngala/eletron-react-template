@@ -73,6 +73,22 @@ const zhCN = {
   'update.error': '下载最新版本时出错。',
   'update.latest': '最新版本为 v{version}',
   'update.progress': '更新进度：',
+
+  // 日志
+  'log.title': '应用日志',
+  'log.refresh': '刷新',
+  'log.clear': '清空',
+  'log.auto': '自动刷新',
+  'log.manual': '手动',
+  'log.empty': '暂无日志',
+  'log.search': '搜索日志...',
+  'log.allLevels': '全部级别',
+  'log.copy': '复制',
+  'log.export': '导出',
+  'log.copied': '已复制到剪贴板',
+  'log.exported': '日志已导出',
+  'log.cleared': '日志已清空',
+  'log.refreshed': '日志已刷新',
 } as const
 
 export default zhCN
