@@ -1,9 +1,3 @@
-# 仓库指南
-
-基于 [electron-vite-react](https://github.com/electron-vite/electron-vite-react) 二次开发的 Electron + React 桌面应用模板。
-技术栈：Electron 42 · React 19 · TypeScript 6 · Vite 8 · TailwindCSS v4 · pnpm
-
----
 
 ## 开发工作流（必须遵守）
 
