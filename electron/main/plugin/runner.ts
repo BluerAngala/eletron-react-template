@@ -70,6 +70,7 @@ class Runner {
       height: 720,
       minWidth: 480,
       minHeight: 400,
+      backgroundColor: '#ffffff',
       webPreferences: {
         contextIsolation: false,
         nodeIntegration: false,

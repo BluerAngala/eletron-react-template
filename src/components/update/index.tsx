@@ -1,5 +1,6 @@
 import type { ProgressInfo } from 'electron-updater'
 import { useCallback, useEffect, useState } from 'react'
+import { RefreshCw, Download } from 'lucide-react'
 import Modal from '@/components/update/modal'
 import Progress from '@/components/update/progress'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -136,9 +137,16 @@ const Update = () => {
       <button
         disabled={checking}
         onClick={checkUpdate}
-        className="flex w-full items-center justify-center rounded-2xl bg-accent p-4 font-semibold text-accent-foreground shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+        className="group flex w-full items-center justify-center gap-3 rounded-2xl border border-border-default bg-surface p-4 shadow-sm transition-all hover:border-accent/50 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {checking ? t('update.checking') : t('update.check')}
+        {checking ? (
+          <RefreshCw className="h-5 w-5 animate-spin text-foreground-muted" />
+        ) : (
+          <Download className="h-5 w-5 text-foreground-muted transition-colors group-hover:text-accent" />
+        )}
+        <span className="text-sm font-semibold text-foreground-secondary transition-colors group-hover:text-accent">
+          {checking ? t('update.checking') : t('update.check')}
+        </span>
       </button>
     </>
   )
