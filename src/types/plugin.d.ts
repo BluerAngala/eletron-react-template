@@ -20,7 +20,16 @@ interface MarketPlugin {
 interface MarketListResult {
   success: boolean
   data?: MarketPlugin[]
+  categories?: MarketCategory[]
   error?: string
+}
+
+interface MarketCategory {
+  id: number
+  title: string
+  description?: string
+  logo?: string
+  plugins: MarketPlugin[]
 }
 
 /** 已安装插件记录 */

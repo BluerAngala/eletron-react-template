@@ -103,9 +103,7 @@ export function PluginDetailModal({
 
   if (!open) return null
 
-  const tabs: { id: Tab; label: string; icon: typeof BookOpen }[] = [
-    { id: 'detail', label: t('market.detail'), icon: BookOpen },
-  ]
+  const tabs: { id: Tab; label: string; icon: typeof BookOpen }[] = []
   if (plugin.features?.length) {
     tabs.push({ id: 'commands', label: t('market.commands'), icon: List })
   }
@@ -199,7 +197,7 @@ export function PluginDetailModal({
                 <p className="text-sm text-foreground-muted">{readmeError}</p>
               ) : renderedHtml ? (
                 <div
-                  className="prose prose-sm max-w-none text-foreground-secondary prose-headings:text-foreground prose-a:text-accent prose-code:rounded prose-code:bg-surface-hover prose-code:px-1.5 prose-code:py-0.5 prose-pre:bg-surface-hover prose-pre:border prose-pre:border-border-default prose-pre:text-foreground prose-img:rounded-2xl prose-img:border prose-img:border-border-default"
+                  className="prose prose-sm max-w-none text-foreground-secondary prose-headings:text-foreground prose-a:text-accent prose-code:rounded prose-code:bg-surface-hover prose-code:px-1.5 prose-code:py-0.5 prose-pre:bg-surface-hover prose-pre:border prose-pre:border-border-default prose-pre:text-foreground prose-img:rounded-2xl prose-img:border prose-img:border-border-default leading-relaxed"
                   dangerouslySetInnerHTML={{ __html: renderedHtml }}
                 />
               ) : (

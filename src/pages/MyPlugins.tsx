@@ -119,7 +119,7 @@ export function MyPlugins() {
               return (
                 <div
                   key={plugin.path}
-                  className="group flex items-center gap-4 rounded-3xl border border-border-default bg-surface/90 p-4 shadow-[0_12px_24px_-28px_rgba(15,23,42,0.5)] backdrop-blur transition-all hover:border-accent/40 cursor-pointer"
+                  className="group flex items-center gap-4 rounded-2xl border border-border-default bg-surface/90 p-4 shadow-[0_12px_24px_-28px_rgba(15,23,42,0.5)] backdrop-blur transition-all hover:border-accent/40 cursor-pointer"
                   onClick={() =>
                     setDetailPlugin({
                       name: plugin.name,

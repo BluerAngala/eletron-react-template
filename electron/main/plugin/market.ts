@@ -4,7 +4,8 @@ import { pluginDb } from './store'
 export const PLUGIN_MARKET_API_BASE = 'https://z-tools.top/api/market'
 
 const CACHE_TTL_MS = 5 * 60 * 1000 // 5 分钟缓存
-let marketCache: { data: MarketPlugin[]; timestamp: number } | null = null
+let marketCache: { data: MarketPlugin[]; categories: MarketCategory[]; timestamp: number } | null =
+  null
 
 export interface MarketPlugin {
   name: string
@@ -26,8 +27,17 @@ export interface MarketPlugin {
 export interface PluginMarketResult {
   success: boolean
   data?: MarketPlugin[]
+  categories?: MarketCategory[]
   storefront?: unknown
   error?: string
+}
+
+export interface MarketCategory {
+  id: number
+  title: string
+  description?: string
+  logo?: string
+  plugins: MarketPlugin[]
 }
 
 const RECOMMEND_LIMIT = 12
@@ -40,7 +50,7 @@ class PluginMarket {
   async fetchPluginMarket(): Promise<PluginMarketResult> {
     // 5 分钟内缓存命中，直接返回
     if (marketCache && Date.now() - marketCache.timestamp < CACHE_TTL_MS) {
-      return { success: true, data: marketCache.data }
+      return { success: true, data: marketCache.data, categories: marketCache.categories }
     }
 
     try {
@@ -53,11 +63,12 @@ class PluginMarket {
         this.fetchRecommendations(RECOMMEND_LIMIT).catch(() => []),
       ])
       const plugins = this.collectPlugins(marketResponse.data)
+      const categories = this.collectCategories(marketResponse.data)
       pluginDb.dbPut('plugin-market-version', String(timestamp))
       pluginDb.dbPut('plugin-market-data', plugins)
-      marketCache = { data: plugins, timestamp: Date.now() }
+      marketCache = { data: plugins, categories, timestamp: Date.now() }
       void recommendations
-      return { success: true, data: plugins }
+      return { success: true, data: plugins, categories }
     } catch (error) {
       // 网络失败时降级使用本地缓存
       const cached = pluginDb.dbGet('plugin-market-data')
@@ -137,6 +148,13 @@ class PluginMarket {
       }
     }
     return [...byName.values()]
+  }
+
+  private collectCategories(value: unknown): MarketCategory[] {
+    const data = (typeof value === 'string' ? JSON.parse(value) : value) as {
+      categories?: MarketCategory[]
+    } | null
+    return (data?.categories || []).filter((c) => c?.id && c?.title)
   }
 }
 

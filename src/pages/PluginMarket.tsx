@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { Search, RefreshCw, Boxes, Download, Check, Loader2, AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -36,6 +36,8 @@ type DownloadState = Record<
 export function PluginMarket() {
   const { t } = useLanguage()
   const [plugins, setPlugins] = useState<PluginItem[]>([])
+  const [categories, setCategories] = useState<MarketCategory[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
   const [installed, setInstalled] = useState<InstalledPluginInfo[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -62,6 +64,7 @@ export function PluginMarket() {
       const result = await window.plugin.marketList()
       if (result.success) {
         setPlugins(result.data || [])
+        setCategories(result.categories || [])
       } else {
         setError(result.error || t('market.failed'))
       }
@@ -111,22 +114,43 @@ export function PluginMarket() {
   }
 
   const filtered = useMemo(() => {
+    // 先按分类筛选
+    let result = plugins
+    if (selectedCategory !== null) {
+      const cat = categories.find((c) => c.id === selectedCategory)
+      if (cat) {
+        const catNames = new Set(cat.plugins.map((p) => p.name))
+        result = result.filter((p) => catNames.has(p.name))
+      }
+    }
+    // 再按关键词搜索
     const kw = keyword.trim().toLowerCase()
-    if (!kw) return plugins
-    return plugins.filter(
+    if (!kw) return result
+    return result.filter(
       (p) =>
         (p.title || '').toLowerCase().includes(kw) ||
         (p.name || '').toLowerCase().includes(kw) ||
         (p.description || '').toLowerCase().includes(kw) ||
         (p.author || '').toLowerCase().includes(kw),
     )
-  }, [plugins, keyword])
+  }, [plugins, keyword, selectedCategory, categories])
 
   const stateFor = (name: string) => downloads[name]
   const installingNames = new Set(
     Object.keys(downloads).filter(
       (k) => downloads[k] === 'downloading' || downloads[k] === 'installing',
     ),
+  )
+
+  /** 查找插件所属分类标题 */
+  const categoryTitle = useCallback(
+    (pluginName: string): string | undefined => {
+      for (const cat of categories) {
+        if (cat.plugins.some((p) => p.name === pluginName)) return cat.title
+      }
+      return undefined
+    },
+    [categories],
   )
 
   return (
@@ -138,7 +162,8 @@ export function PluginMarket() {
             {t('market.title')}
           </h1>
           <span className="text-sm text-foreground-muted">
-            （{formatT(t('myplugins.count'), { count: installed.length })} / 全部插件 {plugins.length} 个）
+            （{formatT(t('myplugins.count'), { count: installed.length })} / 全部插件{' '}
+            {plugins.length} 个）
           </span>
         </div>
         <button
@@ -156,7 +181,7 @@ export function PluginMarket() {
       </div>
 
       {/* Search */}
-      <div className="relative my-8">
+      <div className="relative my-6">
         <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground-muted" />
         <input
           value={keyword}
@@ -165,6 +190,35 @@ export function PluginMarket() {
           className="w-full rounded-2xl border border-border-default bg-surface py-3 pl-12 pr-4 text-sm text-foreground placeholder:text-foreground-muted focus:border-accent/50 focus:outline-none"
         />
       </div>
+
+      {/* Categories */}
+      {categories.length > 0 && (
+        <div className="mb-6 flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setSelectedCategory(null)}
+            className={`rounded-xl px-3.5 py-1.5 text-sm font-medium transition-colors ${
+              selectedCategory === null
+                ? 'bg-accent text-accent-foreground'
+                : 'bg-surface-hover text-foreground-secondary hover:bg-surface-hover/80'
+            }`}
+          >
+            全部
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`rounded-xl px-3.5 py-1.5 text-sm font-medium transition-colors ${
+                selectedCategory === cat.id
+                  ? 'bg-accent text-accent-foreground'
+                  : 'bg-surface-hover text-foreground-secondary hover:bg-surface-hover/80'
+              }`}
+            >
+              {cat.title}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Content */}
       {loading ? (
@@ -191,7 +245,7 @@ export function PluginMarket() {
             return (
               <div
                 key={plugin.name}
-                className="group flex flex-col rounded-3xl border border-border-default bg-surface/90 p-5 shadow-[0_12px_24px_-24px_rgba(15,23,42,0.5)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_20px_40px_-24px_rgba(15,23,42,0.5)] cursor-pointer"
+                className="group relative flex flex-col rounded-2xl border border-border-default bg-surface/90 p-5 shadow-[0_12px_24px_-24px_rgba(15,23,42,0.5)] backdrop-blur transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-[0_20px_40px_-24px_rgba(15,23,42,0.5)] cursor-pointer"
                 onClick={() =>
                   setDetailPlugin({
                     name: plugin.name,
@@ -207,6 +261,16 @@ export function PluginMarket() {
                   })
                 }
               >
+                {/* 分类标签 - 右上角 */}
+                {(() => {
+                  const cat = categoryTitle(plugin.name)
+                  return cat ? (
+                    <span className="absolute right-3 top-3 rounded-md bg-surface-hover px-2 py-0.5 text-[10px] font-medium text-foreground-muted">
+                      {cat}
+                    </span>
+                  ) : null
+                })()}
+
                 <div className="flex items-start gap-4">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-surface-hover">
                     {plugin.logo ? (
@@ -234,32 +298,59 @@ export function PluginMarket() {
                 </p>
 
                 <div className="mt-4 flex items-center justify-between">
-                  <span className="text-xs text-foreground-muted">v{plugin.version}</span>
-                  {isInstalled ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-subtle px-3 py-1.5 text-xs font-medium text-accent">
-                      <Check className="h-3.5 w-3.5" />
-                      {t('market.installed')}
-                    </span>
-                  ) : isDownloading || state === 'success' ? (
-                    <button
-                      disabled
-                      className="inline-flex items-center gap-1.5 rounded-full bg-surface-hover px-3 py-1.5 text-xs font-medium text-foreground-muted"
-                    >
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      {state === 'installing' ? t('market.installing') : t('market.downloading')}
-                    </button>
-                  ) : (
+                  <span className="text-xs text-foreground-muted">
+                    v{plugin.version}
+                    {plugin.downloadCount != null && (
+                      <> · {Number(plugin.downloadCount).toLocaleString()} 次下载</>
+                    )}
+                  </span>
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={(e) => {
                         e.stopPropagation()
-                        void install(plugin)
+                        setDetailPlugin({
+                          name: plugin.name,
+                          title: plugin.title,
+                          version: plugin.version,
+                          description: plugin.description,
+                          author: plugin.author,
+                          homepage: plugin.homepage,
+                          logo: plugin.logo,
+                          downloadUrl: plugin.downloadUrl as string | undefined,
+                          downloadCount: plugin.downloadCount as number | undefined,
+                          installed: installedNames.has(plugin.name),
+                        })
                       }}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground transition-colors hover:opacity-90"
+                      className="inline-flex items-center gap-1 rounded-lg border border-border-default px-2 py-1 text-[11px] font-medium text-foreground-muted transition-colors hover:bg-surface-hover"
                     >
-                      <Download className="h-3.5 w-3.5" />
-                      {t('market.install')}
+                      {t('market.detail')}
                     </button>
-                  )}
+                    {isInstalled ? (
+                      <span className="inline-flex items-center gap-1 rounded-md bg-accent-subtle px-2 py-1 text-[11px] font-medium text-accent">
+                        <Check className="h-3 w-3" />
+                        {t('market.installed')}
+                      </span>
+                    ) : isDownloading || state === 'success' ? (
+                      <button
+                        disabled
+                        className="inline-flex items-center gap-1 rounded-md bg-surface-hover px-2 py-1 text-[11px] font-medium text-foreground-muted"
+                      >
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        {state === 'installing' ? t('market.installing') : t('market.downloading')}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          void install(plugin)
+                        }}
+                        className="inline-flex items-center gap-1 rounded-md bg-accent px-2.5 py-1 text-[11px] font-semibold text-accent-foreground transition-colors hover:opacity-90"
+                      >
+                        <Download className="h-3 w-3" />
+                        {t('market.install')}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             )
