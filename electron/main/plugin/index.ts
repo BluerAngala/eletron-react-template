@@ -1,4 +1,4 @@
-import { ipcMain, protocol, net } from 'electron'
+import { ipcMain, protocol, net, dialog } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -84,6 +84,21 @@ export function initPluginSubsystem(
   // ── 已安装插件 ──
   ipcMain.handle('plugin:list', () => registry.list())
   ipcMain.handle('plugin:delete', (_e, pluginPath: string) => registry.delete(pluginPath))
+
+  // ── 本地导入 ──
+  ipcMain.handle('plugin:import-from-file', async () => {
+    const result = await dialog.showOpenDialog({
+      title: '导入插件',
+      filters: [
+        { name: 'ZTools 插件', extensions: ['zpx', 'zip'] },
+      ],
+      properties: ['openFile'],
+    })
+    if (result.canceled || result.filePaths.length === 0) {
+      return { success: false, cancelled: true }
+    }
+    return installer.installFromPath(result.filePaths[0])
+  })
 
   // ── 插件运行 ──
   ipcMain.handle('plugin:launch', (_e, pluginPath: string) => {

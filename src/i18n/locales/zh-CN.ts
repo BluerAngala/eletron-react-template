@@ -46,6 +46,10 @@ const zhCN = {
   'market.launch': '启动',
   'market.detail': '详情',
   'market.commands': '指令列表',
+  'market.import': '导入插件',
+  'market.import.tip': '选择 .zpx 或 .zip 插件文件',
+  'market.import.success': '插件导入成功',
+  'market.import.failed': '插件导入失败',
   'market.toast.installed': '插件 "{title}" 安装成功',
 
   // 我的插件

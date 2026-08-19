@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { PluginDetailModal, type PluginDetailData } from '@/components/plugin/PluginDetailModal'
+import { ImportPluginButton } from '@/components/plugin/ImportPluginButton'
 import { formatT, logoUrl } from './PluginMarket'
 
 type RunningInfo = { name: string; path: string; running: boolean }
@@ -86,13 +87,16 @@ export function MyPlugins() {
   return (
     <>
       <div className="mx-auto max-w-5xl space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            {t('myplugins.title')}
-          </h1>
-          <p className="mt-1 text-sm text-foreground-secondary">
-            {formatT(t('myplugins.count'), { count: plugins.length })}
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+              {t('myplugins.title')}
+            </h1>
+            <p className="mt-1 text-sm text-foreground-secondary">
+              {formatT(t('myplugins.count'), { count: plugins.length })}
+            </p>
+          </div>
+          <ImportPluginButton onSuccess={refresh} />
         </div>
 
         {loading ? (

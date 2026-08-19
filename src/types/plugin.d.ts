@@ -68,6 +68,12 @@ interface PluginBridge {
     name: string
     downloadUrl?: string
   }) => Promise<{ success: boolean; plugin?: InstalledPluginInfo; error?: string }>
+  installFromFile: () => Promise<{
+    success: boolean
+    plugin?: InstalledPluginInfo
+    error?: string
+    cancelled?: boolean
+  }>
   cancelDownload: (name: string) => Promise<{ success: boolean; error?: string }>
   listInstalled: () => Promise<InstalledPluginInfo[]>
   deletePlugin: (pluginPath: string) => Promise<{ success: boolean; error?: string }>

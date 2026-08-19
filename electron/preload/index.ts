@@ -31,6 +31,7 @@ contextBridge.exposeInMainWorld('plugin', {
   marketReadme: (pluginName: string) => ipcRenderer.invoke('plugin:market-readme', pluginName),
   marketClearCache: () => ipcRenderer.invoke('plugin:market-clear-cache'),
   installFromMarket: (plugin: unknown) => ipcRenderer.invoke('plugin:market-install', plugin),
+  installFromFile: () => ipcRenderer.invoke('plugin:import-from-file'),
   cancelDownload: (name: string) => ipcRenderer.invoke('plugin:market-cancel', name),
   listInstalled: () => ipcRenderer.invoke('plugin:list'),
   deletePlugin: (pluginPath: string) => ipcRenderer.invoke('plugin:delete', pluginPath),

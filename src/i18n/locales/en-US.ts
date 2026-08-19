@@ -46,6 +46,10 @@ const enUS = {
   'market.launch': 'Launch',
   'market.detail': 'Details',
   'market.commands': 'Commands',
+  'market.import': 'Import Plugin',
+  'market.import.tip': 'Select a .zpx or .zip plugin file',
+  'market.import.success': 'Plugin imported successfully',
+  'market.import.failed': 'Failed to import plugin',
   'market.toast.installed': 'Plugin "{title}" installed successfully',
 
   // My Plugins

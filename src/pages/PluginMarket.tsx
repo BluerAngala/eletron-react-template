@@ -3,6 +3,7 @@ import { Search, RefreshCw, Boxes, Download, Check, Loader2, AlertTriangle } fro
 import { toast } from 'sonner'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { PluginDetailModal, type PluginDetailData } from '@/components/plugin/PluginDetailModal'
+import { ImportPluginButton } from '@/components/plugin/ImportPluginButton'
 
 /** 简易插值：t('key', { count: 3 }) → 替换 {count} */
 type Vars = Record<string, string | number>
@@ -166,18 +167,21 @@ export function PluginMarket() {
             {plugins.length} 个）
           </span>
         </div>
-        <button
-          onClick={() => {
-            setPulling(true)
-            window.plugin.marketClearCache().then(() => {
-              void fetchMarket(true).finally(() => setPulling(false))
-            })
-          }}
-          className="inline-flex items-center gap-2 rounded-xl border border-border-default bg-surface px-4 py-2 text-sm font-medium text-foreground-secondary transition-colors hover:border-accent/50 hover:text-accent"
-        >
-          <RefreshCw className={`h-4 w-4 ${pulling ? 'animate-spin' : ''}`} />
-          {t('market.refresh')}
-        </button>
+        <div className="flex items-center gap-2">
+          <ImportPluginButton onSuccess={refreshInstalled} />
+          <button
+            onClick={() => {
+              setPulling(true)
+              window.plugin.marketClearCache().then(() => {
+                void fetchMarket(true).finally(() => setPulling(false))
+              })
+            }}
+            className="inline-flex items-center gap-2 rounded-xl border border-border-default bg-surface px-4 py-2 text-sm font-medium text-foreground-secondary transition-colors hover:border-accent/50 hover:text-accent"
+          >
+            <RefreshCw className={`h-4 w-4 ${pulling ? 'animate-spin' : ''}`} />
+            {t('market.refresh')}
+          </button>
+        </div>
       </div>
 
       {/* Search */}
