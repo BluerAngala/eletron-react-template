@@ -22,10 +22,19 @@ function resolveTheme(theme: Theme): 'light' | 'dark' {
 }
 
 function applyThemeToDom(resolved: 'light' | 'dark') {
-  if (resolved === 'dark') {
-    document.documentElement.classList.add('dark')
+  const apply = () => {
+    if (resolved === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }
+
+  // Electron (Chromium) 支持 View Transition API
+  if (document.startViewTransition) {
+    document.startViewTransition(apply)
   } else {
-    document.documentElement.classList.remove('dark')
+    apply()
   }
 }
 

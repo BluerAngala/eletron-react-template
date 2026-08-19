@@ -3,12 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import { Sidebar } from './Sidebar'
 import { TopBar } from './TopBar'
-
-const pageTitles: Record<string, string> = {
-  '/': '首页',
-  '/settings': '设置',
-  '/about': '关于',
-}
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const SIDEBAR_KEY = 'sidebar-collapsed'
 
@@ -18,6 +13,14 @@ export function AppLayout() {
   })
 
   const location = useLocation()
+  const { t } = useLanguage()
+
+  const pageTitles: Record<string, string> = {
+    '/': t('page.home'),
+    '/settings': t('page.settings'),
+    '/about': t('page.about'),
+  }
+
   const title = pageTitles[location.pathname] || '页面'
 
   useEffect(() => {
@@ -25,7 +28,7 @@ export function AppLayout() {
   }, [collapsed])
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-900">
+    <div className="flex h-screen overflow-hidden bg-warm-white dark:bg-slate-900">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
 
       <div className="flex flex-1 flex-col overflow-hidden">

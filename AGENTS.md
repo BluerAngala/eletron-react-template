@@ -7,19 +7,10 @@
 
 ## 开发工作流（必须遵守）
 
-### 1. 规划阶段：OpenSpec
+### 1. 规划阶段
 
-任何新功能、页面、组件开发前，**必须先用 OpenSpec 做规划**，谋定后动。
+任何新功能、页面、组件开发前，必须先做规划，谋定后动。
 
-```bash
-openspec new change "<kebab-case-name>"   # 创建变更
-openspec status --change "<name>" --json   # 查看状态
-openspec instructions <artifact> --change "<name>" --json  # 获取指引
-```
-
-产出物：`proposal.md`（做什么）、`design.md`（怎么做）、`tasks.md`（实施步骤）
-
-> 技能参考：`skill://openspec-propose`、`skill://openspec-apply-change`
 
 ### 2. 设计阶段：UI/UX 设计系统
 
@@ -110,6 +101,52 @@ ipcMain.handle('channel-name', (event, ...args) => { ... })
 ```
 
 > 参考：`electron/main/update.ts`、`electron/preload/index.ts`、`src/components/update/index.tsx`
+
+---
+
+## 主题系统
+
+### 配色方案
+
+| 模式 | 基础色 | CSS 变量 | 渐变光晕 |
+|------|--------|----------|----------|
+| 浅色 | `#faf8f5`（暖白） | `--color-warm-white` | 琥珀/橙色淡光晕 |
+| 暗色 | `slate-900` | Tailwind 内置 | 蓝色调光晕 |
+
+### 暖白色板（`index.css` @theme）
+
+```css
+--color-warm-white: #faf8f5;
+--color-warm-50: #f7f4ef;
+--color-warm-100: #f0ece4;
+--color-warm-200: #e4ddd2;
+```
+
+### 暗色模式规范
+
+- TailwindCSS v4 class 策略：`@custom-variant dark (&:where(.dark, .dark *));`
+- 每个颜色工具类**必须**配对 `dark:` 变体
+- 基础样式（背景、滚动条、代码块）在 `index.css` 的 `html.dark` 选择器中定义
+- 切换动画：`document.startViewTransition()` + `clip-path: circle()` 从左下角扩散
+
+### 新组件暗色模式清单
+
+```tsx
+// ✅ 正确：配对 dark 变体
+<div className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-700">
+
+// ❌ 错误：只有浅色
+<div className="bg-white text-slate-900 border-slate-200">
+```
+
+---
+
+## 国际化
+
+- 支持语言：`zh-CN`（中文）、`en-US`（English）
+- 翻译键定义在 `src/contexts/LanguageContext.tsx`
+- 使用方式：`const { t } = useLanguage(); t('sidebar.home')`
+- 新增翻译键**必须**同时添加中英文
 
 ---
 
