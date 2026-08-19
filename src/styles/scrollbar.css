@@ -1,0 +1,24 @@
+/* ── 自定义滚动条 ── */
+
+* {
+  scrollbar-color: var(--token-text-muted) var(--token-border);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--token-border);
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 2px solid var(--token-border);
+  border-radius: 9999px;
+  background: var(--token-text-muted);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--token-text-secondary);
+}

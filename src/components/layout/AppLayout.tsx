@@ -28,7 +28,7 @@ export function AppLayout() {
   }, [collapsed])
 
   return (
-    <div className="flex h-screen overflow-hidden bg-warm-white dark:bg-slate-900">
+    <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
 
       <div className="flex flex-1 flex-col overflow-hidden">

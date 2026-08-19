@@ -1,0 +1,33 @@
+/* ── 主题切换圆弧动画 ── */
+
+::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: reveal-in 0.6s cubic-bezier(0.4, 0, 1, 1) both;
+  mix-blend-mode: normal;
+}
+
+html.dark::view-transition-old(root) {
+  animation: reveal-out 0.6s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@keyframes reveal-in {
+  from {
+    clip-path: circle(0% at 0% 100%);
+  }
+  to {
+    clip-path: circle(150% at 0% 100%);
+  }
+}
+
+@keyframes reveal-out {
+  from {
+    clip-path: circle(150% at 0% 100%);
+  }
+  to {
+    clip-path: circle(150% at 0% 100%);
+  }
+}

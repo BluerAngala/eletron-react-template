@@ -25,21 +25,21 @@ const ModalTemplate: React.FC<
 
   return (
     <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-slate-900/14 backdrop-blur-sm" onClick={onCancel} />
+      <div className="absolute inset-0 bg-foreground/10 backdrop-blur-sm" onClick={onCancel} />
       <div className="absolute left-1/2 top-1/2 w-[min(calc(100vw-2rem),_460px)] -translate-x-1/2 -translate-y-1/2">
         <div
-          className="overflow-hidden rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.28)]"
+          className="overflow-hidden rounded-3xl border border-border-default bg-surface px-5 py-4 shadow-[0_24px_60px_-32px_rgba(15,23,42,0.28)]"
           style={{ width }}
         >
-          <div className="flex items-start gap-3 text-slate-900">
+          <div className="flex items-start gap-3 text-foreground">
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">
+              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
                 Electron
               </div>
               <div className="mt-1 text-2xl font-semibold tracking-tight">{title}</div>
             </div>
             <span
-              className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-slate-100 text-slate-700 transition hover:bg-slate-200"
+              className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-surface-hover text-foreground-secondary transition hover:bg-border-default"
               onClick={onCancel}
             >
               <svg
@@ -56,18 +56,18 @@ const ModalTemplate: React.FC<
               </svg>
             </span>
           </div>
-          <div className="pt-4 text-slate-700">{children}</div>
+          <div className="pt-4 text-foreground-secondary">{children}</div>
           {footer !== undefined ? (
             <div className="flex justify-end gap-2 pt-4">
               <button
                 onClick={onCancel}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                className="rounded-xl border border-border-default bg-surface px-4 py-2 text-sm font-medium text-foreground-secondary transition hover:bg-surface-hover"
               >
                 {cancelText}
               </button>
               <button
                 onClick={onOk}
-                className="rounded-xl bg-cyan-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-cyan-700"
+                className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition hover:opacity-90"
               >
                 {okText}
               </button>

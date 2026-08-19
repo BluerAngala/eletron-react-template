@@ -110,15 +110,17 @@ const Update = () => {
               <p className="mt-1 max-h-40 overflow-auto">{updateError.message}</p>
             </div>
           ) : updateAvailable ? (
-            <div className="space-y-3 text-sm text-slate-700">
-              <div className="text-base font-semibold text-slate-900">
+            <div className="space-y-3 text-sm text-foreground-secondary">
+              <div className="text-base font-semibold text-foreground">
                 {t('update.latest').replace('{version}', versionInfo?.newVersion ?? '')}
               </div>
-              <div className="text-slate-600">
+              <div className="text-foreground-secondary">
                 v{versionInfo?.version} -&gt; v{versionInfo?.newVersion}
               </div>
               <div className="flex items-center gap-3 pt-1">
-                <div className="shrink-0 font-medium text-slate-700">{t('update.progress')}</div>
+                <div className="shrink-0 font-medium text-foreground-secondary">
+                  {t('update.progress')}
+                </div>
                 <div className="min-w-0 flex-1">
                   <Progress percent={progressInfo?.percent}></Progress>
                 </div>
@@ -134,7 +136,7 @@ const Update = () => {
       <button
         disabled={checking}
         onClick={checkUpdate}
-        className="flex w-full items-center justify-center rounded-2xl border border-cyan-700/15 bg-cyan-600 p-4 font-semibold text-white shadow-sm shadow-cyan-800/20 transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-cyan-300 disabled:text-cyan-700"
+        className="flex w-full items-center justify-center rounded-2xl bg-accent p-4 font-semibold text-accent-foreground shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {checking ? t('update.checking') : t('update.check')}
       </button>

@@ -1,0 +1,40 @@
+/*
+ * 主题 token 定义
+ * 新增主题只需添加一个 class 块，覆盖 --token-* 变量即可
+ */
+
+:root {
+  /* ── 浅色主题（暖白）── */
+  --token-bg: #faf8f5;
+  --token-surface: #ffffff;
+  --token-surface-hover: #f5f3f0;
+  --token-text: #0f172a;
+  --token-text-secondary: #334155;
+  --token-text-muted: #64748b;
+  --token-border: #e2e8f0;
+  --token-accent: #0891b2;
+  --token-accent-text: #ffffff;
+  --token-accent-subtle: #ecfdf5;
+}
+
+html.dark {
+  /* ── 暗色主题 ── */
+  --token-bg: #0f172a;
+  --token-surface: #1e293b;
+  --token-surface-hover: #334155;
+  --token-text: #ffffff;
+  --token-text-secondary: #e2e8f0;
+  --token-text-muted: #94a3b8;
+  --token-border: #334155;
+  --token-accent: #22d3ee;
+  --token-accent-text: #0f172a;
+  --token-accent-subtle: #164e63;
+}
+
+/* 示例：新增主题只需这样
+html.sepia {
+  --token-bg: #f5f0e8;
+  --token-text: #433422;
+  ...
+}
+*/

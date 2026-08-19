@@ -30,15 +30,13 @@ export function Settings() {
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
-          {t('settings.title')}
-        </h2>
-        <p className="mt-1 text-sm text-slate-500 dark:text-white">{t('settings.desc')}</p>
+        <h2 className="text-2xl font-semibold text-foreground">{t('settings.title')}</h2>
+        <p className="mt-1 text-sm text-foreground-muted">{t('settings.desc')}</p>
       </div>
 
       {/* 主题设置 */}
       <section className="space-y-4">
-        <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-white">
+        <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-foreground-muted">
           {t('settings.theme.title')}
         </h3>
         <div className="grid gap-3 sm:grid-cols-3">
@@ -48,28 +46,22 @@ export function Settings() {
               onClick={() => setTheme(value)}
               className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-6 transition-all ${
                 theme === value
-                  ? 'border-cyan-500 bg-cyan-50 dark:border-cyan-400 dark:bg-cyan-900/20'
-                  : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600'
+                  ? 'border-accent bg-accent-subtle'
+                  : 'border-border-default bg-surface hover:border-foreground-muted'
               }`}
             >
               <Icon
-                className={`h-8 w-8 ${
-                  theme === value
-                    ? 'text-cyan-600 dark:text-cyan-400'
-                    : 'text-slate-400 dark:text-slate-500'
-                }`}
+                className={`h-8 w-8 ${theme === value ? 'text-accent' : 'text-foreground-muted'}`}
               />
               <div className="text-center">
                 <div
                   className={`text-sm font-medium ${
-                    theme === value
-                      ? 'text-cyan-700 dark:text-cyan-300'
-                      : 'text-slate-700 dark:text-white'
+                    theme === value ? 'text-accent' : 'text-foreground-secondary'
                   }`}
                 >
                   {label}
                 </div>
-                <div className="mt-1 text-xs text-slate-500 dark:text-white">{desc}</div>
+                <div className="mt-1 text-xs text-foreground-muted">{desc}</div>
               </div>
             </button>
           ))}

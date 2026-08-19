@@ -6,7 +6,7 @@ import { LanguageProvider } from '@/contexts/LanguageContext'
 import { ErrorBoundary } from '@/components/common/ErrorBoundary'
 import { router } from '@/routes'
 
-import './index.css'
+import '@/styles/index.css'
 import './demos/ipc'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

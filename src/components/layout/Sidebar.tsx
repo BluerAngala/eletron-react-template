@@ -31,16 +31,14 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
   return (
     <aside
-      className={`flex h-full flex-col border-r border-slate-200 bg-warm-white transition-all duration-300 dark:border-slate-700 dark:bg-slate-800 ${
+      className={`flex h-full flex-col border-r border-border-default bg-surface transition-all duration-300 ${
         collapsed ? 'w-16' : 'w-60'
       }`}
     >
       {/* Logo */}
-      <div className="flex h-14 items-center justify-center border-b border-slate-200 px-4 dark:border-slate-700">
-        {!collapsed && (
-          <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">Template</span>
-        )}
-        {collapsed && <span className="text-lg font-bold text-cyan-600">T</span>}
+      <div className="flex h-14 items-center justify-center border-b border-border-default px-4">
+        {!collapsed && <span className="text-lg font-semibold text-foreground">Template</span>}
+        {collapsed && <span className="text-lg font-bold text-accent">T</span>}
       </div>
 
       {/* Navigation */}
@@ -52,8 +50,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                  : 'text-slate-600 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
+                  ? 'bg-accent-subtle text-accent'
+                  : 'text-foreground-secondary hover:bg-surface-hover'
               } ${collapsed ? 'justify-center' : ''}`
             }
             title={collapsed ? label : undefined}
@@ -65,11 +63,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       </nav>
 
       {/* Theme and Language Settings */}
-      <div className="border-t border-slate-200 p-2 dark:border-slate-700">
+      <div className="border-t border-border-default p-2">
         {/* Theme Selection */}
         <div className="mb-2">
           {!collapsed && (
-            <div className="py-1 text-center text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-white">
+            <div className="py-1 text-center text-xs font-medium uppercase tracking-wider text-foreground-muted">
               {t('theme.select')}
             </div>
           )}
@@ -80,8 +78,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 onClick={() => setTheme(value)}
                 className={`flex items-center justify-center rounded-lg p-2 transition-colors ${
                   theme === value
-                    ? 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                    : 'text-slate-500 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
+                    ? 'bg-accent-subtle text-accent'
+                    : 'text-foreground-muted hover:bg-surface-hover'
                 } ${collapsed ? 'w-full' : 'flex-1'}`}
                 title={label}
               >
@@ -95,7 +93,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         {/* Language Selection */}
         <div className="mb-2">
           {!collapsed && (
-            <div className="py-1 text-center text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-white">
+            <div className="py-1 text-center text-xs font-medium uppercase tracking-wider text-foreground-muted">
               {t('language.select')}
             </div>
           )}
@@ -106,8 +104,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 onClick={() => setLanguage(value)}
                 className={`flex items-center justify-center rounded-lg p-2 transition-colors ${
                   language === value
-                    ? 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400'
-                    : 'text-slate-500 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700'
+                    ? 'bg-accent-subtle text-accent'
+                    : 'text-foreground-muted hover:bg-surface-hover'
                 } ${collapsed ? 'w-full' : 'flex-1'}`}
                 title={label}
               >
@@ -124,7 +122,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         {/* Collapse toggle */}
         <button
           onClick={onToggle}
-          className="flex w-full items-center justify-center rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"
+          className="flex w-full items-center justify-center rounded-xl p-2 text-foreground-muted transition-colors hover:bg-surface-hover"
           title={collapsed ? t('sidebar.expand') : t('sidebar.collapse')}
         >
           {collapsed ? (

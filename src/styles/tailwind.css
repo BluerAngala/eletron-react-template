@@ -1,0 +1,27 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── 语义化主题 token 注册到 Tailwind ── */
+@theme {
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* 背景 */
+  --color-background: var(--token-bg);
+  --color-surface: var(--token-surface);
+  --color-surface-hover: var(--token-surface-hover);
+
+  /* 文字 */
+  --color-foreground: var(--token-text);
+  --color-foreground-secondary: var(--token-text-secondary);
+  --color-foreground-muted: var(--token-text-muted);
+
+  /* 边框 */
+  --color-border-default: var(--token-border);
+
+  /* 强调色 */
+  --color-accent: var(--token-accent);
+  --color-accent-foreground: var(--token-accent-text);
+  --color-accent-subtle: var(--token-accent-subtle);
+}

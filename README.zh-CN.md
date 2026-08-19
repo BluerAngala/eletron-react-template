@@ -15,102 +15,102 @@
 
 - ⚡ Vite 构建，HMR 快速热更新
 - 🖥️ Electron 主进程 + React 渲染进程
-- 🎨 TailwindCSS v4 样式方案，暖白浅色主题 + 暗色模式
-- 🌓 主题切换带圆弧扩散过渡动画（View Transition API）
-- 🌐 国际化支持（中文 / English）
-- 🧪 Vitest 单元测试 + Playwright E2E 测试
+- 🎨 TailwindCSS v4 + 语义化 CSS Token 主题架构
+- 🌓 多主题支持（浅色 / 暗色 / 可扩展），圆弧过渡动画
+- 🌐 国际化，独立语言文件（zh-CN / en-US）
+- 🧪 Vitest + Playwright
 - 🔄 Electron 自动更新
 - 📦 electron-builder 打包发布
 
 ## 快速开始
 
 ```sh
-# 克隆项目
 git clone https://github.com/BluerAngala/eletron-react-template.git
-
-# 进入项目目录
 cd eletron-react-template
-
-# 安装依赖
 pnpm install
-
-# 启动开发
 pnpm dev
 ```
 
-## 可用脚本
+## 脚本
 
 | 命令 | 说明 |
 |------|------|
-| `pnpm dev` | 启动 Vite 开发服务器 |
-| `pnpm build` | 构建渲染进程并打包应用 |
-| `pnpm preview` | 本地预览生产构建 |
-| `pnpm test` | 运行 Vitest 单元测试 |
-| `pnpm test:e2e` | 运行 Playwright 端到端测试 |
-| `pnpm typecheck` | TypeScript 类型检查 |
-| `pnpm lint` | ESLint 代码检查 |
-| `pnpm format` | Prettier 格式化 |
+| `pnpm dev` | 启动开发服务器 |
+| `pnpm build` | 构建并打包 |
+| `pnpm test` | 单元测试 |
+| `pnpm test:e2e` | E2E 测试 |
+| `pnpm typecheck` | 类型检查 |
+| `pnpm lint` | ESLint |
+| `pnpm format` | Prettier |
 
 ## 项目结构
 
 ```tree
-├── docs/               模板参考文件
-├── dev_docs/           开发文档
-├── dist-electron/      编译后的 Electron 输出
-├── electron/           主进程和 preload 源码
-│   ├── main/
-│   └── preload/
-├── public/             静态资源
-├── src/                渲染进程源码
-│   ├── assets/         SVG 和图片资源
-│   ├── components/     可复用组件
-│   │   ├── layout/     布局组件（Sidebar、TopBar、AppLayout）
-│   │   ├── ui/         UI 基础组件
-│   │   └── update/     自动更新 UI
-│   ├── contexts/       React Context（主题、语言）
-│   ├── demos/          演示模块
-│   ├── pages/          页面组件
-│   ├── routes/         路由定义
-│   └── type/           TypeScript 类型定义
-└── test/               测试
-    └── e2e/
+src/
+├── styles/             样式文件
+│   ├── index.css       入口（import 全部）
+│   ├── tailwind.css    Tailwind 配置 + @theme token 注册
+│   ├── tokens.css      主题变量定义（浅色/暗色/扩展）
+│   ├── base.css        全局重置与基础样式
+│   ├── scrollbar.css   自定义滚动条
+│   └── animation.css   主题切换动画
+├── i18n/               国际化
+│   ├── index.ts        导出与配置
+│   └── locales/        语言文件
+│       ├── zh-CN.ts
+│       └── en-US.ts
+├── components/
+│   ├── common/         通用组件（ErrorBoundary）
+│   ├── layout/         布局（Sidebar、TopBar、AppLayout）
+│   └── update/         自动更新 UI
+├── contexts/           React Context（主题、语言）
+├── pages/              页面组件
+├── routes/             路由定义
+├── types/              TypeScript 类型定义
+├── assets/             SVG 与图片
+└── demos/              演示模块
 ```
 
 ## 主题系统
 
-应用支持**浅色**和**暗色**主题，切换时带圆弧扩散过渡动画。
+使用 **CSS 自定义属性**作为语义化 Token，组件引用 Token（`bg-surface`、`text-foreground`），不写死颜色值。
 
-### 浅色主题 — 暖白
+### Token 架构
 
-采用柔和的暖白色调（`#faf8f5`），配合淡琥珀色渐变光晕，所有组件使用协调的暖色系。
+```
+styles/tokens.css    →  定义 --token-* 变量（按主题）
+styles/tailwind.css  →  注册为 Tailwind @theme 值
+组件                 →  使用语义类名（bg-surface、text-foreground、border-border-default）
+```
 
-### 暗色主题
+### 新增主题
 
-基于深石板色（`slate-900`），配合蓝色调渐变光晕，所有组件均有完整的 `dark:` 变体样式。
+在 `styles/tokens.css` 添加一个 class 块：
+
+```css
+html.sepia {
+  --token-bg: #f5f0e8;
+  --token-surface: #faf5ed;
+  --token-text: #433422;
+  /* ... */
+}
+```
+
+组件无需任何改动。
 
 ### 主题切换
 
-- **位置**：侧边栏底部 →「选择主题」
-- **选项**：浅色 / 暗色 / 跟随系统
-- **动画**：从左下角圆弧扩散，使用 `document.startViewTransition()` + `clip-path` 动画
-- **防闪烁**：通过 `index.html` 内联脚本在首次渲染前应用主题
-
-### 为新组件添加暗色模式
-
-每个颜色工具类都需配对暗色变体：
-
-```tsx
-<div className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
-  内容
-</div>
-```
+- 位置：侧边栏底部 →「选择主题」
+- 选项：浅色 / 暗色 / 跟随系统
+- 动画：`document.startViewTransition()` + `clip-path` 圆弧扩散
+- 防闪烁：`index.html` 内联脚本在首次渲染前应用主题
 
 ## 国际化
 
-- **语言**：中文（`zh-CN`）、English（`en-US`）
-- **切换位置**：侧边栏底部 →「选择语言」
-- **翻译键**：定义在 `src/contexts/LanguageContext.tsx`
-- **使用方式**：`const { t } = useLanguage(); t('key.name')`
+- 语言：`zh-CN`、`en-US`
+- 语言文件：`src/i18n/locales/{zh-CN,en-US}.ts`
+- 使用：`const { t } = useLanguage(); t('home.hero.title')`
+- 新增翻译键**必须**同时添加到两个语言文件
 
 ## IPC 通信
 
@@ -122,7 +122,7 @@ const result = await window.ipcRenderer.invoke('channel-name', ...args)
 ipcMain.handle('channel-name', (event, ...args) => { ... })
 ```
 
-参考：`electron/main/update.ts`、`electron/preload/index.ts`、`src/components/update/index.tsx`
+参考：`electron/main/update.ts`、`electron/preload/index.ts`
 
 ## 上游项目
 

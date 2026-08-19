@@ -38,21 +38,19 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex min-h-screen items-center justify-center bg-slate-50 p-8 dark:bg-slate-900">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+        <div className="flex min-h-screen items-center justify-center bg-background p-8">
+          <div className="w-full max-w-md rounded-2xl border border-border-default bg-surface p-8 shadow-lg">
             <div className="mb-6 flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
                 <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                  页面出错了
-                </h1>
-                <p className="text-sm text-slate-500 dark:text-slate-400">渲染过程中发生错误</p>
+                <h1 className="text-lg font-semibold text-foreground">页面出错了</h1>
+                <p className="text-sm text-foreground-muted">渲染过程中发生错误</p>
               </div>
             </div>
 
-            <div className="mb-6 rounded-lg bg-slate-100 p-4 dark:bg-slate-700/50">
+            <div className="mb-6 rounded-lg bg-surface-hover p-4">
               <p className="font-mono text-sm break-all text-red-600 dark:text-red-400">
                 {this.state.error?.message}
               </p>
@@ -61,14 +59,14 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="flex gap-3">
               <button
                 onClick={this.handleReload}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-cyan-500 px-4 py-2.5 font-medium text-white transition hover:bg-cyan-600"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 font-medium text-accent-foreground transition hover:opacity-90"
               >
                 <RotateCcw className="h-4 w-4" />
                 重新加载
               </button>
               <button
                 onClick={this.handleCopy}
-                className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
+                className="flex items-center justify-center gap-2 rounded-xl border border-border-default px-4 py-2.5 text-foreground-secondary transition hover:bg-surface-hover"
               >
                 <Copy className="h-4 w-4" />
                 复制错误

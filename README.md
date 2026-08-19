@@ -15,102 +15,102 @@ An Electron + React + TypeScript desktop application template based on [electron
 
 - ⚡ Vite build with fast HMR
 - 🖥️ Electron main process + React renderer
-- 🎨 TailwindCSS v4 styling with warm white light theme and dark mode
-- 🌓 Theme switching with circular arc transition animation (View Transition API)
-- 🌐 i18n support (Chinese / English)
-- 🧪 Vitest unit tests + Playwright E2E tests
+- 🎨 TailwindCSS v4 with semantic CSS token theming
+- 🌓 Multi-theme support (light / dark / extensible) with circular arc transition
+- 🌐 i18n with separate locale files (zh-CN / en-US)
+- 🧪 Vitest + Playwright
 - 🔄 Electron auto-update
 - 📦 electron-builder packaging
 
 ## Quick Start
 
 ```sh
-# Clone the repo
 git clone https://github.com/BluerAngala/eletron-react-template.git
-
-# Enter project directory
 cd eletron-react-template
-
-# Install dependencies
 pnpm install
-
-# Start development
 pnpm dev
 ```
 
-## Available Scripts
+## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `pnpm dev` | Start Vite dev server |
-| `pnpm build` | Build renderer and package app |
-| `pnpm preview` | Preview production build locally |
-| `pnpm test` | Run Vitest unit tests |
-| `pnpm test:e2e` | Run Playwright end-to-end tests |
-| `pnpm typecheck` | Run TypeScript type check |
-| `pnpm lint` | Run ESLint |
-| `pnpm format` | Format code with Prettier |
+| `pnpm dev` | Start dev server |
+| `pnpm build` | Build and package |
+| `pnpm test` | Unit tests |
+| `pnpm test:e2e` | E2E tests |
+| `pnpm typecheck` | Type check |
+| `pnpm lint` | ESLint |
+| `pnpm format` | Prettier |
 
 ## Project Structure
 
 ```tree
-├── docs/               Template reference files
-├── dev_docs/           Development documentation
-├── dist-electron/      Compiled Electron output
-├── electron/           Main process and preload source
-│   ├── main/
-│   └── preload/
-├── public/             Static assets
-├── src/                Renderer source
-│   ├── assets/         SVG and image assets
-│   ├── components/     Reusable components
-│   │   ├── layout/     Layout components (Sidebar, TopBar, AppLayout)
-│   │   ├── ui/         UI primitives
-│   │   └── update/     Auto-update UI
-│   ├── contexts/       React contexts (Theme, Language)
-│   ├── demos/          Demo modules
-│   ├── pages/          Page components
-│   ├── routes/         Route definitions
-│   └── type/           TypeScript type definitions
-└── test/               Tests
-    └── e2e/
+src/
+├── styles/             Stylesheets
+│   ├── index.css       Entry (imports all)
+│   ├── tailwind.css    Tailwind config + @theme tokens
+│   ├── tokens.css      Theme variable definitions
+│   ├── base.css        Global reset and base styles
+│   ├── scrollbar.css   Custom scrollbar
+│   └── animation.css   Theme transition animation
+├── i18n/               Internationalization
+│   ├── index.ts        Exports and config
+│   └── locales/        Locale files
+│       ├── zh-CN.ts
+│       └── en-US.ts
+├── components/
+│   ├── common/         Shared components (ErrorBoundary)
+│   ├── layout/         Layout (Sidebar, TopBar, AppLayout)
+│   └── update/         Auto-update UI
+├── contexts/           React contexts (Theme, Language)
+├── pages/              Page components
+├── routes/             Route definitions
+├── types/              TypeScript type definitions
+├── assets/             SVG and images
+└── demos/              Demo modules
 ```
 
 ## Theming
 
-The app supports **light** and **dark** themes with a smooth circular arc transition.
+Uses **CSS custom properties** as semantic tokens. Components reference tokens (`bg-surface`, `text-foreground`), not raw colors.
 
-### Light Theme — Warm White
+### Token Architecture
 
-A subtle warm-toned white (`#faf8f5`) with soft amber gradient overlays. All components use coordinated warm tones for a cohesive look.
+```
+styles/tokens.css    →  defines --token-* variables per theme
+styles/tailwind.css  →  registers tokens as Tailwind @theme values
+components           →  use semantic classes (bg-surface, text-foreground, border-border-default)
+```
 
-### Dark Theme
+### Adding a New Theme
 
-A deep slate-based dark palette (`slate-900`) with blue-tinted gradient overlays. All components have proper `dark:` variant styles.
+In `styles/tokens.css`, add a new class block:
+
+```css
+html.sepia {
+  --token-bg: #f5f0e8;
+  --token-surface: #faf5ed;
+  --token-text: #433422;
+  /* ... */
+}
+```
+
+No component changes needed.
 
 ### Theme Switching
 
-- **Location**: Sidebar bottom → "选择主题" / "Choose Theme"
-- **Options**: Light / Dark / System (follows OS preference)
-- **Animation**: Circular arc reveal from bottom-left corner using `document.startViewTransition()` + `clip-path` animation
-- **FOUC prevention**: Theme is applied before first paint via inline script in `index.html`
-
-### Adding Dark Mode to New Components
-
-Every color utility must be paired with its dark variant:
-
-```tsx
-<div className="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100">
-  Content
-</div>
-```
+- Location: sidebar bottom → "选择主题" / "Choose Theme"
+- Options: light / dark / system (follows OS)
+- Animation: circular arc reveal via `document.startViewTransition()` + `clip-path`
+- FOUC prevention: inline script in `index.html`
 
 ## Internationalization
 
-- **Languages**: Chinese (`zh-CN`), English (`en-US`)
-- **Location**: Sidebar bottom → "选择语言" / "Choose Language"
-- **Translation keys**: Defined in `src/contexts/LanguageContext.tsx`
-- **Usage**: `const { t } = useLanguage(); t('key.name')`
+- Languages: `zh-CN`, `en-US`
+- Locale files: `src/i18n/locales/{zh-CN,en-US}.ts`
+- Usage: `const { t } = useLanguage(); t('home.hero.title')`
+- New keys must be added to **both** locale files
 
 ## IPC Communication
 
@@ -118,11 +118,11 @@ Every color utility must be paired with its dark variant:
 // Renderer → Main
 const result = await window.ipcRenderer.invoke('channel-name', ...args)
 
-// Main process listener
+// Main process
 ipcMain.handle('channel-name', (event, ...args) => { ... })
 ```
 
-Reference: `electron/main/update.ts`, `electron/preload/index.ts`, `src/components/update/index.tsx`
+Reference: `electron/main/update.ts`, `electron/preload/index.ts`
 
 ## Upstream
 
