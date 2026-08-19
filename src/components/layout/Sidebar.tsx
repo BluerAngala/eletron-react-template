@@ -79,11 +79,6 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <div className="border-t border-border-default p-2">
         {/* Theme Selection */}
         <div className="mb-2">
-          {!collapsed && (
-            <div className="py-1 text-center text-xs font-medium uppercase tracking-wider text-foreground-muted">
-              {t('theme.select')}
-            </div>
-          )}
           <div className={`flex gap-1 ${collapsed ? 'flex-col' : 'flex-row'}`}>
             {themeOptions.map(({ value, icon: Icon, label }) => (
               <button
@@ -105,11 +100,6 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
         {/* Language Selection */}
         <div className="mb-2">
-          {!collapsed && (
-            <div className="py-1 text-center text-xs font-medium uppercase tracking-wider text-foreground-muted">
-              {t('language.select')}
-            </div>
-          )}
           <div className={`flex gap-1 ${collapsed ? 'flex-col' : 'flex-row'}`}>
             {languageOptions.map(({ value, label }) => (
               <button

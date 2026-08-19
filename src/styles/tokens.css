@@ -4,31 +4,31 @@
  */
 
 :root {
-  /* ── 浅色主题（暖白）── */
-  --token-bg: #faf8f5;
+  /* ── 浅色主题（暖石 Warm Stone）── */
+  --token-bg: #f5f2ed;
   --token-surface: #ffffff;
-  --token-surface-hover: #f5f3f0;
-  --token-text: #0f172a;
-  --token-text-secondary: #334155;
-  --token-text-muted: #64748b;
-  --token-border: #e2e8f0;
-  --token-accent: #0891b2;
-  --token-accent-text: #ffffff;
-  --token-accent-subtle: #ecfdf5;
+  --token-surface-hover: #ede7de;
+  --token-text: #1a1a1a;
+  --token-text-secondary: #4a3f35;
+  --token-text-muted: #8a7f6f;
+  --token-border: #e8e2d8;
+  --token-accent: #1a1a1a;
+  --token-accent-text: #f0ebe3;
+  --token-accent-subtle: #f0ebe3;
 }
 
 html.dark {
-  /* ── 暗色主题 ── */
-  --token-bg: #0f172a;
-  --token-surface: #1e293b;
-  --token-surface-hover: #334155;
-  --token-text: #ffffff;
-  --token-text-secondary: #e2e8f0;
-  --token-text-muted: #94a3b8;
-  --token-border: #334155;
-  --token-accent: #22d3ee;
-  --token-accent-text: #0f172a;
-  --token-accent-subtle: #164e63;
+  /* ── 暗色主题（暖石 Warm Stone）── */
+  --token-bg: #141310;
+  --token-surface: #1f1c18;
+  --token-surface-hover: #2a2620;
+  --token-text: #f0ebe3;
+  --token-text-secondary: #c8bfb0;
+  --token-text-muted: #7a7264;
+  --token-border: #2a2620;
+  --token-accent: #e8e2d8;
+  --token-accent-text: #1a1a1a;
+  --token-accent-subtle: #2a2620;
 }
 
 /* 示例：新增主题只需这样
