@@ -672,7 +672,7 @@ window.ztools = {
   // 读取当前浏览器窗口 URL（前提当前活动系统窗口是受支持浏览器）
   readCurrentBrowserUrl: () => electron.ipcRenderer.invoke('plugin:read-current-browser-url'),
   // 获取文件系统图标（返回 base64 Data URL，同步）
-  getFileIcon: (filePath) => electron.ipcRenderer.sendSync('get-file-icon', filePath),
+  getFileIcon: async (filePath) => await electron.ipcRenderer.invoke('get-file-icon', filePath),
   // 插件跳转
   redirect: (label, payload) =>
     electron.ipcRenderer.sendSync('ztools-redirect', { label, payload }),

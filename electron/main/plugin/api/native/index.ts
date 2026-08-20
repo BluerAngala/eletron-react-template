@@ -1,22 +1,56 @@
 import os from 'os'
 import path from 'path'
+import { fileURLToPath } from 'node:url'
 import { execSync, fork, spawnSync } from 'child_process'
 import { app, clipboard } from 'electron'
-import macZToolsNative from '../../../../resources/lib/mac/ztools_native.node?asset'
-import winZToolsNative from '../../../../resources/lib/win/ztools_native.node?asset'
 
 // 根据平台加载对应的原生模块
-// 注意：?asset 导入是 Vite 构建期转换，只能做静态导入（得到路径字符串）
-// 真正的模块加载在下方 require() 中，按平台各自加载，Linux 不加载任何原生模块
 const platform = os.platform()
 
+/** 将 os.platform() 返回值映射到目录名 */
+function nativeLibDir(): string {
+  if (platform === 'darwin') return 'mac'
+  if (platform === 'win32') return 'win'
+  return platform
+}
+
+/** 解析原生模块 .node 文件路径 */
+function resolveNativeModulePath(): string | null {
+  const moduleName = 'ztools_native.node'
+  const libDir = nativeLibDir()
+  // 打包后：resources/lib/{libDir}/ztools_native.node
+  if (app.isPackaged && process.resourcesPath) {
+    const p = path.join(process.resourcesPath, 'lib', libDir, moduleName)
+    if (require('fs').existsSync(p)) return p
+  }
+  // 开发/构建环境：使用 APP_ROOT 定位项目根目录
+  const root = process.env.APP_ROOT
+  if (root) {
+    const devPath = path.join(root, 'resources', 'lib', libDir, moduleName)
+    if (require('fs').existsSync(devPath)) return devPath
+  }
+  return null
+}
+
 let addon: any = null
-if (platform === 'darwin') {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  addon = require(macZToolsNative)
-} else if (platform === 'win32') {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  addon = require(winZToolsNative)
+let _loaded = false
+
+/** 加载原生模块（需在 APP_ROOT 设置后调用） */
+export function ensureNativeModule(): void {
+  if (_loaded) return
+  _loaded = true
+  try {
+    const nativePath = resolveNativeModulePath()
+    if (nativePath) {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      addon = require(nativePath)
+      console.log(`[Native] 已加载原生模块: ${nativePath}`)
+    } else {
+      console.warn('[Native] 未找到原生模块，相关功能将降级')
+    }
+  } catch (e) {
+    console.warn('[Native] 加载原生模块失败:', e)
+  }
 }
 
 // 原生模块接口类型定义
