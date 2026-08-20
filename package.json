@@ -1,6 +1,6 @@
 {
   "name": "eletron-react-template",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Electron + React + TypeScript 桌面应用模板，基于 electron-vite-react 二次开发。",
   "license": "MIT",
@@ -26,7 +26,10 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"electron/**/*.{ts,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"electron/**/*.{ts,json}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"electron/**/*.{ts,json}\"",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "@electron/asar": "^4.3.0",
@@ -41,6 +44,7 @@
     "sonner": "^2.0.7"
   },
   "devDependencies": {
+    "@electron/get": "^4.0.3",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.60.0",
     "@tailwindcss/vite": "^4.3.0",
@@ -52,7 +56,7 @@
     "@typescript-eslint/parser": "^8.64.0",
     "@vitejs/plugin-react": "^6.0.2",
     "electron": "^42.1.0",
-    "electron-builder": "^26.8.1",
+    "electron-builder": "26.15.4",
     "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.6",
@@ -66,6 +70,12 @@
     "vite": "^8.0.16",
     "vite-plugin-electron": "^1.0.1",
     "vite-plugin-electron-renderer": "^1.0.0",
+    "vitepress": "^1.6.4",
     "vitest": "^4.1.8"
+  },
+  "pnpm": {
+    "overrides": {
+      "@electron/get": "4.0.3"
+    }
   }
 }

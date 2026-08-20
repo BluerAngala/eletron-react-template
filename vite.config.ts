@@ -64,7 +64,7 @@ export default defineConfig(({ command }) => {
       }),
     ],
     optimizeDeps: {
-      // ZTools-plugins 中的第三方插件页引用了未安装的依赖，排除它们以避免依赖预打包扫描失败
+      // 排除第三方插件中未安装的依赖，避免预打包扫描失败
       exclude: ['psd', '@emotion/is-prop-valid'],
     },
     clearScreen: false,

@@ -40,11 +40,7 @@ export function ImportPluginButton({ onSuccess, variant = 'default' }: Props) {
         title={t('market.import')}
         className="inline-flex items-center justify-center rounded-xl p-2 text-foreground-muted transition-colors hover:bg-surface-hover hover:text-foreground"
       >
-        {importing ? (
-          <Loader2 className="h-5 w-5 animate-spin" />
-        ) : (
-          <Upload className="h-5 w-5" />
-        )}
+        {importing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Upload className="h-5 w-5" />}
       </button>
     )
   }
@@ -55,11 +51,7 @@ export function ImportPluginButton({ onSuccess, variant = 'default' }: Props) {
       disabled={importing}
       className="inline-flex items-center gap-2 rounded-xl border border-border-default bg-surface px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-surface-hover disabled:opacity-50"
     >
-      {importing ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : (
-        <Upload className="h-4 w-4" />
-      )}
+      {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
       {t('market.import')}
     </button>
   )

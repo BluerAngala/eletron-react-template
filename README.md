@@ -9,18 +9,17 @@ English | [简体中文](README.zh-CN.md)
 
 ## Overview
 
-An Electron + React + TypeScript desktop application template based on [electron-vite-react](https://github.com/electron-vite/electron-vite-react).
+An Electron + React + TypeScript desktop application with a built-in plugin system, theme engine, and internationalization. Based on [electron-vite-react](https://github.com/electron-vite/electron-vite-react).
 
 ### Features
 
-- ⚡ Vite build with fast HMR
-- 🖥️ Electron main process + React renderer
-- 🎨 TailwindCSS v4 with semantic CSS token theming
-- 🌓 Multi-theme support (light / dark / extensible) with circular arc transition
-- 🌐 i18n with separate locale files (zh-CN / en-US)
-- 🧪 Vitest + Playwright
-- 🔄 Electron auto-update
-- 📦 electron-builder packaging
+- 🧩 **Plugin System** — Online plugin marketplace, local import, one-click install and launch
+- 🎨 **Semantic Theme Engine** — CSS custom property tokens, light/dark themes, extensible
+- 🌐 **i18n** — Multi-language support (zh-CN / en-US), easy to extend
+- ⚡ **Vite + React 19** — Fast HMR, TypeScript strict mode
+- 🔄 **Auto Update** — Powered by electron-updater
+- 🧪 **Testing** — Vitest unit tests + Playwright E2E
+- 📦 **CI/CD** — GitHub Actions + electron-builder + GitHub Pages docs
 
 ## Quick Start
 
@@ -42,56 +41,71 @@ pnpm dev
 | `pnpm typecheck` | Type check |
 | `pnpm lint` | ESLint |
 | `pnpm format` | Prettier |
+| `pnpm docs:dev` | Preview docs locally |
+| `pnpm docs:build` | Build docs site |
 
 ## Project Structure
 
-```tree
-src/
-├── styles/             Stylesheets
-│   ├── index.css       Entry (imports all)
-│   ├── tailwind.css    Tailwind config + @theme tokens
-│   ├── tokens.css      Theme variable definitions
-│   ├── base.css        Global reset and base styles
-│   ├── scrollbar.css   Custom scrollbar
-│   └── animation.css   Theme transition animation
-├── i18n/               Internationalization
-│   ├── index.ts        Exports and config
-│   └── locales/        Locale files
-│       ├── zh-CN.ts
-│       └── en-US.ts
-├── components/
-│   ├── common/         Shared components (ErrorBoundary)
-│   ├── layout/         Layout (Sidebar, TopBar, AppLayout)
-│   └── update/         Auto-update UI
-├── contexts/           React contexts (Theme, Language)
-├── pages/              Page components
-├── routes/             Route definitions
-├── types/              TypeScript type definitions
-├── assets/             SVG and images
-└── demos/              Demo modules
 ```
+src/
+├── styles/              Stylesheets (tokens, tailwind, base)
+├── i18n/                Internationalization
+│   └── locales/         zh-CN.ts, en-US.ts
+├── components/
+│   ├── common/          Shared components (ErrorBoundary)
+│   ├── layout/          Layout (Sidebar, AppLayout)
+│   ├── plugin/          Plugin UI (PluginDetailModal, ImportPluginButton)
+│   └── update/          Auto-update UI
+├── contexts/            React contexts (Theme, Language)
+├── pages/               Page components (Home, PluginMarket, MyPlugins)
+├── routes/              Route definitions
+├── types/               TypeScript type definitions
+├── assets/              SVG and images
+electron/
+├── main/
+│   ├── plugin/          Plugin subsystem (market, installer, registry, runner)
+│   ├── index.ts         Main process entry
+│   └── update.ts        Auto-update
+└── preload/             Preload scripts (contextBridge)
+docs/                    VitePress documentation site
+```
+
+## Plugin System
+
+### Plugin Market
+Browse and install plugins from the online marketplace. Features:
+- Category filtering and keyword search
+- Plugin detail modal with README, metadata, and commands
+- 5-minute cache to reduce API calls
+- Download count display
+
+### My Plugins
+Manage installed plugins: launch, stop, uninstall, or import from local `.zpx` / `.zip` files.
+
+### Plugin Window
+Each plugin runs in a dedicated BrowserWindow with a white background, independent of the host app's theme.
 
 ## Theming
 
 Uses **CSS custom properties** as semantic tokens. Components reference tokens (`bg-surface`, `text-foreground`), not raw colors.
 
-### Token Architecture
+### Token Flow
 
 ```
-styles/tokens.css    →  defines --token-* variables per theme
-styles/tailwind.css  →  registers tokens as Tailwind @theme values
-components           →  use semantic classes (bg-surface, text-foreground, border-border-default)
+styles/tokens.css    →  --token-* variables (per theme class)
+styles/tailwind.css  →  registered as @theme values
+components           →  bg-surface, text-foreground, border-border-default
 ```
 
 ### Adding a New Theme
 
-In `styles/tokens.css`, add a new class block:
+In `styles/tokens.css`, add a class block:
 
 ```css
 html.sepia {
   --token-bg: #f5f0e8;
   --token-surface: #faf5ed;
-  --token-text: #433422;
+  --token-accent: #b08947;
   /* ... */
 }
 ```
@@ -100,7 +114,7 @@ No component changes needed.
 
 ### Theme Switching
 
-- Location: sidebar bottom → "选择主题" / "Choose Theme"
+- Location: sidebar bottom (theme toggle buttons)
 - Options: light / dark / system (follows OS)
 - Animation: circular arc reveal via `document.startViewTransition()` + `clip-path`
 - FOUC prevention: inline script in `index.html`
@@ -108,7 +122,6 @@ No component changes needed.
 ## Internationalization
 
 - Languages: `zh-CN`, `en-US`
-- Locale files: `src/i18n/locales/{zh-CN,en-US}.ts`
 - Usage: `const { t } = useLanguage(); t('home.hero.title')`
 - New keys must be added to **both** locale files
 
@@ -122,11 +135,11 @@ const result = await window.ipcRenderer.invoke('channel-name', ...args)
 ipcMain.handle('channel-name', (event, ...args) => { ... })
 ```
 
-Reference: `electron/main/update.ts`, `electron/preload/index.ts`
+Key channels: `plugin:market-list`, `plugin:market-install`, `plugin:import-from-file`, `plugin:launch`, `plugin:list`, etc.
 
-## Upstream
+## Documentation
 
-Based on [electron-vite/electron-vite-react](https://github.com/electron-vite/electron-vite-react). Thanks to the original authors.
+Full documentation is available at [https://bluerangala.github.io/eletron-react-template/](https://bluerangala.github.io/eletron-react-template/). Built with VitePress, deployed via GitHub Actions.
 
 ## License
 

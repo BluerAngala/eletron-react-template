@@ -89,9 +89,7 @@ export function initPluginSubsystem(
   ipcMain.handle('plugin:import-from-file', async () => {
     const result = await dialog.showOpenDialog({
       title: '导入插件',
-      filters: [
-        { name: 'ZTools 插件', extensions: ['zpx', 'zip'] },
-      ],
+      filters: [{ name: 'ZTools 插件', extensions: ['zpx', 'zip'] }],
       properties: ['openFile'],
     })
     if (result.canceled || result.filePaths.length === 0) {

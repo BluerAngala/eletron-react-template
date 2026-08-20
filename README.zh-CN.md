@@ -9,18 +9,17 @@
 
 ## 概览
 
-基于 [electron-vite-react](https://github.com/electron-vite/electron-vite-react) 模板二次开发的 Electron + React + TypeScript 桌面应用模板。
+基于 Electron + React + TypeScript 的桌面应用，内置插件系统、主题引擎和国际化支持。基于 [electron-vite-react](https://github.com/electron-vite/electron-vite-react) 模板二次开发。
 
 ### 特性
 
-- ⚡ Vite 构建，HMR 快速热更新
-- 🖥️ Electron 主进程 + React 渲染进程
-- 🎨 TailwindCSS v4 + 语义化 CSS Token 主题架构
-- 🌓 多主题支持（浅色 / 暗色 / 可扩展），圆弧过渡动画
-- 🌐 国际化，独立语言文件（zh-CN / en-US）
-- 🧪 Vitest + Playwright
-- 🔄 Electron 自动更新
-- 📦 electron-builder 打包发布
+- 🧩 **插件系统** — 在线插件市场、本地导入、一键安装和启动
+- 🎨 **语义化主题引擎** — CSS 自定义属性 Token，浅色/暗色主题，可扩展
+- 🌐 **国际化** — 中英文双语支持，易于扩展
+- ⚡ **Vite + React 19** — 快速 HMR，TypeScript 严格模式
+- 🔄 **自动更新** — 基于 electron-updater
+- 🧪 **测试** — Vitest 单元测试 + Playwright E2E
+- 📦 **CI/CD** — GitHub Actions + electron-builder + GitHub Pages 文档站
 
 ## 快速开始
 
@@ -42,45 +41,60 @@ pnpm dev
 | `pnpm typecheck` | 类型检查 |
 | `pnpm lint` | ESLint |
 | `pnpm format` | Prettier |
+| `pnpm docs:dev` | 本地预览文档 |
+| `pnpm docs:build` | 构建文档站 |
 
 ## 项目结构
 
-```tree
-src/
-├── styles/             样式文件
-│   ├── index.css       入口（import 全部）
-│   ├── tailwind.css    Tailwind 配置 + @theme token 注册
-│   ├── tokens.css      主题变量定义（浅色/暗色/扩展）
-│   ├── base.css        全局重置与基础样式
-│   ├── scrollbar.css   自定义滚动条
-│   └── animation.css   主题切换动画
-├── i18n/               国际化
-│   ├── index.ts        导出与配置
-│   └── locales/        语言文件
-│       ├── zh-CN.ts
-│       └── en-US.ts
-├── components/
-│   ├── common/         通用组件（ErrorBoundary）
-│   ├── layout/         布局（Sidebar、TopBar、AppLayout）
-│   └── update/         自动更新 UI
-├── contexts/           React Context（主题、语言）
-├── pages/              页面组件
-├── routes/             路由定义
-├── types/              TypeScript 类型定义
-├── assets/             SVG 与图片
-└── demos/              演示模块
 ```
+src/
+├── styles/              样式文件（Token、Tailwind、基础样式）
+├── i18n/                国际化
+│   └── locales/         zh-CN.ts, en-US.ts
+├── components/
+│   ├── common/          通用组件（ErrorBoundary）
+│   ├── layout/          布局组件（Sidebar、AppLayout）
+│   ├── plugin/          插件 UI（PluginDetailModal、ImportPluginButton）
+│   └── update/          自动更新 UI
+├── contexts/            React Context（主题、语言）
+├── pages/               页面组件（首页、插件市场、我的插件）
+├── routes/              路由定义
+├── types/               TypeScript 类型定义
+├── assets/              SVG 与图片
+electron/
+├── main/
+│   ├── plugin/          插件子系统（市场、安装、注册、运行）
+│   ├── index.ts         主进程入口
+│   └── update.ts        自动更新
+└── preload/             Preload 脚本（contextBridge）
+docs/                    VitePress 文档站
+```
+
+## 插件系统
+
+### 插件市场
+在线浏览和安装插件，支持：
+- 分类筛选和关键词搜索
+- 插件详情弹窗（README、元数据、指令列表）
+- 5 分钟缓存，减少重复请求
+- 下载量显示
+
+### 我的插件
+管理已安装的插件：启动、停止、卸载，或从本地 `.zpx` / `.zip` 文件导入。
+
+### 插件窗口
+每个插件在独立 BrowserWindow 中运行，背景色固定为白色，不受宿主应用主题影响。
 
 ## 主题系统
 
 使用 **CSS 自定义属性**作为语义化 Token，组件引用 Token（`bg-surface`、`text-foreground`），不写死颜色值。
 
-### Token 架构
+### Token 流转
 
 ```
-styles/tokens.css    →  定义 --token-* 变量（按主题）
+styles/tokens.css    →  定义 --token-* 变量（按主题 class）
 styles/tailwind.css  →  注册为 Tailwind @theme 值
-组件                 →  使用语义类名（bg-surface、text-foreground、border-border-default）
+组件                 →  使用 bg-surface、text-foreground、border-border-default
 ```
 
 ### 新增主题
@@ -91,7 +105,7 @@ styles/tailwind.css  →  注册为 Tailwind @theme 值
 html.sepia {
   --token-bg: #f5f0e8;
   --token-surface: #faf5ed;
-  --token-text: #433422;
+  --token-accent: #b08947;
   /* ... */
 }
 ```
@@ -100,15 +114,14 @@ html.sepia {
 
 ### 主题切换
 
-- 位置：侧边栏底部 →「选择主题」
+- 位置：侧边栏底部（主题切换按钮）
 - 选项：浅色 / 暗色 / 跟随系统
 - 动画：`document.startViewTransition()` + `clip-path` 圆弧扩散
-- 防闪烁：`index.html` 内联脚本在首次渲染前应用主题
+- 防闪烁：`index.html` 内联脚本
 
 ## 国际化
 
 - 语言：`zh-CN`、`en-US`
-- 语言文件：`src/i18n/locales/{zh-CN,en-US}.ts`
 - 使用：`const { t } = useLanguage(); t('home.hero.title')`
 - 新增翻译键**必须**同时添加到两个语言文件
 
@@ -122,11 +135,11 @@ const result = await window.ipcRenderer.invoke('channel-name', ...args)
 ipcMain.handle('channel-name', (event, ...args) => { ... })
 ```
 
-参考：`electron/main/update.ts`、`electron/preload/index.ts`
+主要通道：`plugin:market-list`、`plugin:market-install`、`plugin:import-from-file`、`plugin:launch`、`plugin:list` 等。
 
-## 上游项目
+## 文档站
 
-基于 [electron-vite/electron-vite-react](https://github.com/electron-vite/electron-vite-react) 模板开发，感谢原作者。
+完整文档：[https://bluerangala.github.io/eletron-react-template/](https://bluerangala.github.io/eletron-react-template/)，基于 VitePress 构建，GitHub Actions 自动部署。
 
 ## 许可证
 

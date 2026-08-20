@@ -1,0 +1,16 @@
+{
+  "name": "example",
+  "title": "示例插件",
+  "description": "一个示例插件，展示插件开发的基本结构",
+  "version": "1.0.0",
+  "main": "index.html",
+  "logo": "logo.png",
+  "preload": "preload.js",
+  "features": [
+    {
+      "code": "hello",
+      "explain": "hello world",
+      "cmds": ["hello", "你好"]
+    }
+  ]
+}

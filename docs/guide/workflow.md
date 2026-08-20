@@ -1,0 +1,35 @@
+# 开发工作流
+
+## 1. 规划阶段
+
+任何新功能、页面、组件开发前，必须先做规划，谋定后动。
+
+## 2. 设计阶段
+
+前端页面/组件开发前，必须先生成设计系统，禁止直接写代码。
+
+**设计技能优先级：**
+1. `ui-ux-pro-max` — 生成设计系统（配色、排版、风格、UX 规范）
+2. `gpt-taste` — Awwwards 级别的设计工程（GSAP 动效、AIDA 结构、Bento 网格）
+3. `design-taste-frontend` — 反模板化前端设计
+
+**设计红线：**
+- 禁止默认模板样式（无设计感的卡片、无聊的布局）
+- 禁止 Emoji 作为图标（用 SVG）
+- 禁止硬编码颜色值（用语义化 Token）
+- 必须有视觉层次、间距节奏、微交互动效
+
+## 3. 实现阶段
+
+### 代码规范
+
+- 新组件放 `src/components/<name>/index.tsx`
+- 类型定义集中放 `src/types/`
+- IPC 通道命名：`kebab-case`
+- 样式：使用语义化 Token，禁止硬编码颜色
+
+### 提交前预检
+
+```bash
+pnpm typecheck && pnpm lint && pnpm format:check
+```

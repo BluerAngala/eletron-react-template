@@ -4,7 +4,7 @@ export function About() {
   const { t } = useLanguage()
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8">
+    <div className="space-y-8">
       <div>
         <h2 className="text-2xl font-semibold text-foreground">{t('about.title')}</h2>
         <p className="mt-1 text-sm text-foreground-muted">{t('about.desc')}</p>
