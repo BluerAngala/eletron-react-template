@@ -1,0 +1,221 @@
+/* ===== 暖石 Warm Stone 主题 ===== */
+
+:root {
+  --vp-c-brand-1: #b08947;
+  --vp-c-brand-2: #9a7a3e;
+  --vp-c-brand-3: #8a6a30;
+  --vp-c-brand-soft: rgba(176, 137, 71, 0.14);
+
+  --vp-c-bg: #faf5ed;
+  --vp-c-bg-alt: #f5f0e8;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #f5f0e8;
+
+  --vp-c-text-1: #433422;
+  --vp-c-text-2: #5c4a38;
+  --vp-c-text-3: #8a7560;
+
+  --vp-c-border: #e0d5c5;
+  --vp-c-divider: #e0d5c5;
+  --vp-c-gutter: #e0d5c5;
+
+  --vp-home-hero-name-color: #433422;
+  --vp-home-hero-name-background: transparent;
+  --vp-home-hero-image-background-image: none;
+  --vp-home-hero-image-filter: none;
+
+  --vp-button-brand-bg: #b08947;
+  --vp-button-brand-hover-bg: #9a7a3e;
+  --vp-button-brand-text: #ffffff;
+  --vp-button-brand-hover-text: #ffffff;
+  --vp-button-brand-border: #b08947;
+  --vp-button-brand-hover-border: #9a7a3e;
+
+  --vp-button-alt-bg: #ffffff;
+  --vp-button-alt-hover-bg: #f5f0e8;
+  --vp-button-alt-text: #433422;
+  --vp-button-alt-hover-text: #433422;
+  --vp-button-alt-border: #e0d5c5;
+  --vp-button-alt-hover-border: #d4c9b8;
+}
+
+/* 深色模式适配 */
+.dark {
+  --vp-c-bg: #1a1610;
+  --vp-c-bg-alt: #221e16;
+  --vp-c-bg-elv: #2a241c;
+  --vp-c-bg-soft: #221e16;
+
+  --vp-c-text-1: #e8e0d0;
+  --vp-c-text-2: #c4b8a4;
+  --vp-c-text-3: #9a8a74;
+
+  --vp-c-border: #3a3428;
+  --vp-c-divider: #3a3428;
+
+  --vp-home-hero-name-color: #e8e0d0;
+}
+
+/* ===== Hero 区域 ===== */
+
+.VPHomeHero {
+  padding-top: 64px !important;
+  padding-bottom: 48px !important;
+}
+
+.VPHomeHero .name {
+  font-size: 48px !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.02em !important;
+  font-weight: 800 !important;
+}
+
+.VPHomeHero .text {
+  font-size: 22px !important;
+  line-height: 1.4 !important;
+  color: var(--vp-c-text-2) !important;
+  padding-top: 8px !important;
+  max-width: 560px !important;
+  margin: 0 auto !important;
+}
+
+.VPHomeHero .tagline {
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  color: var(--vp-c-text-3) !important;
+  padding-top: 12px !important;
+}
+
+/* Hero 图片容器 */
+.VPHomeHero .image-container {
+  width: 220px !important;
+  height: 220px !important;
+}
+
+.VPHomeHero .image-container .image-bg {
+  display: none !important;
+}
+
+.VPHomeHero .image-container img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  border-radius: 32px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ===== 操作按钮 ===== */
+
+.VPHomeHero .actions {
+  padding-top: 24px !important;
+}
+
+.VPHomeHero .actions .action {
+  margin: 8px !important;
+}
+
+.VPHomeHero .actions .action .brand {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  padding: 10px 28px !important;
+  transition: all 0.2s ease !important;
+}
+
+.VPHomeHero .actions .action .alt {
+  border-radius: 10px !important;
+  font-weight: 500 !important;
+  font-size: 15px !important;
+  padding: 10px 28px !important;
+  border: 1.5px solid var(--vp-c-border) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* ===== Feature 卡片 ===== */
+
+.VPHomeFeatures {
+  padding-top: 16px !important;
+}
+
+.VPHomeFeatures .container {
+  max-width: 1080px !important;
+  margin: 0 auto !important;
+  padding: 0 24px !important;
+}
+
+.VPHomeFeatures .items {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 20px !important;
+}
+
+@media (max-width: 960px) {
+  .VPHomeFeatures .items {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .VPHomeFeatures .items {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.VPHomeFeatures .item {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+.VPHomeFeatures .item .card {
+  height: 100% !important;
+  border-radius: 16px !important;
+  border: 1px solid var(--vp-c-border) !important;
+  background: var(--vp-c-bg-elv) !important;
+  transition: all 0.25s ease !important;
+  padding: 28px 24px !important;
+}
+
+.VPHomeFeatures .item .card:hover {
+  border-color: var(--vp-c-brand-1) !important;
+  box-shadow: 0 4px 20px rgba(176, 137, 71, 0.1) !important;
+  transform: translateY(-2px) !important;
+}
+
+.VPHomeFeatures .item .icon {
+  width: 48px !important;
+  height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 24px !important;
+  background: var(--vp-c-brand-soft) !important;
+  border-radius: 12px !important;
+  margin-bottom: 16px !important;
+}
+
+.VPHomeFeatures .item .title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  color: var(--vp-c-text-1) !important;
+  margin-bottom: 8px !important;
+}
+
+.VPHomeFeatures .item .details {
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: var(--vp-c-text-2) !important;
+}
+
+/* ===== Footer ===== */
+
+.VPFooter {
+  border-top: 1px solid var(--vp-c-border) !important;
+  padding: 24px 0 !important;
+}
+
+.VPFooter .message {
+  color: var(--vp-c-text-3) !important;
+  font-size: 13px !important;
+}
