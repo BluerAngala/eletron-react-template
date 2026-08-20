@@ -270,6 +270,110 @@ await window.ztools.db.promises.allDocs(key)
 
 - **key**: `string` — 键名。
 
+## 屏幕截图
+
+### `ztools.screenCapture(callback)`
+屏幕截图，进入截图模式后回调返回 base64 图片。
+
+- **callback**: `(image: string, bounds?: object) => void`
+
+### `ztools.screenColorPick(callback)`
+屏幕取色。
+
+- **callback**: `(result: { hex: string, rgb: string }) => void`
+
+## 模拟输入
+
+| API | 说明 |
+|-----|------|
+| `simulateKeyboardTap(key, ...modifiers)` | 模拟键盘按键 |
+| `simulateMouseMove(x, y)` | 模拟鼠标移动 |
+| `simulateMouseClick(x, y)` | 模拟鼠标单击 |
+| `simulateMouseDoubleClick(x, y)` | 模拟鼠标双击 |
+| `simulateMouseRightClick(x, y)` | 模拟鼠标右击 |
+| `sendInputEvent(event)` | 发送输入事件 |
+| `hideMainWindowPasteText(text)` | 粘贴文本到外部应用 |
+| `hideMainWindowPasteImage(image)` | 粘贴图片到外部应用 |
+| `hideMainWindowPasteFile(path)` | 粘贴文件到外部应用 |
+
+## 剪贴板历史
+
+```javascript
+ztools.clipboard.getHistory(page, pageSize, filter)
+ztools.clipboard.search(keyword)
+ztools.clipboard.write(id, shouldPaste)
+ztools.clipboard.writeContent(data, shouldPaste)
+ztools.clipboard.delete(id)
+ztools.clipboard.clear(type)
+ztools.clipboard.onChange(callback)
+```
+
+## 页面内查找
+
+| API | 说明 |
+|-----|------|
+| `findInPage(text, options)` | 在当前页面中查找文本 |
+| `stopFindInPage(action)` | 停止查找 |
+| `onFindInPageResult(callback)` | 监听查找结果 |
+
+## 窗口管理
+
+| API | 说明 |
+|-----|------|
+| `createBrowserWindow(url, options, callback)` | 创建独立子窗口，返回 Proxy 对象 |
+| `showMainWindow()` | 显示主窗口 |
+| `hideMainWindow(isRestorePreWindow)` | 隐藏主窗口 |
+| `outPlugin(isKill)` | 退出插件 |
+| `sendToParent(channel, ...args)` | 子窗口→父窗口通信 |
+
+## 显示器
+
+| API | 说明 |
+|-----|------|
+| `getPrimaryDisplay()` | 主显示器信息 |
+| `getAllDisplays()` | 所有显示器 |
+| `getCursorScreenPoint()` | 鼠标屏幕坐标 |
+| `getDisplayNearestPoint(point)` | 最近的显示器 |
+| `desktopCaptureSources(options)` | 桌面捕获源 |
+| `dipToScreenPoint(point)` | DIP→物理坐标 |
+| `screenToDipPoint(point)` | 物理→DIP 坐标 |
+| `dipToScreenRect(rect)` | DIP→物理区域 |
+
+## 动态 Feature
+
+| API | 说明 |
+|-----|------|
+| `getFeatures(codes)` | 获取动态 features |
+| `setFeature(feature)` | 设置动态 feature |
+| `removeFeature(code)` | 删除动态 feature |
+
+## HTTP 请求头
+
+| API | 说明 |
+|-----|------|
+| `http.setHeaders(headers)` | 设置请求头 |
+| `http.getHeaders()` | 获取请求头 |
+| `http.clearHeaders()` | 清除请求头 |
+
+## 文件操作
+
+| API | 说明 |
+|-----|------|
+| `getFileIcon(path)` | 获取文件图标（base64） |
+| `shellTrashItem(path)` | 文件移到废纸篓 |
+| `readCurrentFolderPath()` | 读取当前文件夹路径 |
+| `readCurrentBrowserUrl()` | 读取当前浏览器 URL |
+
+## 基础信息
+
+| API | 说明 |
+|-----|------|
+| `getNativeId()` | 设备唯一标识（32位） |
+| `getWindowType()` | 窗口类型 |
+| `isDarkColors()` | 是否深色主题 |
+| `getThemeInfo()` | 主题信息 |
+| `getUser()` | 当前用户信息 |
+
 ## 插件上下文
 
 插件可以通过 `window.__PLUGIN_CONTEXT__` 获取自身信息：

@@ -29,6 +29,10 @@ styles/tailwind.css  →  @theme 注册为 Tailwind 值
 | `text-accent-foreground` | 强调色上文字 | `--token-accent-text` |
 | `bg-accent-subtle` | 强调色浅底 | `--token-accent-subtle` |
 
+## 默认主题
+
+内置 `light` 和 `dark` 两套主题，均使用 **暖石 Warm Stone** 色板（暖灰背景 + 暗灰强调色）。
+
 ## 新增主题
 
 在 `src/styles/tokens.css` 添加 class 块：
@@ -39,12 +43,12 @@ html.sepia {
   --token-surface: #faf5ed;
   --token-text: #433422;
   --token-accent: #b08947;
-  /* ... */
 }
 ```
 
 ## 主题切换
 
-- `ThemeContext` 切换 `html` 上的 class（`dark` / 自定义）
+- 侧边栏切换 `light` / `dark` / `system`
+- `ThemeContext` 切换 `html` 上的 class
 - `index.html` 内联脚本防 FOUC
 - `document.startViewTransition()` + `clip-path` 圆弧动画

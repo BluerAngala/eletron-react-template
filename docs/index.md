@@ -19,20 +19,20 @@ hero:
 features:
   - icon: 🧩
     title: 插件系统
-    details: 集成 ZTools 插件市场，支持在线下载、本地导入、分类浏览和一键安装
+    details: 三层插件来源（内置/市场/导入），ZTools 完全兼容 API，截图/剪贴板/模拟输入等能力
   - icon: 🎨
     title: 主题系统
-    details: 语义化 Token 架构，支持浅色/暗色主题切换，组件零改动即可新增主题
+    details: 语义化 Token 架构，暖石 Warm Stone 色板，组件零改动即可新增主题
   - icon: 🌐
     title: 国际化
-    details: 多语言支持，内置中英文翻译，新增翻译键只需同时添加两个语言文件
+    details: 中英文翻译，新增翻译键只需同时添加两个语言文件
   - icon: ⚡
     title: 自动更新
     details: 基于 electron-updater 实现自动检查更新、下载和安装
   - icon: 🛠️
     title: 开发工具链
     details: TypeScript 严格模式、ESLint + Prettier、Vitest 单元测试、Playwright E2E
-  - icon: 📦
-    title: 构建部署
-    details: Vite 构建 + electron-builder 打包，CI/CD 流水线自动运行
+  - icon: 📋
+    title: 实时日志
+    details: 前后端日志统一展示，5 级颜色标签，3 类来源标签，多选复制，内存安全
 ---

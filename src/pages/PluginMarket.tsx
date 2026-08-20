@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
-import { Search, RefreshCw, Boxes, Download, Check, Loader2, AlertTriangle } from 'lucide-react'
+import { Search, RefreshCw, Boxes, Download, Check, Loader2, AlertTriangle, Play } from 'lucide-react'
 import { toast } from 'sonner'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { PluginDetailModal, type PluginDetailData } from '@/components/plugin/PluginDetailModal'
@@ -330,10 +330,17 @@ export function PluginMarket() {
                       {t('market.detail')}
                     </button>
                     {isInstalled ? (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-accent-subtle px-2 py-1 text-[11px] font-medium text-accent">
-                        <Check className="h-3 w-3" />
-                        {t('market.installed')}
-                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          const p = installed.find((i) => i.name === plugin.name)
+                          if (p) window.plugin.launch(p.path)
+                        }}
+                        className="inline-flex items-center gap-1 rounded-md bg-accent px-2.5 py-1 text-[11px] font-semibold text-accent-foreground transition-colors hover:opacity-90"
+                      >
+                        <Play className="h-3 w-3" />
+                        {t('market.launch')}
+                      </button>
                     ) : isDownloading || state === 'success' ? (
                       <button
                         disabled

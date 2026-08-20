@@ -41,16 +41,24 @@ src/
   components/
     common/           通用组件（ErrorBoundary）
     layout/           布局组件（Sidebar、TopBar、AppLayout）
+    log-viewer/       实时日志查看器
+    plugin/           插件组件（PluginDetailModal、ImportPluginButton）
     update/           自动更新 UI
   contexts/           React Context（ThemeContext、LanguageContext）
   pages/              页面组件
   routes/             路由定义
   types/              TypeScript 类型定义（.d.ts）
+  utils/              工具函数（logger.ts）
   assets/             静态资源（SVG、图片）
-  demos/              功能演示代码
 electron/
   main/               主进程逻辑（窗口、IPC、自动更新）
+    plugin/
+      api/            插件 API 模块（dispatcher/clipboard/input/screen 等）
+      installer/      插件安装（installer/download/market/zpx）
+      runtime/        插件运行时（registry/runner/http）
   preload/            Preload 脚本（contextBridge）
+plugins/               内置插件源码
+resources/lib/         原生模块（.node / .dylib）
 test/
   e2e/                Playwright E2E
   *.test.ts           Vitest 单元测试
