@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Electron React Template
   text: 基于 Electron + React + TypeScript 的桌面应用模板
-  tagline: 集成插件系统、主题系统、国际化、自动更新，开箱即用
+  tagline: 集成插件系统、主题系统、国际化、自动更新，开箱即用 · 构建 v37
   image:
     src: /eletron-react-template/logo.svg
     alt: Logo
