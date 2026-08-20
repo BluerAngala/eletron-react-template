@@ -42,9 +42,7 @@ export function scanBuiltinPlugins(): InstalledPlugin[] {
       const version = typeof config.version === 'string' ? config.version : '0.0.0'
       if (!name) continue
 
-      const logo = config.logo
-        ? 'plugin-icon://' + path.join(pluginDir, config.logo)
-        : ''
+      const logo = config.logo ? 'plugin-icon://' + path.join(pluginDir, config.logo) : ''
 
       plugins.push({
         name,
