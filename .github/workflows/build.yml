@@ -53,3 +53,26 @@ jobs:
           name: release_on_${{ matrix.os }}
           path: release/
           retention-days: 5
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          body: |
+            自动构建发布。
+          files: artifacts/**/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
