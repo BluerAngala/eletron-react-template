@@ -1,3 +1,8 @@
+---
+title: "插件 API 参考"
+description: "插件通过全局对象 window.ztools 访问宿主应用提供的 API。"
+---
+
 # 插件 API 参考
 
 插件通过全局对象 `window.ztools` 访问宿主应用提供的 API。

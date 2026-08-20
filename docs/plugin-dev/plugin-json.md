@@ -1,3 +1,8 @@
+---
+title: "plugin.json 配置"
+description: "plugin.json 是插件最核心的配置文件，定义了插件如何与宿主应用集成。"
+---
+
 # plugin.json 配置
 
 `plugin.json` 是插件最核心的配置文件，定义了插件如何与宿主应用集成。

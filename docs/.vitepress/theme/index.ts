@@ -1,4 +1,22 @@
+import { h, computed } from 'vue'
+import { useRoute } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
+import HomePage from './components/HomePage.vue'
 import './style.css'
 
-export default DefaultTheme
+export default {
+  extends: DefaultTheme,
+  Layout() {
+    const route = useRoute()
+    const isHome = computed(() => {
+      const path = route.path.replace(/\/+$/, '')
+      return path === '' || path === '/eletron-react-template' || path === '/eletron-react-template/'
+    })
+
+    if (isHome.value) {
+      return h(HomePage)
+    }
+
+    return h(DefaultTheme.Layout)
+  }
+}

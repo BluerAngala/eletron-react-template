@@ -1,3 +1,8 @@
+---
+title: "快速开始"
+description: "环境要求、安装依赖、启动开发的完整流程，三步跑通 Electron + React + TypeScript 桌面应用模板"
+---
+
 # 快速开始
 
 ## 环境要求

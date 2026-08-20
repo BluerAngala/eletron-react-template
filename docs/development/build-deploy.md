@@ -1,3 +1,8 @@
+---
+title: "构建与部署"
+description: "这会在 dist/ 生成前端构建产物，在 dist-electron/ 生成主进程代码，并调用 electron-builder 打包。"
+---
+
 # 构建与部署
 
 ## 构建

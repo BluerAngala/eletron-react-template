@@ -1,3 +1,8 @@
+---
+title: "目录结构"
+description: "项目目录结构总览：src 渲染进程、electron 主进程、plugins 插件、test 测试的组织方式"
+---
+
 # 目录结构
 
 ```

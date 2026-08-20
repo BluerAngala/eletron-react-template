@@ -1,3 +1,8 @@
+---
+title: "插件开发快速开始"
+description: "插件是运行在独立窗口中的 Web 应用，结合了 HTML/CSS/JavaScript 前端技术 和 Node.js 本地能力，可以："
+---
+
 # 插件开发快速开始
 
 ## 插件是什么

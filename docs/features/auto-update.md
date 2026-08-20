@@ -1,3 +1,8 @@
+---
+title: "自动更新"
+description: "基于 electron-updater 实现自动检查更新、下载和安装。"
+---
+
 # 自动更新
 
 基于 `electron-updater` 实现自动检查更新、下载和安装。

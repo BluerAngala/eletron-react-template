@@ -50,3 +50,9 @@ __pycache__/
 ZTools
 ZTools-doc
 ZTools-plugins
+# VitePress build artifacts
+/docs/.vitepress/cache
+/docs/.vitepress/dist
+
+# WorkBuddy workspace memory
+/.workbuddy

@@ -1,3 +1,8 @@
+---
+title: "IPC 通信"
+description: "插件通过 plugin-preload.js 中的 window.ztools 对象调用，底层走 plugin.api 统一分发通道和直接 IPC 通道。"
+---
+
 # IPC 通信
 
 ## 基本模式

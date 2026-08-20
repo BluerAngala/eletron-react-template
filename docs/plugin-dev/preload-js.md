@@ -1,3 +1,8 @@
+---
+title: "Preload 脚本指南"
+description: "Preload 是插件中一个特殊的 JavaScript 文件，它在插件窗口加载时预先执行，可以调用 Node.js 和 Electron 的原生 API。"
+---
+
 # Preload 脚本指南
 
 ## 什么是 Preload

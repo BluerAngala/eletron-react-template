@@ -1,3 +1,8 @@
+---
+title: "代码规范"
+description: "使用严格模式编译，配置见 tsconfig.json。"
+---
+
 # 代码规范
 
 ## TypeScript
