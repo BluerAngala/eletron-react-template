@@ -73,4 +73,6 @@ export interface InstalledPlugin {
   storageKind: PluginStorageKind
   installedAt: string
   isDevelopment: boolean
+  /** 是否为内置插件（随应用打包，不可卸载） */
+  isBuiltin?: boolean
 }

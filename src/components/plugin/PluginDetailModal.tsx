@@ -33,6 +33,7 @@ export interface PluginDetailData {
     cmds: Array<string | { type: string; label: string }>
   }>
   installed?: boolean
+  isBuiltin?: boolean
 }
 
 interface Props {
@@ -259,7 +260,7 @@ export function PluginDetailModal({
                 <Play className="h-4 w-4" />
                 {t('market.launch')}
               </button>
-              {onUninstall && (
+              {onUninstall && !plugin.isBuiltin && (
                 <button
                   onClick={() => onUninstall(plugin)}
                   className="inline-flex items-center gap-2 rounded-xl border border-border-default px-5 py-2.5 text-sm font-medium text-foreground-muted transition-colors hover:border-red-500/50 hover:text-red-500"

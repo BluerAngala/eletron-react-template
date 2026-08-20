@@ -6,6 +6,11 @@
     {
       "from": "electron/main/plugin/plugin-preload.js",
       "to": "plugin-preload.js"
+    },
+    {
+      "from": "plugins",
+      "to": "plugins",
+      "filter": ["**/*"]
     }
   ],
   "directories": {

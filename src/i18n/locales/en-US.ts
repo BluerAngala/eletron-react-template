@@ -64,6 +64,7 @@ const enUS = {
   'myplugins.status': 'Status',
   'myplugins.uninstall.confirm': 'Uninstall plugin "{title}"?',
   'myplugins.uninstall.desc': 'The plugin files will be deleted. This cannot be undone.',
+  'myplugins.builtin': 'Built-in',
   'myplugins.author': 'Author',
 
   // Common

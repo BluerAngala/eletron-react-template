@@ -48,6 +48,7 @@ interface InstalledPluginInfo {
   installedAt: string
   downloadUrl?: string
   downloadCount?: number
+  isBuiltin?: boolean
 }
 
 interface PluginDownloadProgress {

@@ -137,6 +137,7 @@ export function MyPlugins() {
                       downloadCount: plugin.downloadCount,
                       path: plugin.path,
                       installed: true,
+                      isBuiltin: plugin.isBuiltin,
                     })
                   }
                 >
@@ -157,6 +158,11 @@ export function MyPlugins() {
                       <h3 className="truncate text-sm font-semibold text-foreground">
                         {plugin.title}
                       </h3>
+                      {plugin.isBuiltin && (
+                        <span className="shrink-0 rounded-md border border-border-default bg-surface-hover px-1.5 py-0.5 text-[10px] font-medium text-foreground-muted">
+                          {t('myplugins.builtin')}
+                        </span>
+                      )}
                       <span className="shrink-0 text-xs text-foreground-muted">
                         {formatT(t('myplugins.version'), { version: plugin.version })}
                       </span>
@@ -210,17 +216,19 @@ export function MyPlugins() {
                         <span className="hidden sm:inline">{t('market.launch')}</span>
                       </button>
                     )}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        void uninstall(plugin)
-                      }}
-                      title={t('market.uninstall')}
-                      className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-surface-hover hover:text-red-500"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="hidden sm:inline">{t('market.uninstall')}</span>
-                    </button>
+                    {!plugin.isBuiltin && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          void uninstall(plugin)
+                        }}
+                        title={t('market.uninstall')}
+                        className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-surface-hover hover:text-red-500"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="hidden sm:inline">{t('market.uninstall')}</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               )

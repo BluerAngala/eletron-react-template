@@ -64,6 +64,7 @@ const zhCN = {
   'myplugins.status': '状态',
   'myplugins.uninstall.confirm': '确定卸载插件 "{title}" 吗？',
   'myplugins.uninstall.desc': '将删除插件文件，此操作不可撤销。',
+  'myplugins.builtin': '内置',
   'myplugins.author': '作者',
 
   // 通用

@@ -8,6 +8,7 @@ import { registry } from './registry'
 import { runner } from './runner'
 import { initPluginRuntime, bindRunningContext } from './api'
 import { getRuntimePreloadPath } from './shared'
+import { scanBuiltinPlugins } from './builtin'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const CHANGED_EVENT = 'plugins-changed'
@@ -48,6 +49,12 @@ export function initPluginSubsystem(
   notifyWeb?: (channel: string, ...args: unknown[]) => void,
 ): void {
   ensureRuntimePreload()
+  // 注册内置插件（来自 plugins/ 目录）
+  const builtinPlugins = scanBuiltinPlugins()
+  if (builtinPlugins.length > 0) {
+    registry.registerBuiltin(builtinPlugins)
+    console.log(`[Plugin] 已注册 ${builtinPlugins.length} 个内置插件`)
+  }
   initPluginRuntime()
   bindRunningContext({ getRunning: () => runner.getRunning() })
 
