@@ -1,10 +1,10 @@
 # 开发工作流
 
-## 1. 规划阶段
+## 1. 规划
 
 任何新功能、页面、组件开发前，必须先做规划，谋定后动。
 
-## 2. 设计阶段
+## 2. 设计
 
 前端页面/组件开发前，必须先生成设计系统，禁止直接写代码。
 
@@ -19,17 +19,27 @@
 - 禁止硬编码颜色值（用语义化 Token）
 - 必须有视觉层次、间距节奏、微交互动效
 
-## 3. 实现阶段
-
-### 代码规范
+## 3. 实现
 
 - 新组件放 `src/components/<name>/index.tsx`
 - 类型定义集中放 `src/types/`
 - IPC 通道命名：`kebab-case`
 - 样式：使用语义化 Token，禁止硬编码颜色
 
-### 提交前预检
+## 4. 文档
+
+更新 `docs/` 中对应的文档站文件，保持与代码变更同步。
+
+## 5. 预检
 
 ```bash
-pnpm typecheck && pnpm lint && pnpm format:check
+pnpm typecheck && pnpm lint && pnpm format:check && pnpm test
+```
+
+## 6. 推送
+
+```bash
+git add -A
+git commit -m "feat/ fix/ chore: 描述"
+git push
 ```
