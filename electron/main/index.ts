@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain, protocol, net } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, protocol, net, webContents } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -165,23 +165,85 @@ async function createWindow() {
   log.info('Window created')
 }
 
-// IPC: 读取日志文件内容
-ipcMain.handle('get-logs', async (_event, lines: number = 200) => {
-  try {
-    const fs = await import('node:fs/promises')
-    const logPath = log.transports.file.getFile().path
-    const content = await fs.readFile(logPath, 'utf-8')
-    const allLines = content.split('\n').filter(Boolean)
-    return allLines.slice(-lines).join('\n')
-  } catch (err) {
-    log.warn('Failed to read log file:', err)
-    return ''
+// ── 日志系统 ──
+
+// 内存环形缓冲区：保留最近 2000 条日志，防止内存爆炸
+const MAX_LOG_ENTRIES = 2000
+const logRingBuffer: LogEntry[] = []
+let logBufferId = 0
+
+export interface LogEntry {
+  id: number
+  level: 'error' | 'warn' | 'info' | 'debug' | 'verbose'
+  source: 'main' | 'renderer' | 'plugin'
+  timestamp: string
+  message: string
+  data?: unknown[]
+}
+
+/** 推送日志到所有窗口 */
+function pushLog(entry: LogEntry): void {
+  logRingBuffer.push(entry)
+  if (logRingBuffer.length > MAX_LOG_ENTRIES) {
+    logRingBuffer.splice(0, logRingBuffer.length - MAX_LOG_ENTRIES)
   }
+  for (const w of BrowserWindow.getAllWindows()) {
+    if (!w.isDestroyed()) {
+      w.webContents.send('log-entry', entry)
+    }
+  }
+}
+
+/** 创建日志条目 */
+function createLogEntry(
+  level: LogEntry['level'],
+  source: LogEntry['source'],
+  message: string,
+  data?: unknown[],
+): LogEntry {
+  return {
+    id: ++logBufferId,
+    level,
+    source,
+    timestamp: new Date().toISOString().replace('T', ' ').slice(0, 23),
+    message,
+    data,
+  }
+}
+
+// 挂钩 electron-log，实时推送到渲染进程
+log.hooks.push((_message, transport) => {
+  if (transport !== log.transports.console) return
+  // 从 electron-log 内部结构提取信息
+  const data = (_message as any).data
+  if (!Array.isArray(data) || data.length === 0) return
+  const first = String(data[0])
+  const level = (_message as any).level || 'info'
+  pushLog(createLogEntry(level as LogEntry['level'], 'main', first, data.slice(1)))
+})
+
+// IPC: 初始批量加载日志
+ipcMain.handle('get-logs', async () => {
+  return logRingBuffer
 })
 
 // IPC: 获取日志文件路径
 ipcMain.handle('get-log-path', () => {
   return log.transports.file.getFile().path
+})
+
+// IPC: 清空日志缓冲区
+ipcMain.handle('log:clear', () => {
+  logRingBuffer.length = 0
+  return true
+})
+
+// IPC: 接收渲染进程日志
+ipcMain.handle('log:from-renderer', (_event, entry: { level: string; message: string; data?: unknown[] }) => {
+  const level = ['error', 'warn', 'info', 'debug', 'verbose'].includes(entry.level)
+    ? (entry.level as LogEntry['level'])
+    : 'info'
+  pushLog(createLogEntry(level, 'renderer', entry.message, entry.data))
 })
 
 app.whenReady().then(async () => {

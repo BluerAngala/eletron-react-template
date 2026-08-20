@@ -80,12 +80,15 @@ const Update = () => {
   )
 
   useEffect(() => {
+    if (!window.ipcRenderer) return
+
     window.ipcRenderer.on('update-can-available', onUpdateCanAvailable)
     window.ipcRenderer.on('update-error', onUpdateError)
     window.ipcRenderer.on('download-progress', onDownloadProgress)
     window.ipcRenderer.on('update-downloaded', onUpdateDownloaded)
 
     return () => {
+      if (!window.ipcRenderer) return
       window.ipcRenderer.off('update-can-available', onUpdateCanAvailable)
       window.ipcRenderer.off('update-error', onUpdateError)
       window.ipcRenderer.off('download-progress', onDownloadProgress)

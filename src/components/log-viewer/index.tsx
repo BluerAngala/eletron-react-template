@@ -1,148 +1,185 @@
-import { useState, useEffect, useRef } from 'react'
-import {
-  RefreshCw,
-  Trash2,
-  FolderOpen,
-  Copy,
-  Check,
-  Search,
-  Download,
-  ChevronDown,
-} from 'lucide-react'
+import { useState, useEffect, useRef, useCallback, useMemo, forwardRef, useImperativeHandle } from 'react'
+import { Search, Terminal, Monitor, Puzzle, MousePointer2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useLanguage } from '@/contexts/LanguageContext'
 
-type LogLevel = 'error' | 'warn' | 'info' | 'debug' | 'all'
+const MAX_LOG_ENTRIES = 2000
 
-interface ParsedLog {
-  raw: string
-  level: LogLevel
-  time: string
-  message: string
+type LogLevel = 'error' | 'warn' | 'info' | 'debug' | 'verbose'
+type LogSource = 'main' | 'renderer' | 'plugin'
+
+const LEVEL_CONFIG: Record<
+  LogLevel,
+  { badge: string; text: string; dot: string; label: string }
+> = {
+  error: {
+    badge: 'bg-red-500/15 text-red-500 border-red-500/30',
+    text: 'text-red-400',
+    dot: 'bg-red-500',
+    label: 'ERROR',
+  },
+  warn: {
+    badge: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
+    text: 'text-amber-400',
+    dot: 'bg-amber-500',
+    label: 'WARN',
+  },
+  info: {
+    badge: 'bg-blue-500/15 text-blue-500 border-blue-500/30',
+    text: 'text-foreground-secondary',
+    dot: 'bg-blue-500',
+    label: 'INFO',
+  },
+  debug: {
+    badge: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
+    text: 'text-foreground-muted',
+    dot: 'bg-slate-400',
+    label: 'DEBUG',
+  },
+  verbose: {
+    badge: 'bg-zinc-500/15 text-zinc-400 border-zinc-500/30',
+    text: 'text-foreground-muted/60',
+    dot: 'bg-zinc-400',
+    label: 'VERB',
+  },
 }
 
-function parseLogLine(line: string): ParsedLog {
-  const timeMatch = line.match(/\[(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3})\]/)
-  const levelMatch = line.match(/\[(error|warn|info|debug|verbose|silly)\]/i)
-
-  let level: LogLevel = 'info'
-  if (levelMatch) {
-    const l = levelMatch[1].toLowerCase()
-    if (l === 'error') level = 'error'
-    else if (l === 'warn') level = 'warn'
-    else if (l === 'info') level = 'info'
-    else level = 'debug'
-  } else if (line.toLowerCase().includes('error')) level = 'error'
-  else if (line.toLowerCase().includes('warn')) level = 'warn'
-
-  return {
-    raw: line,
-    level,
-    time: timeMatch?.[1] ?? '',
-    message: line,
-  }
+const SOURCE_CONFIG: Record<LogSource, { badge: string; icon: React.ReactNode }> = {
+  main: {
+    badge: 'bg-violet-500/15 text-violet-500 border-violet-500/30',
+    icon: <Terminal className="h-3 w-3" />,
+  },
+  renderer: {
+    badge: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30',
+    icon: <Monitor className="h-3 w-3" />,
+  },
+  plugin: {
+    badge: 'bg-orange-500/15 text-orange-500 border-orange-500/30',
+    icon: <Puzzle className="h-3 w-3" />,
+  },
 }
 
-const LEVEL_STYLES: Record<LogLevel, { badge: string; text: string }> = {
-  error: { badge: 'bg-red-500/15 text-red-500', text: 'text-red-400' },
-  warn: { badge: 'bg-amber-500/15 text-amber-500', text: 'text-amber-400' },
-  info: { badge: 'bg-cyan-500/15 text-cyan-500', text: 'text-foreground-secondary' },
-  debug: { badge: 'bg-slate-500/15 text-slate-400', text: 'text-foreground-muted' },
-  all: { badge: '', text: '' },
+const LEVELS: LogLevel[] = ['error', 'warn', 'info', 'debug', 'verbose']
+const SOURCES: LogSource[] = ['main', 'renderer', 'plugin']
+
+export interface LogViewerHandle {
+  refresh: () => Promise<void>
+  copySelected: () => Promise<void>
+  exportLogs: () => void
+  clearLogs: () => Promise<void>
 }
 
-const LEVEL_LABELS: Record<LogLevel, string> = {
-  error: 'ERROR',
-  warn: 'WARN',
-  info: 'INFO',
-  debug: 'DEBUG',
-  all: 'ALL',
+interface LogViewerProps {
+  onCountChange?: (count: string) => void
 }
 
-export function LogViewer() {
+export const LogViewer = forwardRef<LogViewerHandle, LogViewerProps>(function LogViewer(
+  { onCountChange },
+  ref,
+) {
   const { t } = useLanguage()
-  const [logs, setLogs] = useState<ParsedLog[]>([])
+  const [logs, setLogs] = useState<LogEntry[]>([])
   const [logPath, setLogPath] = useState('')
-  const [autoRefresh, setAutoRefresh] = useState(false)
-  const [filter, setFilter] = useState<LogLevel>('all')
+  const [filterLevel, setFilterLevel] = useState<LogLevel | 'all'>('all')
+  const [filterSource, setFilterSource] = useState<LogSource | 'all'>('all')
   const [search, setSearch] = useState('')
-  const [copied, setCopied] = useState(false)
-  const [showFilters, setShowFilters] = useState(false)
+  const [showLevelMenu, setShowLevelMenu] = useState(false)
+  const [showSourceMenu, setShowSourceMenu] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
+  const [lastClickedId, setLastClickedId] = useState<number | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const autoScrollRef = useRef(true)
 
-  const fetchLogs = async () => {
-    try {
-      const content = await window.ipcRenderer.invoke('get-logs', 500)
-      if (typeof content === 'string' && content) {
-        setLogs(content.split('\n').filter(Boolean).map(parseLogLine))
-      }
-    } catch (err) {
-      console.error('Failed to fetch logs:', err)
-    }
-  }
-
-  // 初始加载
+  // 初始加载 + 实时流
   useEffect(() => {
-    let cancelled = false
-    const load = async () => {
-      try {
-        const [content, p] = await Promise.all([
-          window.ipcRenderer.invoke('get-logs', 500),
-          window.ipcRenderer.invoke('get-log-path'),
-        ])
-        if (cancelled) return
-        if (typeof content === 'string' && content) {
-          setLogs(content.split('\n').filter(Boolean).map(parseLogLine))
-        }
-        if (typeof p === 'string') setLogPath(p)
-      } catch (err) {
-        console.error('Failed to fetch logs:', err)
+    window.ipcRenderer.invoke('get-logs').then((entries: LogEntry[]) => {
+      if (Array.isArray(entries) && entries.length > 0) {
+        setLogs(entries)
       }
-    }
-    load()
-    return () => {
-      cancelled = true
-    }
+    })
+    window.ipcRenderer.invoke('get-log-path').then((p: string) => {
+      if (typeof p === 'string') setLogPath(p)
+    })
+
+    const unsub = window.logEvents.onLogEntry((entry) => {
+      setLogs((prev) => {
+        const next = [...prev, entry]
+        if (next.length > MAX_LOG_ENTRIES) {
+          return next.slice(next.length - MAX_LOG_ENTRIES)
+        }
+        return next
+      })
+    })
+
+    return unsub
   }, [])
 
-  // 自动刷新
+  // 自动滚动
   useEffect(() => {
-    if (!autoRefresh) return
-    const timer = setInterval(fetchLogs, 2000)
-    return () => clearInterval(timer)
-  }, [autoRefresh])
-
-  // 自动滚到底部
-  useEffect(() => {
-    if (containerRef.current) {
+    if (autoScrollRef.current && containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight
     }
-  }, [logs, filter, search])
+  }, [logs])
 
-  const filteredLogs = logs.filter((log) => {
-    if (filter !== 'all' && log.level !== filter) return false
-    if (search && !log.raw.toLowerCase().includes(search.toLowerCase())) return false
-    return true
-  })
+  const handleScroll = useCallback(() => {
+    const el = containerRef.current
+    if (!el) return
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 50
+    autoScrollRef.current = atBottom
+  }, [])
 
-  const levelCounts = logs.reduce(
-    (acc, log) => {
-      acc[log.level] = (acc[log.level] || 0) + 1
-      return acc
-    },
-    {} as Record<string, number>,
+  // 过滤
+  const filteredLogs = useMemo(
+    () =>
+      logs.filter((log) => {
+        if (filterLevel !== 'all' && log.level !== filterLevel) return false
+        if (filterSource !== 'all' && log.source !== filterSource) return false
+        if (search && !log.message.toLowerCase().includes(search.toLowerCase())) return false
+        return true
+      }),
+    [logs, filterLevel, filterSource, search],
   )
 
-  const handleCopy = async () => {
-    const text = filteredLogs.map((l) => l.raw).join('\n')
-    await navigator.clipboard.writeText(text)
-    setCopied(true)
-    toast.success(t('log.copied'))
-    setTimeout(() => setCopied(false), 2000)
-  }
+  // 统计
+  const counts = useMemo(() => {
+    const level: Record<string, number> = {}
+    const source: Record<string, number> = {}
+    for (const l of logs) {
+      level[l.level] = (level[l.level] || 0) + 1
+      source[l.source] = (source[l.source] || 0) + 1
+    }
+    return { level, source }
+  }, [logs])
 
-  const handleExport = () => {
-    const text = filteredLogs.map((l) => l.raw).join('\n')
+  // 通知外部计数变化
+  useEffect(() => {
+    onCountChange?.(`${filteredLogs.length}/${logs.length}`)
+  }, [filteredLogs.length, logs.length, onCountChange])
+
+  // 暴露给父组件的方法
+  const refresh = useCallback(async () => {
+    const entries = await window.ipcRenderer.invoke('get-logs')
+    if (Array.isArray(entries)) setLogs(entries)
+    toast.success(t('log.refreshed'))
+  }, [t])
+
+  const copySelected = useCallback(async () => {
+    if (selectedIds.size === 0) {
+      const text = filteredLogs.map((l) => l.message).join('\n')
+      await navigator.clipboard.writeText(text)
+      toast.success(t('log.copied'))
+      return
+    }
+    const text = filteredLogs
+      .filter((l) => selectedIds.has(l.id))
+      .map((l) => l.message)
+      .join('\n')
+    await navigator.clipboard.writeText(text)
+    toast.success(t('log.copied'))
+  }, [selectedIds, filteredLogs, t])
+
+  const exportLogs = useCallback(() => {
+    const text = filteredLogs.map((l) => l.message).join('\n')
     const blob = new Blob([text], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -151,65 +188,73 @@ export function LogViewer() {
     a.click()
     URL.revokeObjectURL(url)
     toast.success(t('log.exported'))
-  }
+  }, [filteredLogs, t])
 
-  const handleClear = () => {
+  const clearLogs = useCallback(async () => {
+    await window.ipcRenderer.invoke('log:clear')
     setLogs([])
+    setSelectedIds(new Set())
     toast.success(t('log.cleared'))
-  }
+  }, [t])
 
-  const handleRefresh = () => {
-    fetchLogs()
-    toast.success(t('log.refreshed'))
+  useImperativeHandle(ref, () => ({ refresh, copySelected, exportLogs, clearLogs }), [
+    refresh,
+    copySelected,
+    exportLogs,
+    clearLogs,
+  ])
+
+  // 选择逻辑
+  const handleSelect = useCallback(
+    (id: number, event: React.MouseEvent) => {
+      if (event.ctrlKey || event.metaKey) {
+        setSelectedIds((prev) => {
+          const next = new Set(prev)
+          if (next.has(id)) next.delete(id)
+          else next.add(id)
+          return next
+        })
+        setLastClickedId(id)
+      } else if (event.shiftKey && lastClickedId !== null) {
+        const allIds = filteredLogs.map((l) => l.id)
+        const startIdx = allIds.indexOf(lastClickedId)
+        const endIdx = allIds.indexOf(id)
+        if (startIdx !== -1 && endIdx !== -1) {
+          const [min, max] = startIdx < endIdx ? [startIdx, endIdx] : [endIdx, startIdx]
+          const range = new Set(allIds.slice(min, max + 1))
+          setSelectedIds(range)
+        }
+      } else {
+        setSelectedIds(new Set([id]))
+        setLastClickedId(id)
+      }
+    },
+    [lastClickedId, filteredLogs],
+  )
+
+  // 键盘快捷键 Ctrl+C
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'c' && selectedIds.size > 0) {
+        e.preventDefault()
+        copySelected()
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [copySelected, selectedIds])
+
+  const selectedCount = selectedIds.size
+
+  const clearSelection = () => {
+    setSelectedIds(new Set())
+    setLastClickedId(null)
   }
 
   return (
-    <section className="space-y-4">
-      {/* 标题栏 */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-foreground-muted">
-            {t('log.title')}
-          </h3>
-          <span className="rounded-full bg-surface-hover px-2.5 py-0.5 text-xs font-medium text-foreground-muted">
-            {filteredLogs.length}/{logs.length}
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={handleRefresh}
-            className="rounded-lg bg-surface-hover p-2 text-foreground-muted transition hover:bg-border-default hover:text-foreground active:scale-95"
-            title={t('log.refresh')}
-          >
-            <RefreshCw className="h-4 w-4" />
-          </button>
-          <button
-            onClick={handleCopy}
-            className="rounded-lg bg-surface-hover p-2 text-foreground-muted transition hover:bg-border-default hover:text-foreground active:scale-95"
-            title={t('log.copy')}
-          >
-            {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-          </button>
-          <button
-            onClick={handleExport}
-            className="rounded-lg bg-surface-hover p-2 text-foreground-muted transition hover:bg-border-default hover:text-foreground active:scale-95"
-            title={t('log.export')}
-          >
-            <Download className="h-4 w-4" />
-          </button>
-          <button
-            onClick={handleClear}
-            className="rounded-lg bg-surface-hover p-2 text-foreground-muted transition hover:bg-red-500/10 hover:text-red-500 active:scale-95"
-            title={t('log.clear')}
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* 工具栏 */}
+    <div className="space-y-3">
+      {/* 筛选栏 */}
       <div className="flex items-center gap-3">
-        {/* 搜索 */}
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-foreground-muted" />
           <input
@@ -224,28 +269,32 @@ export function LogViewer() {
         {/* 级别筛选 */}
         <div className="relative">
           <button
-            onClick={() => setShowFilters((v) => !v)}
+            onClick={() => setShowLevelMenu((v) => !v)}
             className="flex items-center gap-2 rounded-lg border border-border-default bg-surface px-3 py-2 text-sm text-foreground-secondary transition hover:border-accent/50"
           >
-            {filter === 'all' ? t('log.allLevels') : LEVEL_LABELS[filter]}
-            <ChevronDown className="h-3.5 w-3.5" />
+            <span
+              className={`h-2 w-2 rounded-full ${filterLevel === 'all' ? 'bg-foreground-muted' : LEVEL_CONFIG[filterLevel as LogLevel].dot}`}
+            />
+            {filterLevel === 'all' ? t('log.allLevels') : LEVEL_CONFIG[filterLevel].label}
           </button>
-          {showFilters && (
+          {showLevelMenu && (
             <div className="absolute right-0 top-full z-10 mt-1 w-36 overflow-hidden rounded-xl border border-border-default bg-surface shadow-lg">
-              {(['all', 'error', 'warn', 'info', 'debug'] as LogLevel[]).map((level) => (
+              {(['all', ...LEVELS] as const).map((level) => (
                 <button
                   key={level}
                   onClick={() => {
-                    setFilter(level)
-                    setShowFilters(false)
+                    setFilterLevel(level)
+                    setShowLevelMenu(false)
                   }}
                   className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition hover:bg-surface-hover ${
-                    filter === level ? 'text-accent' : 'text-foreground-secondary'
+                    filterLevel === level ? 'text-accent' : 'text-foreground-secondary'
                   }`}
                 >
-                  <span>{level === 'all' ? t('log.allLevels') : LEVEL_LABELS[level]}</span>
+                  <span>
+                    {level === 'all' ? t('log.allLevels') : LEVEL_CONFIG[level].label}
+                  </span>
                   {level !== 'all' && (
-                    <span className="text-xs text-foreground-muted">{levelCounts[level] || 0}</span>
+                    <span className="text-xs text-foreground-muted">{counts.level[level] || 0}</span>
                   )}
                 </button>
               ))}
@@ -253,26 +302,67 @@ export function LogViewer() {
           )}
         </div>
 
-        {/* 自动刷新 */}
-        <button
-          onClick={() => setAutoRefresh((v) => !v)}
-          className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition active:scale-95 ${
-            autoRefresh
-              ? 'bg-accent text-accent-foreground shadow-sm shadow-accent/20'
-              : 'bg-surface-hover text-foreground-secondary hover:bg-border-default'
-          }`}
-        >
-          <span
-            className={`h-2 w-2 rounded-full ${autoRefresh ? 'bg-white animate-pulse' : 'bg-foreground-muted'}`}
-          />
-          {autoRefresh ? t('log.auto') : t('log.manual')}
-        </button>
+        {/* 来源筛选 */}
+        <div className="relative">
+          <button
+            onClick={() => setShowSourceMenu((v) => !v)}
+            className="flex items-center gap-2 rounded-lg border border-border-default bg-surface px-3 py-2 text-sm text-foreground-secondary transition hover:border-accent/50"
+          >
+            {filterSource === 'all' ? (
+              <>
+                <Terminal className="h-3.5 w-3.5" />
+                <span>全部来源</span>
+              </>
+            ) : (
+              <>
+                {SOURCE_CONFIG[filterSource].icon}
+                <span className="capitalize">{filterSource}</span>
+              </>
+            )}
+          </button>
+          {showSourceMenu && (
+            <div className="absolute right-0 top-full z-10 mt-1 w-36 overflow-hidden rounded-xl border border-border-default bg-surface shadow-lg">
+              {(['all', ...SOURCES] as const).map((source) => (
+                <button
+                  key={source}
+                  onClick={() => {
+                    setFilterSource(source)
+                    setShowSourceMenu(false)
+                  }}
+                  className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm transition hover:bg-surface-hover ${
+                    filterSource === source ? 'text-accent' : 'text-foreground-secondary'
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    {source !== 'all' && SOURCE_CONFIG[source].icon}
+                    <span className="capitalize">{source === 'all' ? '全部' : source}</span>
+                  </span>
+                  {source !== 'all' && (
+                    <span className="text-xs text-foreground-muted">{counts.source[source] || 0}</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {selectedCount > 0 && (
+          <span className="flex items-center gap-1.5 rounded-full bg-accent/10 px-2.5 py-1.5 text-xs font-medium text-accent">
+            <MousePointer2 className="h-3 w-3" />
+            {selectedCount} 条选中
+            <button
+              onClick={clearSelection}
+              className="ml-1 rounded-full bg-accent/20 px-1 text-[10px] hover:bg-accent/30"
+            >
+              ×
+            </button>
+          </span>
+        )}
       </div>
 
       {/* 日志路径 */}
       {logPath && (
         <div className="flex items-center gap-2 rounded-lg bg-surface px-3 py-2 text-xs text-foreground-muted">
-          <FolderOpen className="h-3.5 w-3.5 shrink-0" />
           <span className="truncate font-mono">{logPath}</span>
         </div>
       )}
@@ -280,36 +370,59 @@ export function LogViewer() {
       {/* 日志内容 */}
       <div
         ref={containerRef}
+        onScroll={handleScroll}
         className="h-80 resize-y overflow-auto rounded-xl border border-border-default bg-surface [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-foreground-muted/40 [&::-webkit-scrollbar-thumb:hover]:bg-foreground-muted/70 [&::-webkit-scrollbar-track]:bg-transparent"
         style={{ minHeight: '200px', maxHeight: '600px' }}
       >
         {filteredLogs.length > 0 ? (
           <div className="divide-y divide-border-default">
-            {filteredLogs.map((log, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-3 px-4 py-2.5 transition hover:bg-surface-hover"
-              >
-                {/* 级别徽标 */}
-                <span
-                  className={`mt-0.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${LEVEL_STYLES[log.level].badge}`}
+            {filteredLogs.map((log) => {
+              const isSelected = selectedIds.has(log.id)
+              const levelCfg = LEVEL_CONFIG[log.level]
+              const sourceCfg = SOURCE_CONFIG[log.source]
+              return (
+                <div
+                  key={log.id}
+                  onClick={(e) => handleSelect(log.id, e)}
+                  className={`flex cursor-pointer items-start gap-2 px-3 py-2 transition ${
+                    isSelected ? 'bg-accent/10' : 'hover:bg-surface-hover'
+                  }`}
                 >
-                  {LEVEL_LABELS[log.level]}
-                </span>
-                {/* 时间 */}
-                {log.time && (
-                  <span className="mt-0.5 shrink-0 font-mono text-[11px] text-foreground-muted">
-                    {log.time}
+                  <div className="mt-1.5 flex w-3 shrink-0 items-center justify-center">
+                    {isSelected ? (
+                      <div className="h-2 w-2 rounded-sm bg-accent" />
+                    ) : (
+                      <div className={`h-2 w-2 rounded-full ${levelCfg.dot} opacity-40`} />
+                    )}
+                  </div>
+
+                  <span
+                    className={`mt-0.5 shrink-0 rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase ${levelCfg.badge}`}
+                  >
+                    {levelCfg.label}
                   </span>
-                )}
-                {/* 内容 */}
-                <span
-                  className={`min-w-0 flex-1 break-all font-mono text-xs leading-6 ${LEVEL_STYLES[log.level].text}`}
-                >
-                  {log.message}
-                </span>
-              </div>
-            ))}
+
+                  <span
+                    className={`mt-0.5 flex shrink-0 items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-medium uppercase ${sourceCfg.badge}`}
+                  >
+                    {sourceCfg.icon}
+                    {log.source}
+                  </span>
+
+                  {log.timestamp && (
+                    <span className="mt-0.5 shrink-0 font-mono text-[11px] text-foreground-muted/70">
+                      {log.timestamp}
+                    </span>
+                  )}
+
+                  <span
+                    className={`min-w-0 flex-1 break-all font-mono text-xs leading-6 ${levelCfg.text}`}
+                  >
+                    {log.message}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-12 text-foreground-muted">
@@ -318,6 +431,6 @@ export function LogViewer() {
           </div>
         )}
       </div>
-    </section>
+    </div>
   )
-}
+})

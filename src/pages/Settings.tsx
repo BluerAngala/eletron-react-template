@@ -1,32 +1,18 @@
-import { Sun, Moon, Monitor } from 'lucide-react'
-import { useTheme } from '@/contexts/ThemeContext'
+import { useState, useRef } from 'react'
+import { ChevronDown, ChevronRight, RefreshCw, Copy, Download, Trash2 } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
-import { LogViewer } from '@/components/log-viewer'
+import { LogViewer, type LogViewerHandle } from '@/components/log-viewer'
 
 export function Settings() {
-  const { theme, setTheme } = useTheme()
   const { t } = useLanguage()
+  const [logExpanded, setLogExpanded] = useState(true)
+  const [logCount, setLogCount] = useState('0/0')
+  const logRef = useRef<LogViewerHandle>(null)
 
-  const themes = [
-    {
-      value: 'system' as const,
-      icon: Monitor,
-      label: t('settings.theme.system'),
-      desc: t('settings.theme.system.desc'),
-    },
-    {
-      value: 'light' as const,
-      icon: Sun,
-      label: t('settings.theme.light'),
-      desc: t('settings.theme.light.desc'),
-    },
-    {
-      value: 'dark' as const,
-      icon: Moon,
-      label: t('settings.theme.dark'),
-      desc: t('settings.theme.dark.desc'),
-    },
-  ]
+  const handleRefresh = () => logRef.current?.refresh()
+  const handleCopy = () => logRef.current?.copySelected()
+  const handleExport = () => logRef.current?.exportLogs()
+  const handleClear = () => logRef.current?.clearLogs()
 
   return (
     <div className="space-y-8">
@@ -35,42 +21,60 @@ export function Settings() {
         <p className="mt-1 text-sm text-foreground-muted">{t('settings.desc')}</p>
       </div>
 
-      {/* 主题设置 */}
+      {/* 应用日志（可折叠） */}
       <section className="space-y-4">
-        <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-foreground-muted">
-          {t('settings.theme.title')}
-        </h3>
-        <div className="grid gap-3 sm:grid-cols-3">
-          {themes.map(({ value, icon: Icon, label, desc }) => (
-            <button
-              key={value}
-              onClick={() => setTheme(value)}
-              className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-6 transition-all ${
-                theme === value
-                  ? 'border-accent bg-accent-subtle'
-                  : 'border-border-default bg-surface hover:border-foreground-muted'
-              }`}
-            >
-              <Icon
-                className={`h-8 w-8 ${theme === value ? 'text-accent' : 'text-foreground-muted'}`}
-              />
-              <div className="text-center">
-                <div
-                  className={`text-sm font-medium ${
-                    theme === value ? 'text-accent' : 'text-foreground-secondary'
-                  }`}
-                >
-                  {label}
-                </div>
-                <div className="mt-1 text-xs text-foreground-muted">{desc}</div>
-              </div>
-            </button>
-          ))}
-        </div>
-      </section>
+        {/* 折叠标题栏 + 操作按钮 */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setLogExpanded((v) => !v)}
+            className="flex items-center gap-2 text-sm font-medium uppercase tracking-[0.2em] text-foreground-muted transition hover:text-foreground"
+          >
+            {logExpanded ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+            <span>{t('log.title')}</span>
+          </button>
 
-      {/* 日志查看 */}
-      <LogViewer />
+          <span className="rounded-full bg-surface-hover px-2.5 py-0.5 text-xs font-medium text-foreground-muted">
+            {logCount}
+          </span>
+
+          <div className="ml-auto flex items-center gap-1.5">
+            <button
+              onClick={handleRefresh}
+              className="rounded-lg bg-surface-hover p-1.5 text-foreground-muted transition hover:bg-border-default hover:text-foreground active:scale-95"
+              title={t('log.refresh')}
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={handleCopy}
+              className="rounded-lg bg-surface-hover p-1.5 text-foreground-muted transition hover:bg-border-default hover:text-foreground active:scale-95"
+              title={t('log.copy')}
+            >
+              <Copy className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={handleExport}
+              className="rounded-lg bg-surface-hover p-1.5 text-foreground-muted transition hover:bg-border-default hover:text-foreground active:scale-95"
+              title={t('log.export')}
+            >
+              <Download className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={handleClear}
+              className="rounded-lg bg-surface-hover p-1.5 text-foreground-muted transition hover:bg-red-500/10 hover:text-red-500 active:scale-95"
+              title={t('log.clear')}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {logExpanded && <LogViewer ref={logRef} onCountChange={setLogCount} />}
+      </section>
     </div>
   )
 }

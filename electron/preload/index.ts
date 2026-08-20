@@ -23,6 +23,16 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // ...
 })
 
+// --------- 日志事件监听 ---------
+contextBridge.exposeInMainWorld('logEvents', {
+  onLogEntry: (cb: (entry: unknown) => void) => {
+    const handler = (_e: unknown, entry: unknown) => cb(entry)
+    ipcRenderer.on('log-entry', handler)
+    return () => ipcRenderer.removeListener('log-entry', handler)
+  },
+  sendLog: (entry: unknown) => ipcRenderer.invoke('log:from-renderer', entry),
+})
+
 // --------- 插件市场 / 插件管理 API ---------
 contextBridge.exposeInMainWorld('plugin', {
   marketList: () => ipcRenderer.invoke('plugin:market-list'),

@@ -92,14 +92,7 @@ const enUS = {
 
   // Settings
   'settings.title': 'Settings',
-  'settings.desc': 'Manage app appearance and preferences',
-  'settings.theme.title': 'Appearance',
-  'settings.theme.system': 'System',
-  'settings.theme.system.desc': 'Match operating system theme automatically',
-  'settings.theme.light': 'Light mode',
-  'settings.theme.light.desc': 'Bright and clean interface style',
-  'settings.theme.dark': 'Dark mode',
-  'settings.theme.dark.desc': 'Comfortable dark style for your eyes',
+  'settings.desc': 'Manage app preferences',
 
   // About
   'about.title': 'About',

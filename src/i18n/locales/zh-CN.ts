@@ -89,14 +89,7 @@ const zhCN = {
 
   // 设置页
   'settings.title': '设置',
-  'settings.desc': '管理应用外观和偏好',
-  'settings.theme.title': '外观主题',
-  'settings.theme.system': '跟随系统',
-  'settings.theme.system.desc': '自动匹配操作系统主题',
-  'settings.theme.light': '浅色模式',
-  'settings.theme.light.desc': '明亮清爽的界面风格',
-  'settings.theme.dark': '深色模式',
-  'settings.theme.dark.desc': '护眼舒适的暗色风格',
+  'settings.desc': '管理应用偏好',
 
   // 关于页
   'about.title': '关于',
