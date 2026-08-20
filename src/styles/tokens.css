@@ -18,17 +18,17 @@
 }
 
 html.dark {
-  /* ── 暗色主题（暖石 Warm Stone）── */
-  --token-bg: #141310;
-  --token-surface: #1f1c18;
-  --token-surface-hover: #2a2620;
-  --token-text: #f0ebe3;
-  --token-text-secondary: #c8bfb0;
-  --token-text-muted: #7a7264;
-  --token-border: #2a2620;
-  --token-accent: #e8e2d8;
-  --token-accent-text: #1a1a1a;
-  --token-accent-subtle: #2a2620;
+  /* ── 暗色主题（纯黑 Pure Black）── */
+  --token-bg: #000000;
+  --token-surface: #0a0a0a;
+  --token-surface-hover: #1a1a1a;
+  --token-text: #ffffff;
+  --token-text-secondary: #e0e0e0;
+  --token-text-muted: #888888;
+  --token-border: #222222;
+  --token-accent: #ffffff;
+  --token-accent-text: #000000;
+  --token-accent-subtle: #1a1a1a;
 }
 
 /* 示例：新增主题只需这样
