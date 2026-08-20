@@ -239,12 +239,15 @@ ipcMain.handle('log:clear', () => {
 })
 
 // IPC: 接收渲染进程日志
-ipcMain.handle('log:from-renderer', (_event, entry: { level: string; message: string; data?: unknown[] }) => {
-  const level = ['error', 'warn', 'info', 'debug', 'verbose'].includes(entry.level)
-    ? (entry.level as LogEntry['level'])
-    : 'info'
-  pushLog(createLogEntry(level, 'renderer', entry.message, entry.data))
-})
+ipcMain.handle(
+  'log:from-renderer',
+  (_event, entry: { level: string; message: string; data?: unknown[] }) => {
+    const level = ['error', 'warn', 'info', 'debug', 'verbose'].includes(entry.level)
+      ? (entry.level as LogEntry['level'])
+      : 'info'
+    pushLog(createLogEntry(level, 'renderer', entry.message, entry.data))
+  },
+)
 
 app.whenReady().then(async () => {
   // 初始化插件子系统（市场/安装/运行），主窗口就绪后启用事件广播

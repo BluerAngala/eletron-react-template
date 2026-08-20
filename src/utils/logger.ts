@@ -21,7 +21,9 @@ function captureConsole(level: string): void {
     originalConsole[method]?.(...args)
     // 发送到主进程
     try {
-      const message = args.map((a) => (typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a))).join(' ')
+      const message = args
+        .map((a) => (typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)))
+        .join(' ')
       window.logEvents?.sendLog({
         level: LOG_LEVEL_MAP[level] || 'info',
         message,

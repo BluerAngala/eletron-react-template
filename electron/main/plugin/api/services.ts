@@ -167,7 +167,9 @@ function registerZToolsStubs(): void {
 
   // ZBrowser
   ipcMain.handle('runZBrowser', async () => ({ success: false, error: '当前环境不支持 ZBrowser' }))
-  ipcMain.on('getIdleZBrowsers', (event) => { event.returnValue = [] })
+  ipcMain.on('getIdleZBrowsers', (event) => {
+    event.returnValue = []
+  })
   ipcMain.handle('setZBrowserProxy', async () => false)
   ipcMain.handle('clearZBrowserCache', async () => false)
   ipcMain.handle('ubrowserLogin', async () => ({ success: false }))
@@ -191,8 +193,12 @@ function registerZToolsStubs(): void {
   ipcMain.handle('clipboard:update-config', async () => false)
 
   // 事件监听（stub，防止插件报错）
-  ipcMain.on('main-push-query', (event) => { event.returnValue = [] })
-  ipcMain.on('main-push-select', (event) => { event.returnValue = false })
+  ipcMain.on('main-push-query', (event) => {
+    event.returnValue = []
+  })
+  ipcMain.on('main-push-select', (event) => {
+    event.returnValue = false
+  })
   ipcMain.on('hotkey-recorded', () => {})
   ipcMain.on('update-window-material', () => {})
   ipcMain.on('update-theme-info', () => {})
@@ -201,8 +207,12 @@ function registerZToolsStubs(): void {
   ipcMain.on('apps-changed', () => {})
   ipcMain.on('command-aliases-changed', () => {})
   ipcMain.on('plugin-detach', () => {})
-  ipcMain.on('call-plugin-method', (event) => { event.returnValue = null })
-  ipcMain.on('get-plugin-mode', (event) => { event.returnValue = null })
+  ipcMain.on('call-plugin-method', (event) => {
+    event.returnValue = null
+  })
+  ipcMain.on('get-plugin-mode', (event) => {
+    event.returnValue = null
+  })
   ipcMain.on('activate-list-mode', () => {})
   ipcMain.on('sub-input-change', () => {})
   ipcMain.on('sync:status-changed', () => {})

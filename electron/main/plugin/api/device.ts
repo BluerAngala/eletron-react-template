@@ -82,14 +82,14 @@ export class PluginDeviceAPI {
         // macOS: 使用 IOPlatformUUID
         const output = execSync(
           "ioreg -rd1 -c IOPlatformExpertDevice | grep IOPlatformUUID | awk '{print $3}' | tr -d '\"'",
-          { encoding: 'utf8' }
+          { encoding: 'utf8' },
         )
         return output.trim()
       } else if (platform === 'win32') {
         // Windows: 使用 PowerShell 获取主板 UUID（wmic 已弃用）
         const output = execSync(
           'powershell -Command "(Get-CimInstance Win32_ComputerSystemProduct).UUID"',
-          { encoding: 'utf8' }
+          { encoding: 'utf8' },
         )
         const uuid = output.trim()
         if (uuid) {

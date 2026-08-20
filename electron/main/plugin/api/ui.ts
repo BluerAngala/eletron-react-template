@@ -13,9 +13,15 @@ class PluginUIAPI {
     ipcMain.handle('set-sub-input', async () => false)
     ipcMain.handle('remove-sub-input', async () => false)
     ipcMain.handle('set-sub-input-value', async () => false)
-    ipcMain.on('sub-input-focus', (event) => { event.returnValue = false })
-    ipcMain.on('sub-input-blur', (event) => { event.returnValue = false })
-    ipcMain.on('sub-input-select', (event) => { event.returnValue = false })
+    ipcMain.on('sub-input-focus', (event) => {
+      event.returnValue = false
+    })
+    ipcMain.on('sub-input-blur', (event) => {
+      event.returnValue = false
+    })
+    ipcMain.on('sub-input-select', (event) => {
+      event.returnValue = false
+    })
     ipcMain.handle('set-expend-height', async () => false)
   }
 }

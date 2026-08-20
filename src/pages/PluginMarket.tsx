@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
-import { Search, RefreshCw, Boxes, Download, Check, Loader2, AlertTriangle, Play } from 'lucide-react'
+import { Search, RefreshCw, Boxes, Download, Loader2, AlertTriangle, Play } from 'lucide-react'
 import { toast } from 'sonner'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { PluginDetailModal, type PluginDetailData } from '@/components/plugin/PluginDetailModal'

@@ -144,7 +144,7 @@ interface NativeAddon {
   simulatePaste: () => boolean
   simulateKeyboardTap: (key: string, ...modifiers: string[]) => boolean
   ensureOptimizedShortcutListener: (
-    callback: (payload: { shortcut: string; primed: boolean }) => void
+    callback: (payload: { shortcut: string; primed: boolean }) => void,
   ) => void
   stopOptimizedShortcutListener: () => void
   registerOptimizedShortcut: (shortcut: string) => { success: boolean; error?: string }
@@ -152,11 +152,11 @@ interface NativeAddon {
   getOptimizedShortcutCount: () => number
   primeScreenshotFrame: () => boolean
   startRegionCapture: (
-    callback: (result: { success: boolean; width?: number; height?: number }) => void
+    callback: (result: { success: boolean; width?: number; height?: number }) => void,
   ) => void
   startRegionCaptureWithPrimedFrame: (
     options: ScreenCaptureOptions,
-    callback: (result: ScreenCaptureResult) => void
+    callback: (result: ScreenCaptureResult) => void,
   ) => void
   getClipboardFiles: () => ClipboardFile[]
   setClipboardFiles: (files: Array<string | { path: string }>) => boolean
@@ -167,7 +167,7 @@ interface NativeAddon {
   startMouseMonitor: (
     buttonType: MouseButtonType,
     longPressMs: number,
-    callback: () => void | { shouldBlock?: boolean }
+    callback: () => void | { shouldBlock?: boolean },
   ) => void
   stopMouseMonitor: () => void
   getUwpApps: () => UwpAppInfo[]
@@ -178,7 +178,7 @@ interface NativeAddon {
   scanWindowsShortcuts: (
     scanPaths: string[],
     rootScanPaths: string[],
-    skipFolders: string[]
+    skipFolders: string[],
   ) => WindowsShortcutInfo[]
   startColorPicker: (callback: (result: { success: boolean; hex: string | null }) => void) => void
   stopColorPicker: () => void
@@ -196,7 +196,7 @@ interface NativeAddon {
   readBrowserWindowUrl: (
     browserName: string,
     hwnd: number,
-    callback: (url: string | null) => void
+    callback: (url: string | null) => void,
   ) => void
   /**
    * 获取当前选中的内容（支持文本、文件、图像）
@@ -832,7 +832,7 @@ export class MouseMonitor {
   static start(
     buttonType: MouseButtonType,
     longPressMs: number,
-    callback: () => MouseMonitorResult
+    callback: () => MouseMonitorResult,
   ): void {
     if (MouseMonitor._isMonitoring) {
       throw new Error('Mouse monitor is already running')
@@ -1007,7 +1007,7 @@ export class ScreenCapture {
    */
   static start(
     options: ScreenCaptureOptions | ((result: ScreenCaptureResult) => void),
-    callback?: (result: ScreenCaptureResult) => void
+    callback?: (result: ScreenCaptureResult) => void,
   ): void {
     if (platform === 'darwin') {
       // macOS 暂不支持
@@ -1159,7 +1159,7 @@ export class WindowsShortcutScanner {
   static scan(
     scanPaths: string[],
     rootScanPaths: string[],
-    skipFolders: string[]
+    skipFolders: string[],
   ): Promise<WindowsShortcutInfo[]> {
     if (platform !== 'win32') {
       throw new Error('WindowsShortcutScanner is only supported on Windows')
@@ -1177,15 +1177,15 @@ export class WindowsShortcutScanner {
             process.resourcesPath,
             'app.asar.unpacked',
             'resources',
-            'windows-shortcut-scanner-runner.cjs'
+            'windows-shortcut-scanner-runner.cjs',
           )
         : path.join(app.getAppPath(), 'resources', 'windows-shortcut-scanner-runner.cjs')
       const child = fork(runnerPath, [winZToolsNative], {
         env: {
           ...process.env,
-          ELECTRON_RUN_AS_NODE: '1'
+          ELECTRON_RUN_AS_NODE: '1',
         },
-        stdio: ['ignore', 'ignore', 'pipe', 'ipc']
+        stdio: ['ignore', 'ignore', 'pipe', 'ipc'],
       })
       let settled = false
 
@@ -1200,7 +1200,7 @@ export class WindowsShortcutScanner {
       const finish = (
         error: Error | null,
         entries: WindowsShortcutInfo[] = [],
-        nativeElapsedMs?: number
+        nativeElapsedMs?: number,
       ): void => {
         if (settled) return
         settled = true
@@ -1214,7 +1214,7 @@ export class WindowsShortcutScanner {
             ? `，native 扫描 ${nativeElapsedMs.toFixed(2)} ms`
             : ''
         console.log(
-          `[WindowsShortcutScanner] 子进程扫描 ${resultLabel}，总耗时 ${elapsedMs.toFixed(2)} ms${nativeLabel}`
+          `[WindowsShortcutScanner] 子进程扫描 ${resultLabel}，总耗时 ${elapsedMs.toFixed(2)} ms${nativeLabel}`,
         )
 
         child.removeAllListeners('message')
@@ -1250,8 +1250,8 @@ export class WindowsShortcutScanner {
       child.once('exit', (code, signal) => {
         finish(
           new Error(
-            `Windows shortcut scanner exited before returning a result: code=${code}, signal=${signal}`
-          )
+            `Windows shortcut scanner exited before returning a result: code=${code}, signal=${signal}`,
+          ),
         )
       })
 
@@ -1275,7 +1275,7 @@ export class WindowsShortcutScanner {
         finish(
           new Error(response.error || 'Windows shortcut scanner failed'),
           [],
-          response.nativeElapsedMs
+          response.nativeElapsedMs,
         )
       })
 

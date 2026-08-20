@@ -63,23 +63,32 @@ export class PluginInputAPI {
       }
     })
 
-    ipcMain.handle('stop-find-in-page', (event, action: 'clearSelection' | 'keepSelection' | 'activateSelection') => {
-      try {
-        event.sender.stopFindInPage(action)
-        return { success: true }
-      } catch {
-        return { success: false }
-      }
-    })
+    ipcMain.handle(
+      'stop-find-in-page',
+      (event, action: 'clearSelection' | 'keepSelection' | 'activateSelection') => {
+        try {
+          event.sender.stopFindInPage(action)
+          return { success: true }
+        } catch {
+          return { success: false }
+        }
+      },
+    )
 
     ipcMain.on('hide-main-window-paste-text', (event, text: string) => {
-      if (typeof text !== 'string') { event.returnValue = false; return }
+      if (typeof text !== 'string') {
+        event.returnValue = false
+        return
+      }
       clipboard.writeText(String(text))
       event.returnValue = true
     })
 
     ipcMain.on('hide-main-window-paste-image', (event, img: string | Uint8Array) => {
-      if (!img) { event.returnValue = false; return }
+      if (!img) {
+        event.returnValue = false
+        return
+      }
       let nativeImg: Electron.NativeImage | undefined
       if (typeof img === 'string') {
         if (/^data:image\//.test(img)) {
@@ -99,16 +108,25 @@ export class PluginInputAPI {
     })
 
     ipcMain.on('hide-main-window-paste-file', (event, filePaths: string | string[]) => {
-      if (!filePaths) { event.returnValue = false; return }
+      if (!filePaths) {
+        event.returnValue = false
+        return
+      }
       let files = Array.isArray(filePaths) ? filePaths : [filePaths]
       files = files.filter((f) => fs.existsSync(f))
-      if (files.length === 0) { event.returnValue = false; return }
+      if (files.length === 0) {
+        event.returnValue = false
+        return
+      }
       clipboard.writeBuffer('public.file-url', Buffer.from(files.join('\n')))
       event.returnValue = true
     })
 
     ipcMain.on('hide-main-window-type-string', (event, text: string) => {
-      if (typeof text !== 'string') { event.returnValue = false; return }
+      if (typeof text !== 'string') {
+        event.returnValue = false
+        return
+      }
       // 写入剪贴板而非模拟键入（缺少原生模块时唯一可行的方案）
       clipboard.writeText(text)
       event.returnValue = true

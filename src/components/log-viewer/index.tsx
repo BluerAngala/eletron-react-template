@@ -1,4 +1,12 @@
-import { useState, useEffect, useRef, useCallback, useMemo, forwardRef, useImperativeHandle } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  forwardRef,
+  useImperativeHandle,
+} from 'react'
 import { Search, Terminal, Monitor, Puzzle, MousePointer2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -8,41 +16,39 @@ const MAX_LOG_ENTRIES = 2000
 type LogLevel = 'error' | 'warn' | 'info' | 'debug' | 'verbose'
 type LogSource = 'main' | 'renderer' | 'plugin'
 
-const LEVEL_CONFIG: Record<
-  LogLevel,
-  { badge: string; text: string; dot: string; label: string }
-> = {
-  error: {
-    badge: 'bg-red-500/15 text-red-500 border-red-500/30',
-    text: 'text-red-400',
-    dot: 'bg-red-500',
-    label: 'ERROR',
-  },
-  warn: {
-    badge: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
-    text: 'text-amber-400',
-    dot: 'bg-amber-500',
-    label: 'WARN',
-  },
-  info: {
-    badge: 'bg-blue-500/15 text-blue-500 border-blue-500/30',
-    text: 'text-foreground-secondary',
-    dot: 'bg-blue-500',
-    label: 'INFO',
-  },
-  debug: {
-    badge: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
-    text: 'text-foreground-muted',
-    dot: 'bg-slate-400',
-    label: 'DEBUG',
-  },
-  verbose: {
-    badge: 'bg-zinc-500/15 text-zinc-400 border-zinc-500/30',
-    text: 'text-foreground-muted/60',
-    dot: 'bg-zinc-400',
-    label: 'VERB',
-  },
-}
+const LEVEL_CONFIG: Record<LogLevel, { badge: string; text: string; dot: string; label: string }> =
+  {
+    error: {
+      badge: 'bg-red-500/15 text-red-500 border-red-500/30',
+      text: 'text-red-400',
+      dot: 'bg-red-500',
+      label: 'ERROR',
+    },
+    warn: {
+      badge: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
+      text: 'text-amber-400',
+      dot: 'bg-amber-500',
+      label: 'WARN',
+    },
+    info: {
+      badge: 'bg-blue-500/15 text-blue-500 border-blue-500/30',
+      text: 'text-foreground-secondary',
+      dot: 'bg-blue-500',
+      label: 'INFO',
+    },
+    debug: {
+      badge: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
+      text: 'text-foreground-muted',
+      dot: 'bg-slate-400',
+      label: 'DEBUG',
+    },
+    verbose: {
+      badge: 'bg-zinc-500/15 text-zinc-400 border-zinc-500/30',
+      text: 'text-foreground-muted/60',
+      dot: 'bg-zinc-400',
+      label: 'VERB',
+    },
+  }
 
 const SOURCE_CONFIG: Record<LogSource, { badge: string; icon: React.ReactNode }> = {
   main: {
@@ -290,11 +296,11 @@ export const LogViewer = forwardRef<LogViewerHandle, LogViewerProps>(function Lo
                     filterLevel === level ? 'text-accent' : 'text-foreground-secondary'
                   }`}
                 >
-                  <span>
-                    {level === 'all' ? t('log.allLevels') : LEVEL_CONFIG[level].label}
-                  </span>
+                  <span>{level === 'all' ? t('log.allLevels') : LEVEL_CONFIG[level].label}</span>
                   {level !== 'all' && (
-                    <span className="text-xs text-foreground-muted">{counts.level[level] || 0}</span>
+                    <span className="text-xs text-foreground-muted">
+                      {counts.level[level] || 0}
+                    </span>
                   )}
                 </button>
               ))}
@@ -338,7 +344,9 @@ export const LogViewer = forwardRef<LogViewerHandle, LogViewerProps>(function Lo
                     <span className="capitalize">{source === 'all' ? '全部' : source}</span>
                   </span>
                   {source !== 'all' && (
-                    <span className="text-xs text-foreground-muted">{counts.source[source] || 0}</span>
+                    <span className="text-xs text-foreground-muted">
+                      {counts.source[source] || 0}
+                    </span>
                   )}
                 </button>
               ))}

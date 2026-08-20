@@ -34,14 +34,17 @@ export class PluginScreenAPI {
       event.returnValue = screen.dipToScreenPoint(point)
     })
 
-    ipcMain.on('dip-to-screen-rect', (event, rect: { x: number; y: number; width: number; height: number }) => {
-      if (process.platform === 'darwin') {
-        event.returnValue = rect
-        return
-      }
-      const win = BrowserWindow.fromWebContents(event.sender)
-      event.returnValue = win ? screen.dipToScreenRect(win, rect) : rect
-    })
+    ipcMain.on(
+      'dip-to-screen-rect',
+      (event, rect: { x: number; y: number; width: number; height: number }) => {
+        if (process.platform === 'darwin') {
+          event.returnValue = rect
+          return
+        }
+        const win = BrowserWindow.fromWebContents(event.sender)
+        event.returnValue = win ? screen.dipToScreenRect(win, rect) : rect
+      },
+    )
 
     ipcMain.on('screen-to-dip-point', (event, point: Electron.Point) => {
       event.returnValue = screen.screenToDipPoint(point)
