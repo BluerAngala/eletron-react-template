@@ -6,10 +6,10 @@ import path from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { downloadFile, DownloadCancelledError } from './download'
 import { isValidZpx, prepareZpxAsar, readTextFromZpx } from './zpx'
-import { physicalFs } from './physicalFs'
+import { physicalFs } from '../physicalFs'
 import { pluginMarket } from './market'
-import { pluginDb } from './store'
-import { getPluginsRoot, type InstalledPlugin } from './shared'
+import { pluginDb } from '../store'
+import { getPluginsRoot, type InstalledPlugin } from '../shared'
 
 const artifactFs = physicalFs.promises
 

@@ -1,5 +1,5 @@
-import { httpGet } from './http'
-import { pluginDb } from './store'
+import { httpGet } from '../runtime/http'
+import { pluginDb } from '../store'
 
 export const PLUGIN_MARKET_API_BASE = 'https://z-tools.top/api/market'
 

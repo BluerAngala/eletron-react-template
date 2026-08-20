@@ -11,7 +11,15 @@
       "from": "plugins",
       "to": "plugins",
       "filter": ["**/*"]
+    },
+    {
+      "from": "resources/lib",
+      "to": "lib",
+      "filter": ["**/*"]
     }
+  ],
+  "asarUnpack": [
+    "resources/lib/**"
   ],
   "directories": {
     "output": "release/${version}"

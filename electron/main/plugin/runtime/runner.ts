@@ -2,7 +2,7 @@ import { BrowserWindow, session } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { getPluginSessionPartition, getRuntimePreloadPath, type InstalledPlugin } from './shared'
+import { getPluginSessionPartition, getRuntimePreloadPath, type InstalledPlugin } from '../shared'
 import { registry } from './registry'
 
 export interface RunningPlugin {

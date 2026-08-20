@@ -1,6 +1,6 @@
-import { pluginDb } from './store'
-import { physicalFs } from './physicalFs'
-import type { InstalledPlugin } from './shared'
+import { pluginDb } from '../store'
+import { physicalFs } from '../physicalFs'
+import type { InstalledPlugin } from '../shared'
 
 const artifactFs = physicalFs.promises
 

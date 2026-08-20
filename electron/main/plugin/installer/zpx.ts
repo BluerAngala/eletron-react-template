@@ -10,7 +10,7 @@ import {
 import path from 'node:path'
 import os from 'node:os'
 import { pipeline } from 'node:stream/promises'
-import { physicalFs } from './physicalFs'
+import { physicalFs } from '../physicalFs'
 
 const fs = physicalFs.promises
 const GZIP_MAGIC = Buffer.from([0x1f, 0x8b])
