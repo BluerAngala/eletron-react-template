@@ -46,7 +46,7 @@ export function AppLayout() {
         richColors
         closeButton
         toastOptions={{
-          className: 'dark:bg-slate-800 dark:text-slate-100',
+          className: 'bg-surface text-foreground',
         }}
       />
     </div>

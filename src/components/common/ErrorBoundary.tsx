@@ -41,8 +41,8 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="flex min-h-screen items-center justify-center bg-background p-8">
           <div className="w-full max-w-md rounded-2xl border border-border-default bg-surface p-8 shadow-lg">
             <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/40">
+                <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-300" />
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-foreground">页面出错了</h1>
@@ -51,7 +51,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </div>
 
             <div className="mb-6 rounded-lg bg-surface-hover p-4">
-              <p className="font-mono text-sm break-all text-red-600 dark:text-red-400">
+              <p className="font-mono text-sm break-all text-red-600 dark:text-red-300">
                 {this.state.error?.message}
               </p>
             </div>

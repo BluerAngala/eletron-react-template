@@ -18,7 +18,7 @@ walk(docsDir)
 const stripMd = (s) =>
   s
     .replace(/^#{1,6}\s+/, '')
-    .replace(/[`*_\[\]()]/g, '')
+    .replace(/[`*_[\]()]/g, '')
     .replace(/<[^>]+>/g, '')
     .replace(/\s+/g, ' ')
     .trim()

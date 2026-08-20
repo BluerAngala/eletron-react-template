@@ -109,8 +109,8 @@ const Update = () => {
       >
         <div className="space-y-3">
           {updateError ? (
-            <div className="text-sm leading-6 text-rose-700">
-              <p className="font-semibold text-rose-900">{t('update.error')}</p>
+            <div className="text-sm leading-6 text-red-500">
+              <p className="font-semibold text-red-600">{t('update.error')}</p>
               <p className="mt-1 max-h-40 overflow-auto">{updateError.message}</p>
             </div>
           ) : updateAvailable ? (
@@ -131,7 +131,7 @@ const Update = () => {
               </div>
             </div>
           ) : (
-            <pre className="overflow-auto text-left text-xs leading-6 text-slate-700">
+            <pre className="overflow-auto text-left text-xs leading-6 text-foreground-secondary">
               {JSON.stringify(versionInfo ?? {}, null, 2)}
             </pre>
           )}
