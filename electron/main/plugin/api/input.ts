@@ -1,4 +1,4 @@
-import { ipcMain, clipboard, nativeImage, BrowserWindow } from 'electron'
+import { ipcMain, clipboard, nativeImage } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -17,24 +17,24 @@ export class PluginInputAPI {
       return { success: false, error: '需要原生模块支持' }
     })
 
-    ipcMain.on('simulate-keyboard-tap', (event, key: string, modifiers: string[]) => {
-      event.returnValue = false
+    ipcMain.on('simulate-keyboard-tap', (_event, _key: string, _modifiers: string[]) => {
+      _event.returnValue = false
     })
 
-    ipcMain.on('simulate-mouse-move', (event, x: number, y: number) => {
-      event.returnValue = false
+    ipcMain.on('simulate-mouse-move', (_event, _x: number, _y: number) => {
+      _event.returnValue = false
     })
 
-    ipcMain.on('simulate-mouse-click', (event, x: number, y: number) => {
-      event.returnValue = false
+    ipcMain.on('simulate-mouse-click', (_event, _x: number, _y: number) => {
+      _event.returnValue = false
     })
 
-    ipcMain.on('simulate-mouse-double-click', (event, x: number, y: number) => {
-      event.returnValue = false
+    ipcMain.on('simulate-mouse-double-click', (_event, _x: number, _y: number) => {
+      _event.returnValue = false
     })
 
-    ipcMain.on('simulate-mouse-right-click', (event, x: number, y: number) => {
-      event.returnValue = false
+    ipcMain.on('simulate-mouse-right-click', (_event, _x: number, _y: number) => {
+      _event.returnValue = false
     })
 
     ipcMain.on('is-dev', (event) => {

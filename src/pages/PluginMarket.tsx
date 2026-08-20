@@ -8,12 +8,14 @@ import { ImportPluginButton } from '@/components/plugin/ImportPluginButton'
 /** 简易插值：t('key', { count: 3 }) → 替换 {count} */
 type Vars = Record<string, string | number>
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function formatT(raw: string, vars?: Vars): string {
   if (!vars) return raw
   return raw.replace(/\{(\w+)\}/g, (_, key) => (vars[key] !== undefined ? String(vars[key]) : ''))
 }
 
 /** 将 file:// logo 转为 plugin-icon:// 协议，解决 http 主窗口下图片显示问题 */
+// eslint-disable-next-line react-refresh/only-export-components
 export function logoUrl(url: string | undefined): string {
   return url ? url.replace(/^file:\/\//, 'plugin-icon://') : ''
 }

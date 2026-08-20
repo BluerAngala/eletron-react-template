@@ -1,5 +1,4 @@
 import { ipcMain } from 'electron'
-import { pluginDb } from '../store'
 import { getPluginDataPrefix } from '../shared'
 
 interface DynamicFeature {
@@ -20,34 +19,28 @@ export class PluginFeatureAPI {
     return `${getPluginDataPrefix(pluginName)}dynamic-features`
   }
 
-  private getPluginNameFromEvent(event: Electron.IpcMainEvent): string | null {
-    // 从 event.sender 解析插件名（通过 runner 登记的 webContentsId）
-    const { runningContext } = require('../runtime/runner') as typeof import('../runtime/runner')
-    return null
-  }
-
   private setupIPC(): void {
-    ipcMain.on('get-features', (event, codes?: string[]) => {
+    ipcMain.on('get-features', (_event, _codes?: string[]) => {
       try {
-        event.returnValue = []
+        _event.returnValue = []
       } catch {
-        event.returnValue = []
+        _event.returnValue = []
       }
     })
 
-    ipcMain.on('set-feature', (event, feature: DynamicFeature) => {
+    ipcMain.on('set-feature', (_event, _feature: DynamicFeature) => {
       try {
-        event.returnValue = { success: true }
+        _event.returnValue = { success: true }
       } catch {
-        event.returnValue = { success: false, error: '未知错误' }
+        _event.returnValue = { success: false, error: '未知错误' }
       }
     })
 
-    ipcMain.on('remove-feature', (event, code: string) => {
+    ipcMain.on('remove-feature', (_event, _code: string) => {
       try {
-        event.returnValue = true
+        _event.returnValue = true
       } catch {
-        event.returnValue = false
+        _event.returnValue = false
       }
     })
   }

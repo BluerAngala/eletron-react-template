@@ -54,8 +54,10 @@ export class PluginWindowAPI {
           return
         }
         try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const result = (win as any)[method](...methodArgs)
           event.returnValue = { success: true, result }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
           event.returnValue = { success: false, error: e.message }
         }
@@ -70,8 +72,10 @@ export class PluginWindowAPI {
         const win = this.createdWindows.get(id)
         if (!win) return { success: false, error: '窗口不存在' }
         try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const result = await (win as any)[method](...methodArgs)
           return { success: true, result }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
           return { success: false, error: e.message }
         }

@@ -1,4 +1,4 @@
-import { ipcMain, session as electronSession } from 'electron'
+import { ipcMain } from 'electron'
 
 /**
  * HTTP API - 插件专用

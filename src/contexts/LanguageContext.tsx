@@ -38,6 +38,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   return <LanguageContext value={{ language, setLanguage, t }}>{children}</LanguageContext>
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLanguage() {
   const context = useContext(LanguageContext)
   if (!context) throw new Error('useLanguage must be used within LanguageProvider')

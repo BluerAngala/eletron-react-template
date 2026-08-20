@@ -68,7 +68,7 @@ export interface InstalledPlugin {
   logo: string
   main?: string
   preload?: string
-  features?: any[]
+  features?: unknown[]
   path: string
   storageKind: PluginStorageKind
   installedAt: string

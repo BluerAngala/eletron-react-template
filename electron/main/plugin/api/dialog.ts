@@ -25,6 +25,7 @@ export class PluginDialogAPI {
           case 'pictures':
           case 'videos':
           case 'logs':
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             result = app.getPath(name as any)
             break
           default:
@@ -36,6 +37,7 @@ export class PluginDialogAPI {
       }
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ipcMain.on('show-save-dialog', (event, options: any) => {
       try {
         const result = dialog.showSaveDialogSync(options)

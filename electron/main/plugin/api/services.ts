@@ -64,7 +64,9 @@ function registerDatabaseApis(): void {
   })
   ipcMain.on('db:bulk-docs', (event, docs) => {
     const prefix = resolvePrefixForSender(event)
-    event.returnValue = docs.map((d: any) => pluginDb.put({ ...d, _id: prefix + d._id })) as unknown
+    event.returnValue = docs.map((d: Record<string, unknown>) =>
+      pluginDb.put({ ...d, _id: prefix + (d._id as string) }),
+    ) as unknown
   })
   ipcMain.on('db:all-docs', (event, key) => {
     const prefix = resolvePrefixForSender(event)
@@ -117,7 +119,7 @@ function registerDatabaseApis(): void {
     const id = typeof docOrId === 'string' ? docOrId : docOrId?._id
     return pluginDb.remove(id)
   })
-  ipcMain.handle('db:bulk-docs', async (_event, docs) => docs.map((d: any) => pluginDb.put(d)))
+  ipcMain.handle('db:bulk-docs', async (_event, docs) => docs.map((d: any) => pluginDb.put(d))) // eslint-disable-line @typescript-eslint/no-explicit-any
   ipcMain.handle('db:all-docs', async (_event, key) => pluginDb.allDocs(key))
 }
 
@@ -125,8 +127,10 @@ function registerDatabaseApis(): void {
 function registerPluginApiServices_(): void {
   const { app } = require('electron') as typeof import('electron')
   registerPluginApiServices({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getPath: (_event: any, args: unknown) => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return app.getPath(args as any)
       } catch {
         return ''
@@ -137,13 +141,15 @@ function registerPluginApiServices_(): void {
       return screen.getPrimaryDisplay()
     },
     getAllDisplays: () => {
-      const { screen } = require('electron') as typeof import('electron')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { screen } = require('electron') as any
       return screen.getAllDisplays()
     },
     getCursorScreenPoint: () => {
       const { screen } = require('electron') as typeof import('electron')
       return screen.getCursorScreenPoint()
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getWebContentsId: (event: any) => event.sender.id,
     'is-dev': () => process.env.NODE_ENV === 'development',
     'get-app-version': () => {

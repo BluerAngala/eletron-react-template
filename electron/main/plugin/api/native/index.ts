@@ -1,8 +1,7 @@
 import os from 'os'
 import path from 'path'
-import { fileURLToPath } from 'node:url'
 import { execSync, fork, spawnSync } from 'child_process'
-import { app, clipboard } from 'electron'
+import { app } from 'electron'
 
 // 根据平台加载对应的原生模块
 const platform = os.platform()
@@ -32,6 +31,7 @@ function resolveNativeModulePath(): string | null {
   return null
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let addon: any = null
 let _loaded = false
 
@@ -42,7 +42,6 @@ export function ensureNativeModule(): void {
   try {
     const nativePath = resolveNativeModulePath()
     if (nativePath) {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       addon = require(nativePath)
       console.log(`[Native] 已加载原生模块: ${nativePath}`)
     } else {

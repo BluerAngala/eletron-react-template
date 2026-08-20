@@ -1,6 +1,5 @@
-import { ipcMain, shell, app, nativeTheme, BrowserWindow } from 'electron'
+import { ipcMain, shell, app, nativeTheme } from 'electron'
 import fs from 'node:fs'
-import path from 'node:path'
 
 /**
  * Shell 操作API - 插件专用
@@ -37,6 +36,7 @@ export class PluginShellAPI {
           return { success: true }
         }
         return { success: false, error: '无效路径' }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         return { success: false, error: e.message }
       }

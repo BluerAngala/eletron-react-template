@@ -1,5 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain, protocol, net, webContents } from 'electron'
-import { createRequire } from 'node:module'
+import { app, BrowserWindow, shell, ipcMain, protocol } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
@@ -21,7 +20,6 @@ log.info(`Version: ${app.getVersion()}`)
 log.info(`Platform: ${process.platform} ${process.arch}`)
 log.info(`Electron: ${process.versions.electron}`)
 
-const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // 强制 DevTools 使用中文，不弹语言选择
@@ -215,9 +213,11 @@ function createLogEntry(
 log.hooks.push((_message, transport) => {
   if (transport !== log.transports.console) return
   // 从 electron-log 内部结构提取信息
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = (_message as any).data
   if (!Array.isArray(data) || data.length === 0) return
   const first = String(data[0])
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const level = (_message as any).level || 'info'
   pushLog(createLogEntry(level as LogEntry['level'], 'main', first, data.slice(1)))
 })

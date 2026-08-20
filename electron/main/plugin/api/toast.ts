@@ -9,6 +9,7 @@ class PluginToastAPI {
   }
 
   private setupIPC(): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ipcMain.handle('plugin:show-toast', async (event, options: any) => {
       try {
         const { message, type = 'info' } = options || {}

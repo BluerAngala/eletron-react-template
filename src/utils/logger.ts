@@ -16,6 +16,7 @@ const originalConsole: Partial<Record<keyof Console, (...args: unknown[]) => voi
 function captureConsole(level: string): void {
   const method = level as keyof Console
   originalConsole[method] = console[method] as (...args: unknown[]) => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ;(console as any)[method] = (...args: unknown[]) => {
     // 仍然输出到控制台
     originalConsole[method]?.(...args)
