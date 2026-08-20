@@ -7,7 +7,6 @@ import { ErrorBoundary } from '@/components/common/ErrorBoundary'
 import { router } from '@/routes'
 
 import '@/styles/index.css'
-import './demos/ipc'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
