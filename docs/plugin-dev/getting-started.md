@@ -19,7 +19,7 @@ my-plugin/
 ├── plugin.json          # 插件配置文件（必需）
 ├── index.html           # 插件入口页面
 ├── preload.js           # Node.js 预加载脚本（可选）
-└── logo.png             # 插件图标（必需）
+└── logo.svg             # 插件图标（推荐 SVG，支持 PNG）
 ```
 
 ## 快速创建
