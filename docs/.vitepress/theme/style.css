@@ -76,8 +76,8 @@
   --vp-c-divider: var(--c-border);
   --vp-c-gutter: var(--c-border-light);
 
-  --vp-layout-max-width: 1180px;
-  --vp-content-max-width: 760px;
+  --vp-layout-max-width: 1440px;
+  --vp-content-max-width: 860px;
   --vp-nav-height: 64px;
   --vp-sidebar-width: 280px;
 }
@@ -155,6 +155,10 @@
   color: var(--c-text-muted);
 }
 
+.VPSidebarItem.level-1 > .item {
+  padding-left: 14px;
+}
+
 .VPSidebarItem.level-1 > .item > .text {
   font-size: 14px;
   color: var(--c-text-secondary);
@@ -166,7 +170,6 @@
 
 .VPSidebarItem.level-1.is-link.is-active > .item {
   background: var(--c-brand-soft);
-  border-radius: 8px;
 }
 
 .VPSidebarItem.level-1.is-link.is-active > .item > .text {
@@ -490,4 +493,106 @@
 /* ---------- 版权页脚 ---------- */
 .VPFooter {
   border-top: 1px solid var(--c-border-light);
+}
+
+/* ---------- 折叠按钮（目录 / 大纲） ---------- */
+.docs-toggle {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  border: 1px solid var(--c-border);
+  background: var(--c-bg-elv);
+  color: var(--c-text-muted);
+  cursor: pointer;
+  opacity: 0.72;
+  transition: opacity 0.2s, color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.docs-toggle:hover {
+  opacity: 1;
+  color: var(--c-brand);
+  border-color: var(--c-brand);
+  background: var(--c-brand-soft);
+}
+
+.docs-toggle-sidebar {
+  left: 288px;
+}
+
+html.docs-sidebar-collapsed .docs-toggle-sidebar {
+  left: 8px;
+}
+
+.docs-toggle-aside {
+  right: 264px;
+}
+
+html.docs-aside-collapsed .docs-toggle-aside {
+  right: 8px;
+}
+
+/* ---------- 折叠态 ---------- */
+html.docs-sidebar-collapsed .VPSidebar {
+  display: none;
+}
+
+html.docs-sidebar-collapsed .VPDoc.has-sidebar .container {
+  max-width: 1104px;
+}
+
+html.docs-sidebar-collapsed .VPDoc.has-sidebar .content {
+  max-width: 784px;
+}
+
+html.docs-aside-collapsed .VPDoc .aside {
+  display: none;
+}
+
+/* ---------- 侧边栏目录优化 ---------- */
+.VPSidebarItem.level-0 + .VPSidebarItem.level-0 {
+  margin-top: 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--c-border-light);
+}
+
+.VPSidebarItem.level-0 > .item > .text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--c-brand);
+}
+
+.VPSidebarItem.level-1.is-link > .item {
+  margin: 1px 0;
+}
+
+.VPSidebarItem.level-1.is-link > .item:hover {
+  background: var(--c-bg-soft);
+}
+
+.VPSidebarItem.level-1.is-link.is-active > .item {
+  background: var(--c-brand-soft);
+}
+
+/* ---------- 右侧大纲优化 ---------- */
+.VPDocAsideOutline .outline-link {
+  display: block;
+  padding: 2px 0;
+}
+
+.VPDocAsideOutline .outline-link.active {
+  color: var(--c-brand);
+  font-weight: 600;
+}
+
+.VPDocAsideOutline .outline-link:hover {
+  color: var(--c-brand);
 }
