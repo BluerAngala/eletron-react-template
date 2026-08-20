@@ -37,11 +37,14 @@ jobs:
         with:
           node-version: 22
 
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@latest --activate
+
       - name: Install Dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Build Release Files
-        run: npm run build
+        run: pnpm build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

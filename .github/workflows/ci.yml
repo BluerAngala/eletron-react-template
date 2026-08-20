@@ -4,9 +4,9 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - '*.md'
-      - '**/*.md'
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
 
 permissions:
   contents: read
@@ -16,8 +16,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-markdown:
-    name: Lint Markdown
+  lint-and-typecheck:
+    name: Lint & TypeCheck
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -25,5 +25,25 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Lint markdown
-        run: npx --yes markdownlint-cli@0.48.0 '**/*.md' --ignore node_modules --disable MD013
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@latest --activate
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: TypeCheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format Check
+        run: pnpm format:check
+
+      - name: Test
+        run: pnpm test
